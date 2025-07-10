@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout | CreativeVector</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css"> 
+    <link rel="icon" href="img/favicon.ico" type="image/x-icon">
+    <script src="https://www.paypal.com/sdk/js?client-id=ARw5TQMWv5wy8T8GTHBnsbQ-tpbpneayD05LvGLm3k_mgTx7QnLXkmc3l3CdK60OtzVntBnTnNjfc1kT&currency=USD"></script> <!-- sandbox -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <header class="main-header">
+    <div class="header-container">
+      <div class="logo">
+        <a href="index.html">
+          <img style="height:40px;" src="img/cstore.png" alt="" />
+        </a>
+      </div>
+      <nav class="main-nav">
+        <ul>
+          <li><a href="index.html">Store</a></li> 
+          <li><a href="license.html">License Agreement</a></li>
+          <li><a href="https://alextiancreative.github.io/" target="_blank">About</a></li>
+        </ul>
+      </nav>
+       <!-- USER ACCOUNT -->
+      <div class="user-auth-container">
+    <button id="authButton" class="btn btn-auth">
+        <i class="fas fa-sign-in-alt"></i> Login / Sign Up 
+    </button>
+    <div id="userProfileStatus" style="display:none;" class="user-profile-status">
+        <div class="user-avatar-wrapper">
+            <i class="fas fa-user-circle user-avatar"></i>
+        </div>
+        <div class="user-info">
+            <a href="profile.html" id="userProfileLink" class="user-profile-link">
+                <span id="userEmailDisplay"></span>
+            </a>
+            <button id="logoutButton" class="btn-logout">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+    </div>
+    </div>
+  </header>
+
+    <main class="checkout-container">
+        <a href="index.html" class="btn" style="text-decoration: none;font-weight: bold;">Back to store</a>
+        <h2 style="font-family: 'Poppins', sans-serif;">Complete Your Purchase</h2>
+
+        <div class="cart-summary">
+            <h3 style="font-family: 'Poppins', sans-serif;">Order Summary</h3>
+            <ul id="summaryList"> 
+                </ul>
+            <div id="summaryTotal" class="summary-total"></div>
+        </div>
+
+        <div class="payment-section">
+            <h3>Choose Your Payment Method</h3>
+            <div id="paypal-button-container">
+            </div>
+            <div id="checkoutMessage" class="checkout-message" style="display: none;"></div>
+        </div>
+        <p class="note">*You will not see your purchase history if you are not logged in.</p>
+        <p class="note">By purchasing the product you choose, you agree to our <a href="license.html">License Agreement</a>. If you have any issues, please <a href="mailto:rendixalextian@graphic-designer.com">contact us</a>.</p>
+        <p class="note">After successful payment, the ordered files will be sent within 1 working day.</p>
+    </main>
+
+    <footer class="main-footer">
+    <div class="footer-content">
+      <div class="footer-section about-shop">
+        <img style="height:40px;" src="img/cstore.png" alt="Alextian Creative Logo" />
+        <p>Your one-stop shop for high-quality digital assets. We offer unique designs for personal and commercial projects, ensuring creativity and value in every product.</p>
+        <p>All digital assets displayed here are purely owned by Alextian Creative Artwork, we do not sell or steal other designers digital assets.</p>
+      </div>
+      <div class="footer-section">
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="index.html">Store</a></li> 
+          <li><a href="license.html">License Agreement</a></li>
+          <li><a href="https://alextiancreative.github.io/" target="_blank">About</a></li>
+      </div>
+    </div>
+    <div class="footer-bottom">
+        &copy; <span id="currentYear"></span> CreativeVector. All rights reserved.
+        <a href="privacy-policy.html" target="_blank">Privacy Policy</a> | <a href="terms-of-service.html" target="_blank">Terms of Service</a>
+        </div>
+  </footer>
+
+    <script>
+        const supabaseUrl = 'https://lekxtacqnusomlvtfxcz.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxla3h0YWNxbnVzb21sdnRmeGN6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAwMDU0OTIsImV4cCI6MjA2NTU4MTQ5Mn0.mUGy47EGjDxWKWFl4EPWgYfYnzKB9YaTTYgmRihRQXU';
+
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+        const summaryList = document.getElementById('summaryList'); 
+        const summaryTotalDiv = document.getElementById('summaryTotal');
+        const checkoutMessageDiv = document.getElementById('checkoutMessage');
+        let cart = JSON.parse(localStorage.getItem('cart')) || []; 
+        let totalAmount = 0;
+
+        document.getElementById('currentYear').textContent = new Date().getFullYear(); 
+
+        function displayCartSummary() {
+            if (cart.length === 0) {
+                summaryList.innerHTML = '<li class="empty-summary-message">Your cart is empty. Please go back to the <a href="index.html">shop</a> to add items.</li>';
+                summaryTotalDiv.innerHTML = '';
+                document.getElementById('paypal-button-container').innerHTML = '<p>No items to checkout.</p>';
+                return;
+            }
+
+            summaryList.innerHTML = ''; 
+            totalAmount = 0;
+            let productIdsForPayPal = []; 
+
+            cart.forEach((item, i) => { 
+                
+                const identifier = item.extractedId || item.filename || 'N/A'; 
+                
+                const itemElement = document.createElement('li'); 
+                itemElement.classList.add('summary-item');
+                
+                itemElement.innerHTML = `
+                    <span class="summary-item-number">${i + 1}.</span>
+                    <span class="summary-item-info">${item.title} (${item.license} #${identifier})</span>
+                    <span class="summary-item-price">$${parseFloat(item.price).toFixed(2)}</span>
+                    <div class="summary-item-preview">
+                        <img src="${item.preview_url}" alt="Product Preview">
+                    </div>
+                `;
+                summaryList.appendChild(itemElement); 
+                totalAmount += item.price;
+
+                if (item.extractedId) {
+                    productIdsForPayPal.push(item.extractedId);
+                }
+            });
+
+            summaryTotalDiv.textContent = `Total : $${totalAmount.toFixed(2)}`;
+
+            const orderDescription = productIdsForPayPal.length > 0
+                ? `Purchase from Alextian Creative Store (IDs: ${productIdsForPayPal.join(', ')})`
+                : 'Purchase from Alextian Creative Store';
+
+            initPayPalButtons(orderDescription);
+        }
+        
+        function showMessage(message, type = 'info') {
+            checkoutMessageDiv.textContent = message;
+            checkoutMessageDiv.className = `checkout-message ${type}`;
+            checkoutMessageDiv.style.display = 'block';
+            checkoutMessageDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        
+        function initPayPalButtons(orderDescription) {
+            if (cart.length === 0) {
+                return;
+            }
+
+            document.getElementById('paypal-button-container').innerHTML = '';
+
+            paypal.Buttons({
+                createOrder: function(data, actions) {
+                    if (cart.length === 0) {
+                        return actions.reject('CART_EMPTY');
+                    }
+
+                    return fetch('https://lekxtacqnusomlvtfxcz.supabase.co/functions/v1/create-paypal-order', { // sandbox
+                        method: 'post',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            cartItems: cart
+                        })
+                    }).then(function(response) {
+                        if (!response.ok) {
+                            return response.json().then(err => { throw err; });
+                        }
+                        return response.json();
+                    }).then(function(orderData) {
+                        if (orderData.error) {
+                            alert('An error occurred while creating the order: ' + orderData.error);
+                            throw new Error(orderData.error);
+                        }
+                        return orderData.orderID;
+                    }).catch(function(error) {
+                        alert('Unable to create a PayPal order. Please try again.');
+                        throw error;
+                    });
+                },
+                onApprove: function(data, actions) {
+                    return fetch('https://lekxtacqnusomlvtfxcz.supabase.co/functions/v1/capture-paypal-order', { // sandbox
+                        method: 'post',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            orderID: data.orderID,
+                            paymentSource: data.paymentSource,
+                            cart_items: JSON.parse(localStorage.getItem('cart'))
+                        })
+                    }).then(function(response) {
+                        return response.json();
+                    }).then(function(captureData) {
+                        if (captureData.success) {
+                            localStorage.removeItem('cart');
+                            window.location.href = '/success.html';
+                        } else {
+                            window.location.href = '/error.html';
+                        }
+                    }).catch(function(error) {
+                        alert('An unexpected error occurred after payment. Please contact support.');
+                    });
+                }
+            }).render('#paypal-button-container');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            displayCartSummary();
+        });
+    </script>
+    <script type="module" src="js/product.js"></script>
+    <script type="module" src="js/user.js"></script> </body>
+</body>
+</html>

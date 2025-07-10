@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="robots" content="index, follow">
+  <meta name="description" content="CreativeVector is a premium vector store offering high-quality digital assets for personal, commercial and extended use. Explore our unique designs and elevate your projects with our exclusive vector art.">
+  <meta name="author" content="Alextian Creative Artwork">
+  <meta name="keywords" content="premium vectors, digital assets, vector art, graphic design, personal use, commercial use, extended use, unique designs, high-quality vectors, CreativeVector, Alextian Creative Artwork, vector store, digital design, creative assets, vector graphics, eps, ai, svg, png, jpg, license agreement, vector portfolio">
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="License | CreativeVector" />
+  <meta property="og:description" content="CreativeVector is a premium vector store offering high-quality digital assets for personal, commercial and extended use. Explore our unique designs and elevate your projects with our exclusive vector art." />
+  <meta property="og:url" content="https://creativevector.github.io/license.html" />
+  <meta property="og:image" content="https://creativevector.github.io/img/cstore.png" />
+  <meta name="google-site-verification" content="undefined" />
+  <meta property="og:site_name" content="License | CreativeVector" />
+
+  <title>License | CreativeVector</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="icon" href="img/favicon.ico" type="image/x-icon">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+<header class="main-header">
+  <div class="header-container">
+    <div class="logo">
+      <a href="index.html">
+        <img style="height:40px;" src="img/cstore.png" alt="" />
+      </a>
+    </div>
+    <nav class="main-nav">
+      <ul>
+        <li><a href="index.html">Store</a></li> 
+        <li><a href="license.html">License Agreement</a></li>
+        <li><a href="https://alextiancreative.github.io/" target="_blank">About</a></li>
+      </ul>
+    </nav>
+    <div class="user-auth-container">
+      <button id="authButton" class="btn btn-auth">
+        <i class="fas fa-sign-in-alt"></i> Login / Sign Up 
+      </button>
+      <div id="userProfileStatus" style="display:none;" class="user-profile-status">
+        <div class="user-avatar-wrapper">
+          <i class="fas fa-user-circle user-avatar"></i>
+        </div>
+        <div class="user-info">
+          <a href="profile.html" id="userProfileLink" class="user-profile-link">
+            <span id="userEmailDisplay"></span>
+          </a>
+          <button id="logoutButton" class="btn-logout">
+            <i class="fas fa-sign-out-alt"></i> Logout
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="layout">
+  <div class="sidebar">
+    <button id="personal" class="tab active" data-file="https://gist.githubusercontent.com/AlextianCreative/0f5c41f8fa7fa759f9ea97718040b71c/raw/f03644916cba98eec073f4edfaf9e05cea54c3e0/personal.txt">1. PERSONAL USE</button>
+    <button id="commercial" class="tab" data-file="https://gist.githubusercontent.com/AlextianCreative/0f5c41f8fa7fa759f9ea97718040b71c/raw/f03644916cba98eec073f4edfaf9e05cea54c3e0/commercial.txt">2. COMMERCIAL USE</button>
+    <button id="extended" class="tab" data-file="https://gist.githubusercontent.com/AlextianCreative/0f5c41f8fa7fa759f9ea97718040b71c/raw/f03644916cba98eec073f4edfaf9e05cea54c3e0/extended.txt">3. EXTENDED USE</button>
+  </div>
+  <div class="content" id="noteContent">
+    <div class="header">Loading . . .</div>
+  </div>
+</main>
+
+<footer class="main-footer">
+  <div class="footer-content">
+    <div class="footer-section about-shop">
+      <img style="height:40px;" src="img/cstore.png" alt="Alextian Creative Logo" />
+      <p>Your one-stop shop for high-quality digital assets. We offer unique designs for personal and commercial projects, ensuring creativity and value in every product.</p>
+      <p>All digital assets displayed here are purely owned by Alextian Creative Artwork, we do not sell or steal other designers digital assets.</p>
+    </div>
+    <div class="footer-section">
+      <h3>Quick Links</h3>
+      <ul>
+        <li><a href="index.html">Store</a></li> 
+        <li><a href="license.html">License Agreement</a></li>
+        <li><a href="https://alextiancreative.github.io/" target="_blank">About</a></li>
+      </ul>
+    </div>
+    
+  </div>
+  <div class="footer-bottom">
+    &copy; <span id="currentYear"></span> CreativeVector. All rights reserved.
+    <a href="privacy-policy.html" target="_blank">Privacy Policy</a> | <a href="terms-of-service.html" target="_blank">Terms of Service</a>
+  </div>
+</footer>
+
+<script>
+    
+    
+    
+    
+    
+    
+    
+    window.addEventListener('DOMContentLoaded', () => {
+        const tabs = document.querySelectorAll('.tab');
+        const content = document.getElementById('noteContent');
+        const currentYear = document.getElementById('currentYear');
+
+        if (currentYear) {
+            currentYear.textContent = new Date().getFullYear();
+        }
+
+        async function loadNote(file, label) {
+            
+            content.innerHTML = `<div class="header"><h3>${label}</h3></div><div class="content-loading">Loading...</div>`;
+            
+            try {
+                const response = await fetch(file);
+                if (!response.ok) throw new Error("Failed to load content: " + response.statusText);
+                const text = await response.text();
+                
+                
+                
+                
+                const paragraphs = text.split(/\n\s*\n/).map(p => `<p>${p.trim()}</p>`).join('');
+
+                content.innerHTML = `
+                    <div class="header"><h3>${label}</h3></div>
+                    <pre style="font-family: 'Roboto', sans-serif;">${text}</pre>
+                `;
+            } catch (err) {
+                content.innerHTML = `<div class="header">❌ Failed to load</div><div>${err.message}</div>`;
+            }
+        }
+        
+
+        
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                loadNote(tab.dataset.file, tab.textContent.trim());
+                
+                history.pushState(null, '', `#${tab.id}`);
+                window.scrollTo({ top: 0, behavior: 'smooth' }); 
+            });
+        });
+
+        
+        const hash = window.location.hash.substring(1);
+        const defaultTab = document.getElementById('personal');
+
+        if (hash) {
+            const targetBtn = document.getElementById(hash);
+            if (targetBtn) {
+                
+                tabs.forEach(btn => btn.classList.remove('active'));
+                
+                targetBtn.classList.add('active');
+                
+                loadNote(targetBtn.dataset.file, targetBtn.textContent.trim());
+                return;
+            }
+        }
+
+        
+        if (defaultTab) {
+            defaultTab.classList.add('active');
+            loadNote(defaultTab.dataset.file, defaultTab.textContent.trim());
+        } else {
+            console.error("Default 'personal' tab not found in the DOM.");
+            content.innerHTML = `<div class="header">Error</div><div>Default license tab not found.</div>`;
+        }
+    });
+
+</script>
+<script src="js/user.js"></script>
+</body>
+</html>

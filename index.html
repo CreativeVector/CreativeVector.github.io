@@ -12,44 +12,167 @@
   <meta property="og:description" content="CreativeVector is a premium vector store offering high-quality digital assets for personal, commercial and extended use. Explore our unique designs and elevate your projects with our exclusive vector art." />
   <meta property="og:url" content="https://creativevector.github.io" />
   <meta property="og:image" content="https://creativevector.github.io/img/cstore.png" />
-  <meta name="google-site-verification" content="undefined" />
+  <meta name="google-site-verification" content="_J1nX2G61upYTYfcmSRSifBh6sLBYfo-eEyp4nnZ2IU" />
   <meta property="og:site_name" content="CreativeVector Store" />
   
   <title>Premium Quality Vectors | CreativeVector</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="icon" href="img/favicon.ico" type="image/x-icon">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
   <header class="main-header">
     <div class="header-container">
-    <h2>CreativeVector STORE</h2>>
+      <div class="logo">
+        <a href="index.html">
+          <img style="height:40px;" src="img/cstore.png" alt="" />
+        </a>
       </div>
       <nav class="main-nav">
         <ul>
-          <li><a href="#">Store</a></li> 
-          <li><a href="#">License Agreement</a></li>
+          <li><a href="index.html">Store</a></li> 
+          <li><a href="license.html">License Agreement</a></li>
           <li><a href="https://alextiancreative.github.io/" target="_blank">About</a></li>
         </ul>
       </nav>
+      <!-- USER ACCOUNT -->
+      <div class="user-auth-container">
+    <button id="authButton" class="btn btn-auth">
+        <i class="fas fa-sign-in-alt"></i> Login / Sign Up 
+    </button>
+    <div id="userProfileStatus" style="display:none;" class="user-profile-status">
+        <div class="user-avatar-wrapper">
+            <i class="fas fa-user-circle user-avatar"></i>
+        </div>
+        <div class="user-info">
+            <a href="profile.html" id="userProfileLink" class="user-profile-link">
+                <span id="userEmailDisplay"></span>
+            </a>
+            <button id="logoutButton" class="btn-logout">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
     </div>
+</div>
       
     </div>
   </header>
 
-  <h1>UNDER CONSTRUCTION</h1>
+  <div class="sub-header">
+    <div class="sub-header-container">
+      <div class="license-selector-wrapper">
+        <h4>License</h4>
+        <select id="licenseSelector" onchange="setLicense(this.value)">
+          <option value="personal" selected>Personal</option>
+          <option value="commercial">Commercial</option>
+          <option value="extended">Extended</option>
+        </select>
+      </div>
+      <div class="categories" id="categoryTabs">
+        <h4>Category</h4>
+        </div>
+        <div class="search-box-wrapper">
+        <input type="text" id="searchInput" placeholder="Search products..." />
+        <i class="fas fa-search search-icon"></i>
+      </div>
+      <div class="header-actions">
+        <div class="cart-icon" id="cartIcon" data-count="0">
+          <i class="fas fa-shopping-cart" style="color:black"></i>
+          <span class="cart-count">0</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <main id="store" class="store"></main>
+  <div id="pagination-controls" class="pagination-controls">
+    </div>
+
+  <div id="cartModal" class="modal">
+    <div class="modal-content cart-modal-content">
+      <button class="close-btn" onclick="closeCart()">×</button>
+      <h2><i class="fas fa-shopping-cart"></i>  Your Cart</h2>
+      <ul id="cartList" class="cart-items-list"></ul>
+      <div id="cartTotal" class="cart-total"></div>
+      <div class="cart-actions">
+        <button id="clearCartBtn" class="btn clear-cart-btn">Clear Cart</button>
+        <button id="checkoutBtn" class="btn checkout-btn" onclick="location.href='checkout.html'">Checkout</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="previewModal" class="modal">
+    <div class="modal-content preview-modal-content">
+      <button class="close-btn" onclick="closePreview()">×</button>
+      <img id="previewImage" src="" alt="Preview" class="preview-image" />
+      <div id="previewTitle" class="preview-title"></div>
+      <div id="previewDesc" class="preview-description"></div>
+      <div id="previewFilename" class="preview-filename"></div>
+
+      <div class="preview-price-section">
+        <div id="previewPrice1"></div>
+        <div id="previewPrice2"></div>
+        <div id="previewPrice3"></div>
+      </div>
+
+      <div class="preview-icons-copyright">
+        <div id="previewIcon1" class="format-icons"></div>
+        <div id="previewIcon2" class="format-icons"></div>
+        <div class="copyright-info">
+          <p>Copyright by © Alextian Creative Artwork</p>
+          <p style="font-size: medium; margin-top: 5px;">All rights reserved.</p>
+        </div>
+      </div>
+      <button onclick="closePreview()" class="btn close-preview-btn">Close</button>
+    </div>
+  </div>
 
   <footer class="main-footer">
     <div class="footer-content">
       <div class="footer-section about-shop">
-        <h2>About CreativeVector</h2>
+        <img style="height:40px;" src="img/cstore.png" alt="Alextian Creative Logo" />
         <p>Your one-stop shop for high-quality digital assets. We offer unique designs for personal and commercial projects, ensuring creativity and value in every product.</p>
         <p>All digital assets displayed here are purely owned by Alextian Creative Artwork, we do not sell or steal other designers digital assets.</p>
       </div>
-      
+      <div class="footer-section">
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="index.html">Store</a></li> 
+          <li><a href="license.html">License Agreement</a></li>
+          <li><a href="https://alextiancreative.github.io/" target="_blank">About</a></li>
+      </div>
     </div>
-    
+    <div class="footer-bottom">
+        &copy; <span id="currentYear"></span> CreativeVector. All rights reserved.
+        <a href="privacy-policy.html" target="_blank">Privacy Policy</a> | <a href="terms-of-service.html" target="_blank">Terms of Service</a>
+        </div>
   </footer>
 
+  <div id="authModalOverlay" class="auth-modal-overlay" style="display: none;">
+    <div class="auth-modal-content">
+      <span class="auth-modal-close-btn" id="authModalCloseBtn">&times;</span>
+      <h3 id="authModalTitle">Login</h3>
+      <form id="authForm">
+        <label for="authEmail">Email:</label>
+        <input type="email" id="authEmail" required>
+        <label for="authPassword">Password:</label>
+        <input type="password" id="authPassword" required>
+        <button type="submit" id="authSubmitButton">Login</button>
+      </form>
+      <div id="authMessage" class="auth-modal-message" style="display: none;"></div>
+      <p class="switch-mode">
+        Don't have an account? <a id="switchToSignUp">Sign Up</a>
+        <span id="loginLinkContainer" style="display: none;">Already have an account? <a id="switchToLogin">Login</a></span>
+      </p>
+    </div>
+  </div>
+
+  <div id="global-cart-preview" style="display: none;"></div>
+  
+  <script type="module" src="js/product.js"></script>
+  <script type="module" src="js/user.js"></script> 
 
 </body>
 </html>
