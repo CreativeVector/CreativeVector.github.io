@@ -1,0 +1,36 @@
+name: Generate Product Pages
+
+on:
+  push:
+    paths:
+      - generate.js
+      - template/**
+      - .github/workflows/generate-products.yml
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Generate and commit product pages
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+
+    - name: Install dependencies
+      run: npm install node-fetch@2
+
+    - name: Run generator
+      run: node generate.js
+
+    - name: Commit and push changes
+      run: |
+        git config --global user.name "github-actions"
+        git config --global user.email "github-actions@github.com"
+        git add products/
+        git commit -m "Auto-generate product pages [skip ci]" || echo "No changes"
+        git push
