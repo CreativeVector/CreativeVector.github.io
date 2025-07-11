@@ -5,7 +5,7 @@ on:
     paths:
       - generate.js
       - template/**
-      - .github/workflows/generate-products.yml
+      - .github/workflows/generateproducts.yml
 
 jobs:
   build:
