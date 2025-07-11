@@ -72,10 +72,14 @@ window.addEventListener('click', (event) => {
     }
 });
 
-searchInput.addEventListener('input', (event) => {
-    searchQuery = event.target.value.toLowerCase();
+let debounceTimeout;
+searchInput.addEventListener('input', (e) => {
+  clearTimeout(debounceTimeout);
+  debounceTimeout = setTimeout(() => {
+    searchQuery = e.target.value.toLowerCase();
     currentPage = 1;
     renderProducts();
+  }, 300);
 });
 
 
