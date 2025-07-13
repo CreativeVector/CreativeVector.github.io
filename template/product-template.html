@@ -11,6 +11,11 @@
   <meta property="og:image" content="{{IMAGE_URL}}" />
   <meta property="og:type" content="product" />
   <meta property="og:url" content="https://creativevector.github.io/products/{{FILENAME}}.html" />
+  <meta name="keywords" content="{{KEYWORD}}">
+  <link rel="preconnect" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="icon" href="../img/favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="../css/style.css" />
 
   <script type="application/ld+json">
   {
@@ -19,6 +24,11 @@
     "name": "{{TITLE}}",
     "image": "{{IMAGE_URL}}",
     "description": "{{DESCRIPTION}}",
+    "keywords": "{{KEYWORD}}",
+    "brand": {
+      "@type": "Brand",
+      "name": "CreativeVector"
+    },
     "sku": "{{FILENAME}}",
     "offers": {
       "@type": "Offer",
@@ -29,29 +39,59 @@
   }
   </script>
 
-  <link rel="stylesheet" href="../css/style.css" />
+
 </head>
 <body>
 
   <header class="main-header">
     <div class="header-container">
-      <div class="logo"><a href="/">
-        <img src="../img/cstore.png" alt="CreativeVector" style="height:40px;"></a></div>
+      <div class="logo">
+        <a href="index.html">
+          <img loading="lazy" style="height:40px;" src="../img/cstore.png" alt="" />
+        </a>
+      </div>
       <nav class="main-nav">
         <ul>
-          <li><a href="/">Store</a></li>
-          <li><a href="/user-license.html">License</a></li>
+          <li><a href="/">Store</a></li> 
+          <li><a href="/user-license.html">License Agreement</a></li>
           <li><a href="https://alextiancreative.github.io/" target="_blank">About</a></li>
         </ul>
       </nav>
+      <div class="header-actions">
+        <div class="cart-icon" id="cartIcon" data-count="0">
+          <i class="fas fa-shopping-cart" style="color:black"></i>
+          <span class="cart-count">0</span>
+        </div>
+        <div class="user-auth-container">
+    <button id="authButton" class="btn btn-auth">
+        <i class="fas fa-sign-in-alt"></i> Sign In 
+    </button>
+    <div id="userProfileStatus" style="display:none;" class="user-profile-status">
+        <div class="user-avatar-wrapper">
+            <i class="fas fa-user-circle user-avatar"></i>
+        </div>
+        <div class="user-info">
+            <a href="profile.html" id="userProfileLink" class="user-profile-link">
+                <span id="userEmailDisplay"></span>
+            </a>
+            <button id="logoutButton" class="btn-logout">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+    </div>
+    </div>  
+      </div>
+      <!-- USER ACCOUNT -->
+      
     </div>
   </header>
 
+
   <main class="layout" style="padding: 40px 20px;">
-    <div class="content" style="width:100%;">
-      <div class="image-wrapper" style="max-width: 600px; margin:auto;">
-        <img src="{{IMAGE_URL}}" alt="{{TITLE}}" style="width: 100%; border-radius:10px;" />
-      </div>
+  <div class="content" style="width:100%;">
+    <div class="image-wrapper" style="max-width: 600px; margin:auto;">
+      <img src="{{IMAGE_URL}}" alt="{{TITLE}}" style="width: 100%; border-radius:10px; cursor: zoom-in;" onclick="openImagePreview('{{IMAGE_URL}}')" />
+    </div>
 
       <div style="margin-top:30px; text-align:center;">
         <h1 class="preview-title">{{TITLE}}</h1>
@@ -61,15 +101,15 @@
 
       <div class="preview-price-section">
         <div class="textDesc">
-          <a href="https://gist.githubusercontent.com/AlextianCreative/.../personal.txt" target="_blank" class="btn license-button">Personal License</a>
+          <a href="/user-license.html#personal" target="_blank" class="btn license-button">Personal License</a>
           <h1>$ {{PRICE}}</h1>
         </div>
         <div class="textDesc">
-          <a href="https://gist.githubusercontent.com/AlextianCreative/.../commercial.txt" target="_blank" class="btn license-button">Commercial License</a>
+          <a href="/user-license.html#commercial" target="_blank" class="btn license-button">Commercial License</a>
           <h1>$ {{PRICE_COMMERCIAL}}</h1>
         </div>
         <div class="textDesc">
-          <a href="https://gist.githubusercontent.com/AlextianCreative/.../extended.txt" target="_blank" class="btn license-button">Extended License</a>
+          <a href="/user-license.html#extended" target="_blank" class="btn license-button">Extended License</a>
           <h1>$ {{PRICE_EXTENDED}}</h1>
         </div>
       </div>
@@ -83,6 +123,11 @@
       </div>
     </div>
   </main>
+
+    <div id="imgPreviewPopup" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.9); z-index:9999; justify-content:center; align-items:center;">
+      <span onclick="closeImagePreview()" style="position:absolute; top:20px; right:30px; color:#fff; font-size:2rem; cursor:pointer;">&times;</span>
+      <img id="popupImage" src="" style="max-width:90vw; max-height:90vh; border-radius:8px;" alt="Preview">
+    </div>
 
   <script>
     function addToCart() {
@@ -104,6 +149,16 @@
       cart.push(product);
       localStorage.setItem('cart', JSON.stringify(cart));
       alert("Added to cart.");
+    }
+    function openImagePreview(url) {
+    const popup = document.getElementById('imgPreviewPopup');
+    const img = document.getElementById('popupImage');
+    img.src = url;
+    popup.style.display = 'flex';
+    }
+
+    function closeImagePreview() {
+      document.getElementById('imgPreviewPopup').style.display = 'none';
     }
     
     document.addEventListener('DOMContentLoaded', function() {
