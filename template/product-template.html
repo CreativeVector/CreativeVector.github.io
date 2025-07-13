@@ -35,11 +35,12 @@
 
   <header class="main-header">
     <div class="header-container">
-      <div class="logo"><a href="/"><img src="../img/cstore.png" alt="CreativeVector" style="height:40px;"></a></div>
+      <div class="logo"><a href="/">
+        <img src="../img/cstore.png" alt="CreativeVector" style="height:40px;"></a></div>
       <nav class="main-nav">
         <ul>
           <li><a href="/">Store</a></li>
-          <li><a href="/license.html">License</a></li>
+          <li><a href="/user-license.html">License</a></li>
           <li><a href="https://alextiancreative.github.io/" target="_blank">About</a></li>
         </ul>
       </nav>
@@ -73,6 +74,10 @@
         </div>
       </div>
 
+    <div style="margin-top:30px; text-align:center;">
+            <p class="preview-keyword">{{KEYWORD}}</p>
+          </div>
+
       <div style="text-align:center; margin-top:20px;">
         <button class="btn" onclick="addToCart()">+ Add to Cart</button>
       </div>
@@ -100,12 +105,63 @@
       localStorage.setItem('cart', JSON.stringify(cart));
       alert("Added to cart.");
     }
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        // Cari elemen yang berisi kata kunci
+        const keywordContainer = document.querySelector('.preview-keyword');
+
+        // Pastikan elemen ditemukan dan berisi teks
+        if (keywordContainer && keywordContainer.textContent.trim() !== '') {
+            const rawKeywords = keywordContainer.textContent.trim();
+            
+            // Hapus isi teks saat ini dari container
+            keywordContainer.textContent = '';
+            
+            // Bagi string kata kunci berdasarkan koma (,)
+            const keywordsArray = rawKeywords.split(',');
+
+            // Iterasi melalui setiap kata kunci
+            keywordsArray.forEach(keyword => {
+                const trimmedKeyword = keyword.trim();
+                
+                // Jika kata kunci tidak kosong (setelah trim)
+                if (trimmedKeyword) {
+                    // Buat elemen <span> baru
+                    const keywordSpan = document.createElement('span');
+                    
+                    // Tambahkan class 'keyword-item' (sesuai CSS yang Anda buat sebelumnya)
+                    keywordSpan.classList.add('keyword-item');
+                    
+                    // Tambahkan teks kata kunci ke dalam <span>
+                    keywordSpan.textContent = trimmedKeyword;
+                    
+                    // Tambahkan <span> ke dalam container
+                    keywordContainer.appendChild(keywordSpan);
+                }
+            });
+        }
+    });
   </script>
 
   <footer class="main-footer">
-    <div class="footer-bottom">
-      &copy; <span id="currentYear"></span> CreativeVector. All rights reserved.
+    <div class="footer-content">
+      <div class="footer-section about-shop">
+        <img loading="lazy" style="height:40px;" src="img/cstore.png" alt="Alextian Creative Logo" />
+        <p>Your one-stop shop for high-quality digital assets. We offer unique designs for personal and commercial projects, ensuring creativity and value in every product.</p>
+        <p>All digital assets displayed here are purely owned by Alextian Creative Artwork, we do not sell or steal other designers digital assets.</p>
+      </div>
+      <div class="footer-section">
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="index.html">Store</a></li> 
+          <li><a href="user-license.html">License Agreement</a></li>
+          <li><a href="https://alextiancreative.github.io/" target="_blank">About</a></li>
+      </div>
     </div>
+    <div class="footer-bottom">
+        &copy; <span id="currentYear"></span> CreativeVector. All rights reserved.
+        <a href="privacy-policy.html" target="_blank">Privacy Policy</a> | <a href="terms-of-service.html" target="_blank">Terms of Service</a>
+        </div>
   </footer>
 
   <script>

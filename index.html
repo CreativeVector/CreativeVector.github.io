@@ -33,14 +33,14 @@
       <nav class="main-nav">
         <ul>
           <li><a href="index.html">Store</a></li> 
-          <li><a href="license.html">License Agreement</a></li>
+          <li><a href="user-license.html">License Agreement</a></li>
           <li><a href="https://alextiancreative.github.io/" target="_blank">About</a></li>
         </ul>
       </nav>
       <!-- USER ACCOUNT -->
       <div class="user-auth-container">
     <button id="authButton" class="btn btn-auth">
-        <i class="fas fa-sign-in-alt"></i> Login / Sign Up 
+        <i class="fas fa-sign-in-alt"></i> Sign In 
     </button>
     <div id="userProfileStatus" style="display:none;" class="user-profile-status">
         <div class="user-avatar-wrapper">
@@ -85,6 +85,8 @@
       </div>
     </div>
   </div>
+  <div id="searchResultCount"></div>
+
 
   <main id="store" class="store"></main>
   <div id="pagination-controls" class="pagination-controls">
@@ -103,32 +105,6 @@
     </div>
   </div>
 
-  <div id="previewModal" class="modal">
-    <div class="modal-content preview-modal-content">
-      <button class="close-btn" onclick="closePreview()">×</button>
-      <img loading="lazy" id="previewImage" src="" alt="Preview" class="preview-image" />
-      <div id="previewTitle" class="preview-title"></div>
-      <div id="previewDesc" class="preview-description"></div>
-      <div id="previewFilename" class="preview-filename"></div>
-
-      <div class="preview-price-section">
-        <div id="previewPrice1"></div>
-        <div id="previewPrice2"></div>
-        <div id="previewPrice3"></div>
-      </div>
-
-      <div class="preview-icons-copyright">
-        <div id="previewIcon1" class="format-icons"></div>
-        <div id="previewIcon2" class="format-icons"></div>
-        <div class="copyright-info">
-          <p>Copyright by © Alextian Creative Artwork</p>
-          <p style="font-size: medium; margin-top: 5px;">All rights reserved.</p>
-        </div>
-      </div>
-      <button onclick="closePreview()" class="btn close-preview-btn">Close</button>
-    </div>
-  </div>
-
   <footer class="main-footer">
     <div class="footer-content">
       <div class="footer-section about-shop">
@@ -140,7 +116,7 @@
         <h3>Quick Links</h3>
         <ul>
           <li><a href="index.html">Store</a></li> 
-          <li><a href="license.html">License Agreement</a></li>
+          <li><a href="user-license.html">License Agreement</a></li>
           <li><a href="https://alextiancreative.github.io/" target="_blank">About</a></li>
       </div>
     </div>
@@ -149,25 +125,6 @@
         <a href="privacy-policy.html" target="_blank">Privacy Policy</a> | <a href="terms-of-service.html" target="_blank">Terms of Service</a>
         </div>
   </footer>
-
-  <div id="authModalOverlay" class="auth-modal-overlay" style="display: none;">
-    <div class="auth-modal-content">
-      <span class="auth-modal-close-btn" id="authModalCloseBtn">&times;</span>
-      <h3 id="authModalTitle">Login</h3>
-      <form id="authForm">
-        <label for="authEmail">Email:</label>
-        <input type="email" id="authEmail" required>
-        <label for="authPassword">Password:</label>
-        <input type="password" id="authPassword" required>
-        <button type="submit" id="authSubmitButton">Login</button>
-      </form>
-      <div id="authMessage" class="auth-modal-message" style="display: none;"></div>
-      <p class="switch-mode">
-        Don't have an account? <a id="switchToSignUp">Sign Up</a>
-        <span id="loginLinkContainer" style="display: none;">Already have an account? <a id="switchToLogin">Login</a></span>
-      </p>
-    </div>
-  </div>
 
   <div id="global-cart-preview" style="display: none;"></div>
   

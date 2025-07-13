@@ -321,6 +321,7 @@ body {
     align-items: center;
     gap: 15px;
     flex-wrap: wrap;
+    overflow-x: auto;
 }
 
 .categories .category-btn {
@@ -744,33 +745,98 @@ body {
 
 .preview-title {
     font-family: 'Poppins', sans-serif;
-    font-size: 25px;
+    font-size: 2.5rem;
     font-weight: 700;
-    color: var(--text-color-dark);
     margin-bottom: 10px;
+    color: var(--text-color-dark);
 }
 
 .preview-description {
-    font-size: 16px;
+    font-size: 1rem;
     color: var(--text-color-medium);
-    border-top: 1px solid var(--border-color-light);
-    line-height: 1.6;
-    padding: 10px;
-    text-align: left;
+    margin-bottom: 20px;
+}
+
+.preview-keyword {
+    text-align: center;
+    margin-top: 30px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    /* Space between keyword boxes */
+}
+
+/* Individual Keyword Box Styling */
+.keyword-item {
+    display: inline-block;
+    padding: 6px 12px;
+    background-color: var(--bg-medium);
+    /* Use a neutral background color from your style.css */
+    color: var(--text-color-dark);
+    /* Use a dark text color */
+    border: 1px solid var(--border-color-medium);
+    border-radius: 20px;
+    /* Rounded corners for a box appearance */
+    font-size: 0.9em;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+/* Optional: Add hover effect */
+.keyword-item:hover {
+    background-color: var(--primary-color);
+    color: #fff;
+    border-color: var(--primary-color);
 }
 
 .preview-filename {
-    font-size: 18px;
-    color: var(--text-color-medium);
+    font-size: 0.9rem;
+    color: var(--text-color-light);
+    margin-bottom: 20px;
     font-weight: bold;
-    text-align: left;
-    margin-left: 10px;
 }
 
 .preview-price-section {
-    margin-bottom: 25px;
-    border-top: 1px solid var(--border-color-light);
-    padding-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+    width: 100%;
+}
+
+.preview-price-section .textDesc {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.preview-price-section h1 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin: 0;
+}
+
+.preview-price-section a.btn {
+    background-color: var(--button-bg-default);
+    color: var(--button-text-default);
+    border: 1px solid var(--border-color-medium);
+    font-size: 1rem;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.preview-price-section a.btn:hover {
+    background-color: #e0e0e0;
+    color: var(--primary-color);
+    border-color: var(--primary-color);
 }
 
 .textDesc {
@@ -1043,6 +1109,23 @@ body {
     border-color: var(--primary-color);
     outline: none;
     box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+}
+
+#searchResultCount {
+    text-align: center;
+    font-size: 0.95rem;
+    color: var(--text-color-dark);
+    margin: 0.5rem auto 0.2rem;
+}
+
+.keyword {
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.category {
+    font-style: bold;
+    color: var(--text-color-dark);
 }
 
 .search-icon {

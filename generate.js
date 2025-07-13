@@ -37,6 +37,7 @@ function generateHtml(template, product) {
         .replace(/{{PRICE_COMMERCIAL}}/g, product.price_commercial.toFixed(2))
         .replace(/{{PRICE_EXTENDED}}/g, product.price_extended.toFixed(2))
         .replace(/{{FILENAME}}/g, product.filename || 'unknown')
+        .replace(/{{KEYWORD}}/g, product.keyword || 'unknown')
         .replace(/{{IMAGE_URL}}/g, product.preview_url || '');
 }
 

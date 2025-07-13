@@ -3,17 +3,24 @@ const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 const tableName = 'StorePreview';
 let supabase;
 
-document.addEventListener('DOMContentLoaded', () => {
-    if (window.supabase && typeof window.supabase.createClient === 'function') {
-        supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-        console.log("Supabase client initialized successfully in product.js.");
-        loadProducts(); 
-        updateCartUI(); 
-    } else {
-        console.error("Error: Supabase global object or createClient function not found. Is Supabase SDK loaded correctly?");
-    }
-});
+function getQueryParams() {
+  const params = new URLSearchParams(window.location.search);
+  return {
+    query: params.get('q') || '',
+    page: parseInt(params.get('page')) || 1,
+    category: params.get('category') || ''
+  };
+}
 
+function updateURLParams(query, page, category) {
+  const params = new URLSearchParams();
+  if (query) params.set('q', query);
+  if (page > 1) params.set('page', page);
+  if (category) params.set('category', category);
+
+  const newUrl = `${window.location.pathname}?${params.toString()}`;
+  window.history.replaceState({}, '', newUrl);
+}
 
 let allProducts = [];
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
@@ -78,10 +85,10 @@ searchInput.addEventListener('input', (e) => {
   debounceTimeout = setTimeout(() => {
     searchQuery = e.target.value.toLowerCase();
     currentPage = 1;
+    updateURLParams(searchQuery, currentPage);
     renderProducts();
   }, 300);
 });
-
 
 function saveCart() {
   localStorage.setItem('cart', JSON.stringify(cart));
@@ -123,16 +130,9 @@ function updateCartUI() {
             removeFromCart(indexToRemove);
         });
     });
-
-    
-    
-    
     
     if (!previewImageContainer) {
         previewImageContainer = document.getElementById('global-cart-preview'); 
-        
-        
-        
         
     }
 
@@ -246,36 +246,30 @@ const url = `https://gist.githubusercontent.com/AlextianCreative/0f5c41f8fa7fa75
     window.open(url, '_blank');
 }
 
+function handleCategoryClick(cat) {
+  activeCategory = cat;
+  currentPage = 1;
+  updateURLParams(searchQuery, currentPage, activeCategory);
+  renderProducts();
+  highlightActiveCategory();
+}
 
 function renderCategories(categories) {
   categoryTabsContainer.innerHTML = '<h4>Category</h4>';
   const allBtn = document.createElement('button');
   allBtn.textContent = 'All';
   allBtn.className = 'category-btn ' + (activeCategory === '' ? 'active' : '');
-  allBtn.onclick = () => {
-      activeCategory = '';
-      searchInput.value = '';
-      searchQuery = '';
-      currentPage = 1;
-      renderProducts();
-      highlightActiveCategory();
-  };
+  allBtn.onclick = () => handleCategoryClick('');
   categoryTabsContainer.appendChild(allBtn);
 
   categories.forEach(cat => {
     const btn = document.createElement('button');
     btn.textContent = cat;
     btn.className = 'category-btn ' + (activeCategory === cat ? 'active' : '');
-    btn.onclick = () => {
-        activeCategory = cat;
-        searchInput.value = '';
-        searchQuery = '';
-        currentPage = 1;
-        renderProducts();
-        highlightActiveCategory();
-    };
+    btn.onclick = () => handleCategoryClick(cat);
     categoryTabsContainer.appendChild(btn);
   });
+
 }
 function highlightActiveCategory() {
   document.querySelectorAll('.categories .category-btn').forEach(btn => {
@@ -293,12 +287,14 @@ function renderProducts() {
   if (activeCategory) {
     filteredProducts = filteredProducts.filter(p => p.category === activeCategory);
   }
-
   if (searchQuery) {
-    filteredProducts = filteredProducts.filter(p =>
-      p.title.toLowerCase().includes(searchQuery)
-    );
-  }
+        // Modified to search using p.keyword instead of p.title
+        filteredProducts = filteredProducts.filter(p =>
+            p.keyword.toLowerCase().includes(searchQuery)
+        );
+        
+    }
+    
 
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
 
@@ -321,10 +317,14 @@ function renderProducts() {
 
   productsToDisplay.forEach(p => {
     const price = selectedLicense === 'commercial' ? p.price_commercial : selectedLicense === 'extended' ? p.price_extended : p.price;
+    const productUrl = `products/${p.filename}.html`;
     const html = `
+    
       <div class="product-card">
         <div class="image-wrapper">
-          <img src="${p.preview_url}" alt="${p.title}" onclick="showPreview('${p.preview_url}', '${p.title.replace(/'/g, "\\'")}', '${p.description.replace(/'/g, "\\'")}', '${p.filename}', '${p.price}', '${p.price_commercial}', '${p.price_extended}')"/>
+          <a href="${productUrl}" class="product-link">
+            <img src="${p.preview_url}" alt="${p.title}"/>
+           </a>
         </div>
         <h2>${p.title}</h2>
         <p>${p.description}</p>
@@ -341,10 +341,26 @@ function renderProducts() {
         </div>
         <button class="btn add-to-cart-btn" onclick='addToCart({...${JSON.stringify(p).replace(/'/g, "\\'")}, price:${price}, license: "${selectedLicense}"})'>+ Add to Cart</button>
       </div>
+   
     `;
     storeDiv.innerHTML += html;
   });
 
+  const resultDiv = document.getElementById('searchResultCount');
+const isFiltered = activeCategory || searchQuery;
+const countMessageParts = [];
+
+if (searchQuery) countMessageParts.push(`<span class="keyword">${searchQuery}</span>`);
+if (activeCategory) countMessageParts.push(`<span class="category">${activeCategory}</span>`);
+
+if (isFiltered) {
+  resultDiv.style.display = 'block';
+  resultDiv.innerHTML = `Found <b>${filteredProducts.length}</b> product <b>${filteredProducts.length !== 1 ? 's' : ''}</b>` + 
+    (countMessageParts.length ? ` by <b>${countMessageParts.join(' in ')}</b>` : '');
+}
+else {
+  resultDiv.style.display = 'none';
+}
   renderPaginationControls(totalPages);
 }
 
@@ -362,6 +378,7 @@ function renderPaginationControls(totalPages) {
     prevButton.onclick = () => {
         if (currentPage > 1) {
             currentPage--;
+            updateURLParams(searchQuery, currentPage, activeCategory);
             renderProducts();
             window.scrollTo(0, 0);
         }
@@ -385,9 +402,11 @@ function renderPaginationControls(totalPages) {
         }
         pageButton.onclick = () => {
             currentPage = i;
+            updateURLParams(searchQuery, currentPage, activeCategory);
             renderProducts();
             window.scrollTo(0, 0);
-        };
+          };
+
         paginationControls.appendChild(pageButton);
     }
 
@@ -398,6 +417,7 @@ function renderPaginationControls(totalPages) {
     nextButton.onclick = () => {
         if (currentPage < totalPages) {
             currentPage++;
+            updateURLParams(searchQuery, currentPage, activeCategory);
             renderProducts();
             window.scrollTo(0, 0);
         }
@@ -458,7 +478,8 @@ window.addToCart = function(product) {
 
 async function loadProducts() {
   try {
-    const res = await fetch(`${supabaseUrl}/rest/v1/${tableName}?select=*`, {
+    const res = await fetch(`${supabaseUrl}/rest/v1/${tableName}?select=*,keyword`, {
+
       headers: {
         'apikey': supabaseKey,
         'Authorization': `Bearer ${supabaseKey}`
@@ -476,11 +497,19 @@ async function loadProducts() {
     console.error('Fetch error:', err);
   }
 }
+document.addEventListener('DOMContentLoaded', () => {
+  if (window.supabase && typeof window.supabase.createClient === 'function') {
+    supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+    const { query, page, category } = getQueryParams();
+    searchQuery = query.toLowerCase();
+    currentPage = page;
+    activeCategory = category;
+    searchInput.value = query;
+    loadProducts(); 
+    updateCartUI(); 
+  } else {
+    console.error("Error: Supabase global object or createClient function not found. Is Supabase SDK loaded correctly?");
+  }
+});
 
 document.getElementById('currentYear').textContent = new Date().getFullYear();
-
-
-
-
-
-
