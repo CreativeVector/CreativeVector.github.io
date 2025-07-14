@@ -55,6 +55,7 @@ async function generatePages() {
             const filePath = path.join(outputDir, `${safeFilename}.html`);
             fs.writeFileSync(filePath, html, 'utf8');
             console.log(`✅ Generated: ${filePath}`);
+            addToSitemap(product.filename);
         });
 
         console.log('🎉 All product pages generated successfully!');
@@ -92,4 +93,4 @@ ${urlEntry}
   fs.writeFileSync(sitemapPath, sitemapContent, 'utf8');
   console.log(`✅ Added ${filename}.html to sitemap.xml`);
 }
-addToSitemap(product.filename);
+
