@@ -44,28 +44,6 @@ function generateHtml(template, product) {
         .replace(/{{IMAGE_URL}}/g, product.preview_url || '');
 }
 
-async function generatePages() {
-    try {
-        const template = fs.readFileSync(templatePath, 'utf8');
-        const products = await fetchProducts();
-
-        products.forEach(product => {
-            const html = generateHtml(template, product);
-            const safeFilename = (product.filename || 'product').replace(/[^\w-]/g, '_');
-            const filePath = path.join(outputDir, `${safeFilename}.html`);
-            fs.writeFileSync(filePath, html, 'utf8');
-            console.log(`✅ Generated: ${filePath}`);
-            addToSitemap(product.filename);
-        });
-
-        console.log('🎉 All product pages generated successfully!');
-    } catch (err) {
-        console.error('❌ Error generating product pages:', err);
-    }
-}
-
-generatePages();
-
 function addToSitemap(filename) {
   const urlEntry = `
   <url>
@@ -93,4 +71,28 @@ ${urlEntry}
   fs.writeFileSync(sitemapPath, sitemapContent, 'utf8');
   console.log(`✅ Added ${filename}.html to sitemap.xml`);
 }
+
+async function generatePages() {
+    try {
+        const template = fs.readFileSync(templatePath, 'utf8');
+        const products = await fetchProducts();
+
+        products.forEach(product => {
+            const html = generateHtml(template, product);
+            const safeFilename = (product.filename || 'product').replace(/[^\w-]/g, '_');
+            const filePath = path.join(outputDir, `${safeFilename}.html`);
+            fs.writeFileSync(filePath, html, 'utf8');
+            console.log(`✅ Generated: ${filePath}`);
+            addToSitemap(product.filename);
+        });
+
+        console.log('🎉 All product pages generated successfully!');
+    } catch (err) {
+        console.error('❌ Error generating product pages:', err);
+    }
+}
+
+generatePages();
+
+
 
