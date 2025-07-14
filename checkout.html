@@ -92,7 +92,8 @@
         <a href="privacy-policy.html" target="_blank">Privacy Policy</a> | <a href="terms-of-service.html" target="_blank">Terms of Service</a>
         </div>
   </footer>
-
+    <div id="globalAlertContainer" style="position: fixed; top: 20px; right: 20px; z-index: 9999;"></div>
+    <script src="js/show-alert.js"></script>
     <script>
         const supabaseUrl = 'https://lekxtacqnusomlvtfxcz.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxla3h0YWNxbnVzb21sdnRmeGN6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAwMDU0OTIsImV4cCI6MjA2NTU4MTQ5Mn0.mUGy47EGjDxWKWFl4EPWgYfYnzKB9YaTTYgmRihRQXU';
@@ -186,12 +187,12 @@
                         return response.json();
                     }).then(function(orderData) {
                         if (orderData.error) {
-                            alert('An error occurred while creating the order: ' + orderData.error);
+                            showAlert('An error occurred while creating the order: ' + orderData.error, 'error');
                             throw new Error(orderData.error);
                         }
                         return orderData.orderID;
                     }).catch(function(error) {
-                        alert('Unable to create a PayPal order. Please try again.');
+                        showAlert('Unable to create a PayPal order. Please try again.', 'error');
                         throw error;
                     });
                 },
@@ -216,7 +217,7 @@
                             window.location.href = '/error.html';
                         }
                     }).catch(function(error) {
-                        alert('An unexpected error occurred after payment. Please contact support.');
+                        showAlert('An unexpected error occurred after payment. Please contact support.', 'error');
                     });
                 }
             }).render('#paypal-button-container');
@@ -226,6 +227,7 @@
             displayCartSummary();
         });
     </script>
+    
     <script type="module" src="js/product.js"></script>
     <script type="module" src="js/user.js"></script> </body>
 </body>

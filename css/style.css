@@ -1872,3 +1872,36 @@ body {
 .btn-logout:hover {
     background-color: #d32f2f;
 }
+
+.toast-alert {
+    background-color: var(--text-color-dark);
+    color: var(--header-bg-color);
+    padding: 12px 18px;
+    margin-top: 10px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: bold;
+    min-width: 200px;
+    max-width: 320px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.toast-alert.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.toast-success {
+    background-color: #5c9e6c;
+}
+
+.toast-error {
+    background-color: #dd979e;
+}
+
+.toast-info {
+    background-color: #a8cff8;
+}

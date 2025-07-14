@@ -77,11 +77,11 @@ async function handleLogout(event) {
     const { error } = await supabase.auth.signOut();
     if (error) {
         console.error('Logout Error:', error.message);
-        alert('Failed to logout: ' + error.message);
+        showAlert('Failed to logout: ' + error.message, 'error');
     } else {
         console.log('User logged out.');
         
-        window.location.href = 'index.html'; 
+        window.location.href = '/index.html'; 
     }
 }
 

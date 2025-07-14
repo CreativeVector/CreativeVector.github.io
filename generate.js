@@ -36,6 +36,7 @@ function generateHtml(template, product) {
     return template
         .replace(/{{TITLE}}/g, product.title || 'Untitled')
         .replace(/{{DESCRIPTION}}/g, product.description || '')
+        .replace(/{{CATEGORY}}/g, product.category || 'unknown')
         .replace(/{{PRICE}}/g, product.price.toFixed(2))
         .replace(/{{PRICE_COMMERCIAL}}/g, product.price_commercial.toFixed(2))
         .replace(/{{PRICE_EXTENDED}}/g, product.price_extended.toFixed(2))

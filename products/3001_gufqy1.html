@@ -148,7 +148,7 @@ Illustration contains transparency and blending effects</p>
       <div id="cartTotal" class="cart-total"></div>
       <div class="cart-actions">
         <button id="clearCartBtn" class="btn clear-cart-btn">Clear Cart</button>
-        <button id="checkoutBtn" class="btn checkout-btn" onclick="location.href='checkout.html'">Checkout</button>
+        <button id="checkoutBtn" class="btn checkout-btn" onclick="location.href='/checkout.html'">Checkout</button>
       </div>
     </div>
   </div>
@@ -159,6 +159,21 @@ Illustration contains transparency and blending effects</p>
     </div>
 
   <script>
+
+  const cartIcon = document.getElementById("cartIcon");
+  const cartModal = document.getElementById('cartModal');
+  const cartList = document.getElementById('cartList');
+  const cartTotal = document.getElementById('cartTotal');
+  const clearCartBtn = document.getElementById('clearCartBtn');
+  const checkoutBtn = document.getElementById('checkoutBtn');
+  const authButton = document.getElementById('authButton'); 
+  const logoutButton = document.getElementById('logoutButton');
+  const userEmailDisplay = document.getElementById('userEmailDisplay'); 
+  const userProfileStatus = document.getElementById('userProfileStatus'); 
+  const userProfileLink = document.getElementById('userProfileLink');
+  const licenseSelector = document.getElementById('licenseSelector');
+  const cartCountSpan = document.querySelector('.cart-count');
+
     let selectedLicense = 'personal';
 
   window.setLicense = function(val) {

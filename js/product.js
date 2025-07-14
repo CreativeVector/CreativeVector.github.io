@@ -64,11 +64,11 @@ cartIcon.addEventListener("click", showCart);
 clearCartBtn.addEventListener("click", clearCart);
 checkoutBtn.addEventListener("click", () => {
   if (cart.length === 0) {
-    alert("Your cart is empty. Please add some items before checking out.");
+    showAlert("Your cart is empty. Please add some items before checking out.", "info");
     return;
   }
   
-  location.href='checkout.html';
+  location.href='/checkout.html';
 });
 window.addEventListener('click', (event) => {
     if (event.target === cartModal) {
@@ -469,10 +469,11 @@ window.addToCart = function(product) {
   );
 
   if (existingProductIndex > -1) {
-    alert(`"${productWithCartDetails.title}" with "${productWithCartDetails.license}" license is already in your cart.`);
+    showAlert(`"${productWithCartDetails.title}" with "${productWithCartDetails.license}" license is already in your cart.`, "info");
   } else {
     cart.push(productWithCartDetails);
     updateCartUI();
+    showAlert("Added to cart.", "success");
   }
 }
 
