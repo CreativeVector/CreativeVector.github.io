@@ -90,7 +90,7 @@ async function handleLogout(event) {
 if (authButton) {
     authButton.addEventListener('click', (event) => {
         event.preventDefault();
-        window.location.href = 'auth.html'; 
+        window.location.href = '/auth.html'; 
     });
 }
 

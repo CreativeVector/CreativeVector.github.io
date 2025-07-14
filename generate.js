@@ -11,7 +11,10 @@ const tableName = 'StorePreview';
 const templatePath = path.join(__dirname, 'template', 'product-template.html');
 const outputDir = path.join(__dirname, 'products');
 
-// Ganti ini jika Anda punya folder tujuan lain
+const BASE_URL = 'https://creativevector.github.io';
+const sitemapPath = path.join(__dirname, 'sitemap.xml');
+
+
 if (!fs.existsSync(outputDir)) {
     fs.mkdirSync(outputDir, { recursive: true });
 }
@@ -61,3 +64,32 @@ async function generatePages() {
 }
 
 generatePages();
+
+function addToSitemap(filename) {
+  const urlEntry = `
+  <url>
+    <loc>${BASE_URL}/products/${filename}.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>`;
+
+  let sitemapContent = '';
+  if (fs.existsSync(sitemapPath)) {
+    sitemapContent = fs.readFileSync(sitemapPath, 'utf8');
+    if (sitemapContent.includes(`${filename}.html`)) {
+      console.log(`🔁 ${filename}.html already exists in sitemap.xml`);
+      return;
+    }
+
+    sitemapContent = sitemapContent.replace('</urlset>', `${urlEntry}\n</urlset>`);
+  } else {
+    sitemapContent = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urlEntry}
+</urlset>`;
+  }
+
+  fs.writeFileSync(sitemapPath, sitemapContent, 'utf8');
+  console.log(`✅ Added ${filename}.html to sitemap.xml`);
+}
+addToSitemap(product.filename);

@@ -1,6 +1,3 @@
-
-
-
 const SUPABASE_URL = 'https://lekxtacqnusomlvtfxcz.supabase.co'; 
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxla3h0YWNxbnVzb21sdnRmeGN6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAwMDU0OTIsImV4cCI6MjA2NTU4MTQ5Mn0.mUGy47EGjDxWKWFl4EPWgYfYnzKB9YaTTYgmRihRQXU';
 
@@ -154,9 +151,13 @@ function handleToggleAuthMode(e) {
 
     // Toggle visibility of repeat password field based on mode
     if (repeatPasswordInput) {
-        // We set display based on whether we are in Sign Up mode (true = block, false = none)
-        repeatPasswordInput.style.display = isSignUpMode ? 'flex' : 'none'; 
-        repeatPasswordInput.value = ''; // Clear the input field
+        if (isSignUpMode) {
+        repeatPasswordInput.required = true;
+        repeatPasswordInput.style.display = 'block';
+        } else {
+        repeatPasswordInput.required = false;
+        repeatPasswordInput.style.display = 'none'; // karena tidak required, tidak akan error
+        }
     }
 
     // Update form text and clear inputs
