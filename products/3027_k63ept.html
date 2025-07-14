@@ -59,44 +59,42 @@
       </nav>
       <div class="header-actions">
         <div class="cart-icon" id="cartIcon" data-count="0">
-          <i class="fas fa-shopping-cart" style="color:black"></i>
+          <i class="fas fa-shopping-cart"></i>
           <span class="cart-count">0</span>
         </div>
-        <div class="user-auth-container">
-    <button id="authButton" class="btn btn-auth">
-        <i class="fas fa-sign-in-alt"></i> Sign In 
-    </button>
-    <div id="userProfileStatus" style="display:none;" class="user-profile-status">
-        <div class="user-avatar-wrapper">
-            <i class="fas fa-user-circle user-avatar"></i>
+        <!-- USER ACCOUNT -->
+      <div class="user-auth-container">
+        <button id="authButton" class="btn btn-auth">
+            <i class="fas fa-sign-in-alt"></i> Sign In 
+        </button>
+      <div id="userProfileStatus" style="display:none;" class="user-profile-status">
+          <div class="user-avatar-wrapper">
+              <i class="fas fa-user-circle user-avatar"></i>
+          </div>
+          <div class="user-info">
+              <a href="profile.html" id="userProfileLink" class="user-profile-link">
+                  <span id="userEmailDisplay"></span>
+              </a>
+              <button id="logoutButton" class="btn-logout">
+                  <i class="fas fa-sign-out-alt"></i> Logout
+              </button>
+          </div>
         </div>
-        <div class="user-info">
-            <a href="profile.html" id="userProfileLink" class="user-profile-link">
-                <span id="userEmailDisplay"></span>
-            </a>
-            <button id="logoutButton" class="btn-logout">
-                <i class="fas fa-sign-out-alt"></i> Logout
-            </button>
-        </div>
-    </div>
-    </div>  
       </div>
-      <!-- USER ACCOUNT -->
-      
     </div>
   </header>
 
 
   <main class="layout" style="padding: 40px 20px;">
   <div class="content" style="width:100%;">
-    <div class="image-wrapper" style="max-width: 600px; margin:auto;">
+    <div class="image-wrapper" style="max-width: 1200px; margin: 5px auto;">
       <img src="https://res.cloudinary.com/dpb7gy4mk/image/upload/v1751667970/preview_3027_k63ept.jpg" alt="Soccer League Trophy with Gold Laurel Wreath, Isolated on Transparent Background, Vector Illustration" style="width: 100%; border-radius:10px; cursor: zoom-in;" onclick="openImagePreview('https://res.cloudinary.com/dpb7gy4mk/image/upload/v1751667970/preview_3027_k63ept.jpg')" />
     </div>
 
       <div style="margin-top:30px; text-align:center;">
         <h1 class="preview-title">Soccer League Trophy with Gold Laurel Wreath, Isolated on Transparent Background, Vector Illustration</h1>
         <p class="preview-description">Made with 100% vector shapes resizable, No raster and is easy to edit,  Compatible with Adobe Illustrator version 10,  Illustration contains transparency and blending effects</p>
-        <p class="preview-filename"><strong>ID #3027_k63ept</strong></p>
+        <p class="preview-filename"><strong>Asset ID #3027_k63ept • Category : {{CATEGORY}}</strong></p>
       </div>
 
       <div class="preview-price-section">
@@ -115,39 +113,94 @@
       </div>
 
     <div style="margin-top:30px; text-align:center;">
+            <p class="preview-filename">Keywords</p>
             <p class="preview-keyword">isolated, gold, trophy, laurel wreath, golden, gold trophy, league, icon, design, sport, success, luxury, celebration, metal, game, badge, leadership, winner, award, congratulations, yellow, leader, cup, goal, skill, ceremony, prize, competition, realistic, pride, metallic, contest, goblet, achievement, best, champion, championship, classic, first, object, one, place, reward, shiny, stylish, victory, win, transparent, illustration,</p>
           </div>
-
-      <div style="text-align:center; margin-top:20px;">
-        <button class="btn" onclick="addToCart()">+ Add to Cart</button>
+      
+      <div style="text-align:center; gap: 10px;">
+        <h4>Choose License</h4>
+        <select id="licenseSelector" onchange="setLicense(this.value)">
+          <option value="personal" selected>Personal</option>
+          <option value="commercial">Commercial</option>
+          <option value="extended">Extended</option>
+        </select>
+        <button class="btn" onclick="addProductToCart()">+ Add to Cart</button>
       </div>
     </div>
   </main>
+  <div id="cartModal" class="modal">
+    <div class="modal-content cart-modal-content">
+      <button class="close-btn" onclick="closeCart()">×</button>
+      <h2><i class="fas fa-shopping-cart"></i>  Your Cart</h2>
+      <ul id="cartList" class="cart-items-list"></ul>
+      <div id="cartTotal" class="cart-total"></div>
+      <div class="cart-actions">
+        <button id="clearCartBtn" class="btn clear-cart-btn">Clear Cart</button>
+        <button id="checkoutBtn" class="btn checkout-btn" onclick="location.href='checkout.html'">Checkout</button>
+      </div>
+    </div>
+  </div>
 
     <div id="imgPreviewPopup" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.9); z-index:9999; justify-content:center; align-items:center;">
       <span onclick="closeImagePreview()" style="position:absolute; top:20px; right:30px; color:#fff; font-size:2rem; cursor:pointer;">&times;</span>
-      <img id="popupImage" src="" style="max-width:90vw; max-height:90vh; border-radius:8px;" alt="Preview">
+      <img id="popupImage" src="" style="max-width:100vw; max-height:100vh; border-radius:8px;" alt="Preview">
     </div>
 
   <script>
-    function addToCart() {
-      const product = {
-        title: "Soccer League Trophy with Gold Laurel Wreath, Isolated on Transparent Background, Vector Illustration",
-        filename: "3027_k63ept",
-        price: parseFloat("3.00"),
-        price_commercial: parseFloat("16.00"),
-        price_extended: parseFloat("28.00"),
-        preview_url: "https://res.cloudinary.com/dpb7gy4mk/image/upload/v1751667970/preview_3027_k63ept.jpg",
-        license: "personal" // default
-      };
-      const cart = JSON.parse(localStorage.getItem('cart')) || [];
-      const exists = cart.find(p => p.filename === product.filename && p.license === product.license);
-      if (exists) {
-        alert("Product already in cart.");
-        return;
+    let selectedLicense = 'personal';
+
+  window.setLicense = function(val) {
+    selectedLicense = val;
+  }
+
+  function extractIdFromUrl(url) {
+    const filename = url.split('/').pop().split('.')[0];
+    return filename.startsWith('preview_') ? filename.replace('preview_', '') : filename;
+  }
+
+  function addProductToCart() {
+    const license = selectedLicense;
+
+    const product = {
+      title: "Soccer League Trophy with Gold Laurel Wreath, Isolated on Transparent Background, Vector Illustration",
+      filename: "3027_k63ept",
+      price: license === 'commercial'
+        ? parseFloat("16.00")
+        : license === 'extended'
+          ? parseFloat("28.00")
+          : parseFloat("3.00"),
+      price_commercial: parseFloat("16.00"),
+      price_extended: parseFloat("28.00"),
+      preview_url: "https://res.cloudinary.com/dpb7gy4mk/image/upload/v1751667970/preview_3027_k63ept.jpg",
+      license: license
+    };
+
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+    const extractedId = product.filename || extractIdFromUrl(product.preview_url);
+
+    const productWithDetails = {
+      ...product,
+      extractedId: extractedId,
+    };
+
+    const exists = cart.find(
+      p => p.filename === productWithDetails.filename && p.license === productWithDetails.license
+    );
+
+    if (exists) {
+      alert(`"${productWithDetails.title}" with "${productWithDetails.license}" license is already in your cart.`);
+      return;
+    }
+
+    cart.push(productWithDetails);
+    localStorage.setItem('cart', JSON.stringify(cart));
+
+      // Jika fungsi updateCartUI tersedia dari global (misalnya dipanggil dari product.js), jalankan
+      if (typeof updateCartUI === 'function') {
+        updateCartUI();
       }
-      cart.push(product);
-      localStorage.setItem('cart', JSON.stringify(cart));
+
       alert("Added to cart.");
     }
     function openImagePreview(url) {
@@ -181,41 +234,44 @@
                 
                 // Jika kata kunci tidak kosong (setelah trim)
                 if (trimmedKeyword) {
-                    // Buat elemen <span> baru
-                    const keywordSpan = document.createElement('span');
-                    
-                    // Tambahkan class 'keyword-item' (sesuai CSS yang Anda buat sebelumnya)
-                    keywordSpan.classList.add('keyword-item');
-                    
-                    // Tambahkan teks kata kunci ke dalam <span>
-                    keywordSpan.textContent = trimmedKeyword;
-                    
-                    // Tambahkan <span> ke dalam container
-                    keywordContainer.appendChild(keywordSpan);
-                }
+                // Buat elemen <a> sebagai link pencarian
+                const keywordLink = document.createElement('a');
+                keywordLink.classList.add('keyword-item');
+                keywordLink.href = `/?q=${encodeURIComponent(trimmedKeyword)}`;
+                keywordLink.textContent = trimmedKeyword;
+                keywordLink.style.marginRight = '6px';
+                keywordLink.style.textDecoration = 'none';
+
+                keywordContainer.appendChild(keywordLink);
+              }
             });
         }
     });
+    window.closeCart = function() {
+      const cartModal = document.getElementById('cartModal');
+      if (cartModal) cartModal.style.display = 'none';
+    };
   </script>
-
+  <script type="module" src="../js/user.js"></script>
+  <script type="module" src="../js/product.js"></script>
   <footer class="main-footer">
     <div class="footer-content">
       <div class="footer-section about-shop">
-        <img loading="lazy" style="height:40px;" src="img/cstore.png" alt="Alextian Creative Logo" />
+        <img loading="lazy" style="height:40px;" src="/img/cstore.png" alt="Alextian Creative Logo" />
         <p>Your one-stop shop for high-quality digital assets. We offer unique designs for personal and commercial projects, ensuring creativity and value in every product.</p>
         <p>All digital assets displayed here are purely owned by Alextian Creative Artwork, we do not sell or steal other designers digital assets.</p>
       </div>
       <div class="footer-section">
         <h3>Quick Links</h3>
         <ul>
-          <li><a href="index.html">Store</a></li> 
-          <li><a href="user-license.html">License Agreement</a></li>
+          <li><a href="/">Store</a></li> 
+          <li><a href="/user-license.html">License Agreement</a></li>
           <li><a href="https://alextiancreative.github.io/" target="_blank">About</a></li>
       </div>
     </div>
     <div class="footer-bottom">
         &copy; <span id="currentYear"></span> CreativeVector. All rights reserved.
-        <a href="privacy-policy.html" target="_blank">Privacy Policy</a> | <a href="terms-of-service.html" target="_blank">Terms of Service</a>
+        <a href="/privacy-policy.html" target="_blank">Privacy Policy</a> | <a href="/terms-of-service.html" target="_blank">Terms of Service</a>
         </div>
   </footer>
 
