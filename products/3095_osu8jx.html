@@ -91,9 +91,13 @@
     </div>
 
       <div style="margin-top:30px; text-align:center;">
-        <h1 class="preview-title">Abstract Blue Wavy Line of Light with A Transparent Background, Isolated and Easy to Edit, Vector Illustration</h1>
+        <h3 class="preview-title">Abstract Blue Wavy Line of Light with A Transparent Background, Isolated and Easy to Edit, Vector Illustration</h3>
         <p class="preview-description">Made with 100% vector shapes resizable, No raster and is easy to edit,  Compatible with Adobe Illustrator version 10,  Illustration contains transparency and blending effects</p>
-        <p class="preview-filename"><strong>Asset ID #3095_osu8jx • Category : Abstract</strong></p>
+        <div class="preview-gap">
+          <p class="preview-filename"><strong>Asset ID #3095_osu8jx</strong></p>
+          <button class="category-search" style="margin-top: 5px;" onclick="window.location.href='/?category=Abstract'">Abstract</button>
+        </div>
+        
       </div>
 
       <div class="preview-price-section">
@@ -168,6 +172,57 @@
     localStorage.setItem('cart', JSON.stringify(cart));
     showAlert("Added to cart.", "success");
   }
+  function openImagePreview(url) {
+    const popup = document.getElementById('imgPreviewPopup');
+    const img = document.getElementById('popupImage');
+    img.src = url;
+    popup.style.display = 'flex';
+    }
+
+    function closeImagePreview() {
+      document.getElementById('imgPreviewPopup').style.display = 'none';
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        // Cari elemen yang berisi kata kunci
+        const keywordContainer = document.querySelector('.preview-keyword');
+
+        // Pastikan elemen ditemukan dan berisi teks
+        if (keywordContainer && keywordContainer.textContent.trim() !== '') {
+            const rawKeywords = keywordContainer.textContent.trim();
+            
+            // Hapus isi teks saat ini dari container
+            keywordContainer.textContent = '';
+            
+            // Bagi string kata kunci berdasarkan koma (,)
+            const keywordsArray = rawKeywords.split(',');
+
+            // Iterasi melalui setiap kata kunci
+            keywordsArray.forEach(keyword => {
+                const trimmedKeyword = keyword.trim();
+                
+                // Jika kata kunci tidak kosong (setelah trim)
+                if (trimmedKeyword) {
+                // Buat elemen <a> sebagai link pencarian
+                const keywordLink = document.createElement('a');
+                keywordLink.classList.add('keyword-item');
+                keywordLink.href = `/?q=${encodeURIComponent(trimmedKeyword)}`;
+                keywordLink.textContent = trimmedKeyword;
+                keywordLink.style.marginRight = '6px';
+                keywordLink.style.textDecoration = 'none';
+
+                keywordContainer.appendChild(keywordLink);
+              }
+            });
+        }
+    });
+    document.addEventListener('DOMContentLoaded', function() {
+        // Cari elemen yang berisi kata kunci
+        const categoryText = document.querySelector('.category-search');
+        const categoryLink = document.createElement('a');
+        categoryLink.href = `/?q=${encodeURIComponent(categoryText)}`;
+        categoryLink.textContent = categoryText;
+        
+    });
 </script>
   
   <script type="module" src="../js/user.js"></script>
