@@ -316,8 +316,7 @@ body {
     box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
 }
 
-#hiddenCategoriesContainer
-.categories {
+#hiddenCategoriesContainer .categories {
     display: flex;
     align-items: center;
     gap: 15px;
@@ -1962,4 +1961,333 @@ body {
 
 .toast-info {
     background-color: #a8cff8;
+}
+
+.license-text .content-container {
+    max-width: 800px;
+    margin: 80px auto 40px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.content-container h1 {
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    color: var(--text-color-dark);
+}
+
+.content-container h2 {
+    margin-top: 30px;
+    color: var(--text-color-dark);
+}
+
+.content-container p, .content-container ul {
+    line-height: 1.6;
+    color: var(--text-color-medium);
+}
+
+.contact-container {
+    max-width: 900px;
+    margin: 80px auto 40px auto;
+    padding: 40px 20px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.contact-container h1 {
+    font-size: 2.5em;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+}
+
+.contact-container p {
+    font-size: 1.1em;
+    color: var(--text-color-medium);
+    line-height: 1.6;
+    margin-bottom: 30px;
+}
+
+.contact-options {
+    display:flexbox;
+    grid-template-rows: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-top: 40px;
+    text-align: left;
+    /* Mengatur teks dalam kartu kembali ke kiri */
+}
+
+.contact-card {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+}
+
+.contact-card h3 {
+    color: var(--text-color-dark);
+    font-size: 1.6em;
+    margin-bottom: 15px;
+}
+
+.contact-card p {
+    font-size: 0.95em;
+    color: var(--text-color-medium);
+    margin-bottom: 20px;
+    flex-grow: 1;
+    /* Memastikan p mengisi ruang yang tersedia */
+}
+
+/* Gaya untuk form kontak */
+.contact-form .form-group {
+    margin-bottom: 15px;
+}
+
+.contact-form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--text-color-dark);
+}
+
+.contact-form input[type="text"],
+.contact-form input[type="email"],
+.contact-form textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border-color-medium);
+    border-radius: 5px;
+    font-size: 1em;
+    font-family: 'Roboto', sans-serif;
+    color: var(--text-color-dark);
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 162, 255, 0.2);
+}
+
+.contact-form textarea {
+    resize: vertical;
+    /* Memungkinkan pengguna mengubah ukuran tinggi textarea */
+    min-height: 120px;
+}
+
+/* Gaya untuk tombol utama (bisa disamakan dengan button-primary yang sudah ada) */
+.button-primary {
+    display: inline-block;
+    background-color: var(--primary-color);
+    color: white;
+    padding: 12px 25px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    border: none;
+    /* Pastikan tidak ada border */
+    cursor: pointer;
+    font-size: 1em;
+    width: auto;
+    /* Agar tidak selalu 100% */
+}
+
+.button-primary:hover {
+    background-color: #007bbd;
+    /* Warna hover sedikit lebih gelap */
+}
+
+/* Gaya untuk tombol link kecil */
+.button-link-small {
+    display: inline-block;
+    background-color: #eee;
+    /* Warna latar belakang abu-abu terang */
+    color: var(--text-color-dark);
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+    border: 1px solid var(--border-color-medium);
+    /* Border ringan */
+    font-size: 0.9em;
+}
+
+.button-link-small:hover {
+    background-color: #ddd;
+    color: #333;
+}
+
+.button-link-small .fas {
+    margin-right: 8px;
+}
+
+/* Gaya untuk ikon sosial media */
+.social-links {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.social-links a {
+    font-size: 2.2em;
+    color: var(--text-color-medium);
+    transition: color 0.3s ease;
+}
+
+.social-links a:hover {
+    color: var(--primary-color);
+}
+
+@media (max-width: 768px) {
+    .contact-container {
+        margin-top: 60px;
+        padding: 30px 15px;
+    }
+
+    .contact-options {
+        grid-template-columns: 1fr;
+    }
+
+    .contact-card {
+        padding: 25px;
+    }
+
+    .contact-container h1 {
+        font-size: 2em;
+    }
+}
+.faq-container {
+    max-width: 900px;
+    margin: 80px auto 40px auto; /* Margin atas untuk menghindari header */
+    padding: 40px 20px;
+    background: var(--bg-light);
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    text-align: center;
+}
+
+.faq-container h1 {
+    font-size: 2.5em;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+}
+
+.faq-container p {
+    font-size: 1.1em;
+    color: var(--text-color-medium);
+    line-height: 1.6;
+    margin-bottom: 30px;
+}
+
+.faq-container p a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.faq-container p a:hover {
+    text-decoration: underline;
+}
+
+.faq-list {
+    margin-top: 30px;
+    text-align: left; /* Mengatur teks dalam item FAQ kembali ke kiri */
+}
+
+.faq-item {
+    background-color: #fff;
+    border: 1px solid var(--border-color-medium);
+    border-radius: 8px;
+    margin-bottom: 15px;
+    overflow: hidden; /* Penting untuk transisi */
+}
+
+.faq-question {
+    display: block; /* Penting agar summary mengisi lebar */
+    padding: 20px 25px;
+    font-size: 1.2em;
+    font-weight: 600;
+    color: var(--text-color-dark);
+    cursor: pointer;
+    background-color: var(--bg-medium);
+    border-bottom: 1px solid transparent; /* Untuk transisi */
+    position: relative;
+    transition: background-color 0.3s ease, border-bottom-color 0.3s ease;
+}
+
+.faq-question:hover {
+    background-color: #e6e6e6; /* Sedikit lebih gelap saat hover */
+}
+
+/* Arrow indicator for summary */
+.faq-question::after {
+    content: '\25BC'; /* Panah ke bawah */
+    position: absolute;
+    right: 25px;
+    font-size: 0.8em;
+    transition: transform 0.3s ease;
+}
+
+.faq-item[open] > .faq-question::after {
+    content: '\25B2'; /* Panah ke atas saat terbuka */
+    transform: rotate(0deg); /* Pastikan rotasi benar */
+}
+
+.faq-item[open] > .faq-question {
+    border-bottom-color: var(--border-color-medium); /* Border saat terbuka */
+}
+
+
+.faq-answer {
+    padding: 20px 25px;
+    font-size: 1em;
+    line-height: 1.6;
+    color: var(--text-color-medium);
+    /* Untuk animasi expand/collapse yang lebih halus, bisa memerlukan JS */
+    /* Namun, <details> memiliki animasi built-in yang cukup baik */
+}
+
+.faq-answer ul {
+    margin-top: 15px;
+    margin-left: 20px;
+    list-style: disc;
+}
+
+.faq-answer ul li {
+    margin-bottom: 8px;
+}
+
+/* Penyesuaian untuk tampilan mobile */
+@media (max-width: 768px) {
+    .faq-container {
+        margin-top: 60px; /* Sesuaikan margin untuk mobile */
+        padding: 30px 15px;
+    }
+
+    .faq-container h1 {
+        font-size: 2em;
+    }
+
+    .faq-question {
+        padding: 15px 20px;
+        font-size: 1.1em;
+    }
+    
+    .faq-question::after {
+        right: 20px;
+    }
+
+    .faq-answer {
+        padding: 15px 20px;
+        font-size: 0.95em;
+    }
 }
