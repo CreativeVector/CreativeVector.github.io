@@ -10,7 +10,9 @@
     "Exclude": [
       "404.html",
       "cancel.html",
-      "success.html"
+      "success.html",
+      "products/product.html",
+      "template/product-template.html"
     ],
     "TagsToInclude": [
       "priority",
