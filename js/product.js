@@ -255,21 +255,59 @@ function handleCategoryClick(cat) {
 }
 
 function renderCategories(categories) {
-  categoryTabsContainer.innerHTML = '<h4>Category</h4>';
-  const allBtn = document.createElement('button');
-  allBtn.textContent = 'All';
-  allBtn.className = 'category-btn ' + (activeCategory === '' ? 'active' : '');
-  allBtn.onclick = () => handleCategoryClick('');
-  categoryTabsContainer.appendChild(allBtn);
 
-  categories.forEach(cat => {
-    const btn = document.createElement('button');
-    btn.textContent = cat;
-    btn.className = 'category-btn ' + (activeCategory === cat ? 'active' : '');
-    btn.onclick = () => handleCategoryClick(cat);
-    categoryTabsContainer.appendChild(btn);
-  });
+    const maxVisibleCategories = 9; // Batasi jumlah kategori yang terlihat
+    let isExpanded = false; // Status untuk melacak apakah kategori diperluas
 
+    const allBtn = document.createElement('button');
+    allBtn.textContent = 'All';
+    allBtn.className = 'category-btn ' + (activeCategory === '' ? 'active' : '');
+    allBtn.onclick = () => handleCategoryClick('');
+    categoryTabsContainer.appendChild(allBtn);
+
+    const visibleCategories = categories.slice(0, maxVisibleCategories);
+    const hiddenCategories = categories.slice(maxVisibleCategories);
+
+    // Render kategori yang terlihat
+    visibleCategories.forEach(cat => {
+        const btn = document.createElement('button');
+        btn.textContent = cat;
+        btn.className = 'category-btn ' + (activeCategory === cat ? 'active' : '');
+        btn.onclick = () => handleCategoryClick(cat);
+        categoryTabsContainer.appendChild(btn);
+    });
+
+    // Jika ada kategori yang tersembunyi, buat wadah untuk mereka dan tombol expand/collapse
+    if (hiddenCategories.length > 0) {
+        const hiddenCategoriesContainer = document.createElement('div');
+        hiddenCategoriesContainer.id = 'hiddenCategoriesContainer';
+        hiddenCategoriesContainer.style.display = 'none'; // Sembunyikan secara default
+        
+        hiddenCategories.forEach(cat => {
+            const btn = document.createElement('button');
+            btn.textContent = cat;
+            btn.className = 'category-btn ' + (activeCategory === cat ? 'active' : '');
+            btn.onclick = () => handleCategoryClick(cat);
+            hiddenCategoriesContainer.appendChild(btn);
+        });
+        categoryTabsContainer.appendChild(hiddenCategoriesContainer);
+
+        const toggleButton = document.createElement('button');
+        toggleButton.id = 'toggleCategoriesBtn';
+        toggleButton.textContent = 'Expand ▼';
+        toggleButton.className = 'category-toggle-btn'; // Tambahkan kelas untuk styling
+        toggleButton.onclick = () => {
+            isExpanded = !isExpanded;
+            if (isExpanded) {
+                hiddenCategoriesContainer.style.display = 'block';
+                toggleButton.textContent = 'Collapse ▲';
+            } else {
+                hiddenCategoriesContainer.style.display = 'none';
+                toggleButton.textContent = 'Expand ▼';
+            }
+        };
+        categoryTabsContainer.appendChild(toggleButton);
+    }
 }
 function highlightActiveCategory() {
   document.querySelectorAll('.categories .category-btn').forEach(btn => {

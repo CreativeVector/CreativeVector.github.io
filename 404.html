@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow">
   <title>404 Not Found | CreativeVector</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <link rel="stylesheet" href="css/style.css" /> 
   <link rel="icon" href="img/favicon.ico" type="image/x-icon">
   <style>
     /* Specific styles for 404 page content */
@@ -14,28 +17,34 @@
       text-align: center;
       padding: 100px 20px;
       margin-top: 60px;
-      min-height: calc(100vh - 200px); /* Ensure content fills space between header and footer */
+      min-height: calc(100vh - 200px);
+      /* Ensure content fills space between header and footer */
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
     }
+
     .not-found-container h1 {
       font-size: 5rem;
-      color: var(--primary-color); /* Matches your primary color */
+      color: var(--primary-color);
+      /* Matches your primary color */
       margin-bottom: 0;
     }
+
     .not-found-container h2 {
       font-size: 2rem;
       color: var(--text-color-dark);
       margin-top: 10px;
     }
+
     .not-found-container p {
       font-size: 1.1rem;
       color: var(--text-color-medium);
       margin-top: 20px;
       max-width: 600px;
     }
+
     .not-found-container .btn {
       margin-top: 30px;
       background-color: var(--primary-color);
@@ -46,13 +55,108 @@
       font-weight: 600;
       transition: background-color 0.3s ease;
     }
+
     .not-found-container .btn:hover {
       background-color: var(--primary-color);
     }
+
+    .main-header {
+      background-color: var(--header-bg-color);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      padding: 25px 0;
+      color: var(--header-text-color);
+      min-height: 120px;
+      padding-bottom: 10px;
+
+
+    }
+
+    .header-container {
+
+      width: 100%;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+    }
+
+    .logo a {
+      text-decoration: none;
+      color: inherit;
+      max-height: 32px;
+    }
+
+    .logo img {
+      height: max-content;
+      width: auto;
+      transition: transform 0.3s ease;
+    }
+
+    .logo h1 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 28px;
+      font-weight: 700;
+      margin: 0;
+      color: var(--header-text-color);
+      transition: color 0.3s ease;
+    }
+
+    .logo h1:hover {
+      color: var(--primary-color);
+    }
+
+
+    .main-nav ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      gap: 30px;
+    }
+
+    .main-nav ul li a {
+      text-decoration: none;
+      color: var(--header-text-color);
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      font-size: 16px;
+      padding: 5px 0;
+      position: relative;
+      transition: color 0.3s ease;
+    }
+
+    .main-nav ul li a:hover {
+      color: var(--primary-color);
+    }
+
+    .main-nav ul li a::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -5px;
+      width: 0;
+      height: 2px;
+      background-color: var(--primary-color);
+      transition: width 0.3s ease;
+    }
+
+    .main-nav ul li a:hover::after {
+      width: 100%;
+    }
+
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
   </style>
 </head>
+
 <body>
-  
+
   <header class="main-header">
     <div class="header-container">
       <div class="logo">
@@ -62,39 +166,39 @@
       </div>
       <nav class="main-nav">
         <ul>
-          <li><a href="index.html">Store</a></li> 
+          <li><a href="index.html">Store</a></li>
           <li><a href="user-license.html">License Agreement</a></li>
           <li><a href="https://alextiancreative.github.io/" target="_blank">About</a></li>
         </ul>
       </nav>
       <div class="user-auth-container">
-          <div id="user-status-area" class="user-status">
-            <button id="authButton" class="btn btn-auth">
-                <i class="fas fa-sign-in-alt"></i> Sign In 
-            </button>
-            <div id="userProfileStatus" style="display:none;" class="user-profile-status">
-                <div class="user-avatar-wrapper">
-                    <i class="fas fa-user-circle user-avatar"></i>
-                </div>
-                <div class="user-info">
-                    <a href="profile.html" id="userProfileLink" class="user-profile-link">
-                        <span id="userEmailDisplay"></span>
-                    </a>
-                    <button id="logoutButton" class="btn-logout">
-                        <i class="fas fa-sign-out-alt"></i> Logout
-            </button>
+        <div id="user-status-area" class="user-status">
+          <button id="authButton" class="btn btn-auth">
+            <i class="fas fa-sign-in-alt"></i> Sign In
+          </button>
+          <div id="userProfileStatus" style="display:none;" class="user-profile-status">
+            <div class="user-avatar-wrapper">
+              <i class="fas fa-user-circle user-avatar"></i>
+            </div>
+            <div class="user-info">
+              <a href="profile.html" id="userProfileLink" class="user-profile-link">
+                <span id="userEmailDisplay"></span>
+              </a>
+              <button id="logoutButton" class="btn-logout">
+                <i class="fas fa-sign-out-alt"></i> Logout
+              </button>
+            </div>
+          </div>
         </div>
-    </div>
-        </div>
-    </div>
+      </div>
   </header>
 
   <main>
     <div class="not-found-container">
       <h1>404</h1>
-        <h2>Page Not Found</h2>
-        <p>We apologize, the page you are looking for may have been moved, deleted, or you entered the wrong URL.</p>
-        <a href="index.html" class="btn">Return to Store</a>
+      <h2>Page Not Found</h2>
+      <p>We apologize, the page you are looking for may have been moved, deleted, or you entered the wrong URL.</p>
+      <a href="index.html" class="btn">Return to Store</a>
     </div>
   </main>
 
@@ -102,21 +206,24 @@
     <div class="footer-content">
       <div class="footer-section about-shop">
         <img loading="lazy" style="height:40px;" src="img/cstore.png" alt="CreativeVector Logo" />
-        <p>Your one-stop shop for high-quality digital assets. We offer unique designs for personal and commercial projects, ensuring creativity and value in every product.</p>
-        <p>All digital assets displayed here are purely owned by Alextian Creative Artwork, we do not sell or steal other designers digital assets.</p>
+        <p>Your one-stop shop for high-quality digital assets. We offer unique designs for personal and commercial
+          projects, ensuring creativity and value in every product.</p>
+        <p>All digital assets displayed here are purely owned by Alextian Creative Artwork, we do not sell or steal
+          other designers digital assets.</p>
       </div>
       <div class="footer-section">
         <h3>Quick Links</h3>
         <ul>
-          <li><a href="index.html">Store</a></li> 
+          <li><a href="index.html">Store</a></li>
           <li><a href="license.html">License Agreement</a></li>
           <li><a href="https://alextiancreative.github.io/" target="_blank">About</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
-        &copy; <span id="currentYear"></span> CreativeVector. All rights reserved.
-        <a href="privacy-policy.html" target="_blank">Privacy Policy</a> | <a href="terms-of-service.html" target="_blank">Terms of Service</a>
+      &copy; <span id="currentYear"></span> CreativeVector. All rights reserved.
+      <a href="privacy-policy.html" target="_blank">Privacy Policy</a> | <a href="terms-of-service.html"
+        target="_blank">Terms of Service</a>
     </div>
   </footer>
 
@@ -126,4 +233,5 @@
     document.getElementById("currentYear").textContent = new Date().getFullYear();
   </script>
 </body>
+
 </html>

@@ -15,6 +15,7 @@
     --button-bg-default: #f0f0f0;
     --button-text-default: #555;
     --error-color: #ff4d4d;
+    --btn-padding: 8px 15px;
 }
 
 
@@ -292,9 +293,9 @@ body {
 }
 
 #licenseSelector {
-    padding: 10px 12px;
+    padding: var(--btn-padding);
     border: 1px solid var(--border-color-medium);
-    border-radius: 5px;
+    border-radius: 20px;
     font-family: 'Roboto', sans-serif;
     font-size: 15px;
     color: var(--text-color-medium);
@@ -315,16 +316,48 @@ body {
     box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
 }
 
-
+#hiddenCategoriesContainer
 .categories {
     display: flex;
     align-items: center;
     gap: 15px;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     overflow-x: auto;
 }
 
 .categories .category-btn {
+    text-decoration: none;
+    color: var(--text-color-medium);
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    padding: var(--btn-padding);
+    border: 1px solid var(--border-color-medium);
+    border-radius: 20px;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    background-color: #fff;
+    cursor: pointer;
+}
+
+.categories .category-btn:hover {
+    background-color: var(--bg-medium);
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.categories .category-btn.active {
+    background-color: var(--primary-color);
+    color: var(--header-text-color);
+    border-color: var(--primary-color);
+    font-weight: 500;
+}
+
+.categories .category-btn.active:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+.category-toggle-btn {
     text-decoration: none;
     color: var(--text-color-medium);
     font-family: 'Poppins', sans-serif;
@@ -338,24 +371,11 @@ body {
     cursor: pointer;
 }
 
-.categories .category-btn:hover {
-    background-color: #e9e9e9;
+.category-toggle-btn:hover {
+    background-color: var(--bg-medium);
     color: var(--primary-color);
     border-color: var(--primary-color);
 }
-
-.categories .category-btn.active {
-    background-color: var(--primary-color);
-    color: #fff;
-    border-color: var(--primary-color);
-    font-weight: 500;
-}
-
-.categories .category-btn.active:hover {
-    background-color: #0056b3;
-    border-color: #0056b3;
-}
-
 
 .store {
     display: grid;
@@ -789,6 +809,7 @@ body {
     color: #fff;
     border-color: var(--primary-color);
 }
+
 .preview-gap {
     margin-top: 20px;
     display: flex;
@@ -797,9 +818,11 @@ body {
     gap: 1px;
     margin-bottom: 20px;
 }
+
 .preview-gap p {
     margin: 0;
 }
+
 .preview-gap .category-search {
     background-color: var(--button-bg-default);
     color: var(--button-text-default);
@@ -813,11 +836,13 @@ body {
     text-decoration: none;
 
 }
+
 .preview-gap .category-search:hover {
     background-color: var(--button-bg-default);
     color: var(--primary-color);
     border-color: var(--primary-color);
 }
+
 .preview-filename {
     font-size: 0.9rem;
     color: var(--text-color-light);
