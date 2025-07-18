@@ -11,7 +11,7 @@ const tableName = 'StorePreview';
 const templatePath = path.join(__dirname, 'template', 'product-template.html');
 const outputDir = path.join(__dirname, 'products');
 
-const BASE_URL = 'https://creativevector.github.io';
+const BASE_URL = 'https://creativevector.store';
 const sitemapPath = path.join(__dirname, 'sitemap.xml');
 
 

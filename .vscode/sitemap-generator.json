@@ -1,7 +1,7 @@
 {
   "sitemap.xml": {
     "Protocol": "https",
-    "DomainName": "https://creativevector.github.io",
+    "DomainName": "https://creativevector.store",
     "Root": "./",
     "IncludeExt": [
       ".html",
