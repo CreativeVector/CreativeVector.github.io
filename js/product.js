@@ -326,14 +326,16 @@ function renderProducts() {
     filteredProducts = filteredProducts.filter(p => p.category === activeCategory);
   }
   if (searchQuery) {
-        // Modified to search using p.keyword instead of p.title
-        filteredProducts = filteredProducts.filter(p =>
-            p.keyword.toLowerCase().includes(searchQuery)
-        );
-        
-    }
-    
+       filteredProducts = allProducts.filter(p => {
+      const productCategory = p.category ? p.category.toLowerCase() : ''; 
+      const productTitle = p.keyword ? p.keyword.toLowerCase() : ''; 
 
+      const matchesCategory = activeCategory === '' || productCategory === activeCategory.toLowerCase();
+      const matchesSearch = productTitle.includes(searchQuery);
+
+      return matchesCategory && matchesSearch;
+  });   
+  }
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
 
   if (currentPage > totalPages && totalPages > 0) {
@@ -348,6 +350,7 @@ function renderProducts() {
   const productsToDisplay = filteredProducts.slice(startIndex, endIndex);
 
   if (productsToDisplay.length === 0) {
+    searchResultCount.textContent = `Found ${filteredProducts.length} product${filteredProducts.length !== 1 ? 's' : ''}`;
     storeDiv.innerHTML = '<p class="no-products-message">No products found matching your criteria.</p>';
     paginationControls.innerHTML = '';
     return;
@@ -384,22 +387,20 @@ function renderProducts() {
     storeDiv.innerHTML += html;
   });
 
-  const resultDiv = document.getElementById('searchResultCount');
+const resultDiv = document.getElementById('searchResultCount');
 const isFiltered = activeCategory || searchQuery;
 const countMessageParts = [];
 
 if (searchQuery) countMessageParts.push(`<span class="keyword">${searchQuery}</span>`);
 if (activeCategory) countMessageParts.push(`<span class="category">${activeCategory}</span>`);
+resultDiv.style.display = 'block';
+let message = `Found <b>${filteredProducts.length}</b> product${filteredProducts.length !== 1 ? 's' : ''}`;
+if (countMessageParts.length > 0) {
+  message += ` by <b>${countMessageParts.join(' in ')}</b>`;
+}
 
-if (isFiltered) {
-  resultDiv.style.display = 'block';
-  resultDiv.innerHTML = `Found <b>${filteredProducts.length}</b> product <b>${filteredProducts.length !== 1 ? 's' : ''}</b>` + 
-    (countMessageParts.length ? ` by <b>${countMessageParts.join(' in ')}</b>` : '');
-}
-else {
-  resultDiv.style.display = 'none';
-}
-  renderPaginationControls(totalPages);
+resultDiv.innerHTML = message;
+renderPaginationControls(totalPages);
 }
 
 function renderPaginationControls(totalPages) {
