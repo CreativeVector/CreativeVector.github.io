@@ -28,7 +28,7 @@ let activeCategory = '';
 let selectedLicense = 'personal';
 let searchQuery = '';
 let currentPage = 1;
-const itemsPerPage = 12;
+const itemsPerPage = 24;
 
 
 let previewImageContainer;
@@ -368,7 +368,6 @@ function renderProducts() {
            </a>
         </div>
         <h2>${p.title}</h2>
-        <p>${p.description}</p>
         <id>ID #${p.filename}</id>
         <div class="product-meta">
           <div class="format-icons">

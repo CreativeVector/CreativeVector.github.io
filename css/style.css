@@ -425,7 +425,7 @@ body {
 .product-card h2 {
     font-family: 'Poppins', sans-serif;
     margin: 0.5rem 0 0.25rem;
-    font-size: 1.1rem;
+    font-size: 0.8rem;
     color: var(--text-color-dark);
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -433,7 +433,7 @@ body {
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
-    min-height: 2.8rem;
+    min-height: 2.2rem;
 }
 
 .product-card p {
