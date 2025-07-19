@@ -1,81 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="index, follow">
-    <meta name="description" content="Contact CreativeVector for support, inquiries, or collaborations. Reach out to us via email or our contact form.">
+    <meta name="description"
+        content="Contact CreativeVector for support, inquiries, or collaborations. Reach out to us via email or our contact form.">
     <meta name="author" content="Alextian Creative Artwork">
     <meta name="keywords" content="contact, CreativeVector, support, inquiry, collaboration, email, contact form, help">
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Contact Us | CreativeVector" />
-    <meta property="og:description" content="Contact CreativeVector for support, inquiries, or collaborations. Reach out to us via email or our contact form." />
+    <meta property="og:description"
+        content="Contact CreativeVector for support, inquiries, or collaborations. Reach out to us via email or our contact form." />
     <meta property="og:url" content="https://creativevector.store/contact.html" />
     <meta property="og:image" content="https://creativevector.store/img/cstore.png" />
     <meta name="google-site-verification" content="_J1nX2G61upYTYfcmSRSifBh6sLBYfo-eEyp4nnZ2IU" />
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-MHQSM53YE1"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
+        function gtag() { dataLayer.push(arguments); }
         gtag('js', new Date());
 
         gtag('config', 'G-MHQSM53YE1');
     </script>
     <title>Contact Us | CreativeVector</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="preconnect"
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="css/style.css"> 
+    <link rel="stylesheet" href="css/style.css">
     <link rel="icon" href="img/favicon.ico" type="image/x-icon">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
+
 <body>
     <header class="main-header">
-    <div class="header-container">
-      <div class="logo">
-        <a href="/">
-          <img style="height:40px;" src="img/cstore.png" alt="" />
-        </a>
-      </div>
-      <nav class="main-nav">
-        <ul>
+        <div class="header-container">
+            <div class="logo">
+                <a href="/">
+                    <img style="height:40px;" src="img/cstore.png" alt="" />
+                </a>
+            </div>
+            <nav class="main-nav">
+                <ul>
                     <li><a href="/">Store</a></li>
                     <li><a href="user-license.html">License Agreement</a></li>
                     <li><a href="https://admin.creativevector.store/" target="_blank">About</a></li>
                     <li><a href="contact.html">Contact</a></li>
-                    <li><a href="faq.html" class="active">FAQ</a></li> </ul>
-        </ul>
-      </nav>
-       <!-- USER ACCOUNT -->
-      <div class="user-auth-container">
-    <button id="authButton" class="btn btn-auth">
-        <i class="fas fa-sign-in-alt"></i> Sign In 
-    </button>
-    <div id="userProfileStatus" style="display:none;" class="user-profile-status">
-        <div class="user-avatar-wrapper">
-            <i class="fas fa-user-circle user-avatar"></i>
-        </div>
-        <div class="user-info">
-            <a href="profile.html" id="userProfileLink" class="user-profile-link">
-                <span id="userEmailDisplay"></span>
-            </a>
-            <button id="logoutButton" class="btn-logout">
-                <i class="fas fa-sign-out-alt"></i> Logout
-            </button>
-        </div>
-    </div>
-    </div>
-  </header>
+                    <li><a href="faq.html" class="active">FAQ</a></li>
+                </ul>
+                </ul>
+            </nav>
+            <!-- USER ACCOUNT -->
+            <div class="user-auth-container">
+                <button id="authButton" class="btn btn-auth">
+                    <i class="fas fa-sign-in-alt"></i> Sign In
+                </button>
+                <div id="userProfileStatus" style="display:none;" class="user-profile-status">
+                    <div class="user-avatar-wrapper">
+                        <i class="fas fa-user-circle user-avatar"></i>
+                    </div>
+                    <div class="user-info">
+                        <a href="profile.html" id="userProfileLink" class="user-profile-link">
+                            <span id="userEmailDisplay"></span>
+                        </a>
+                        <button id="logoutButton" class="btn-logout">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+    </header>
 
     <main class="main-content">
         <div class="contact-container">
             <h1>Contact Us</h1>
-            <p>We're here to help! Please choose the most convenient way to get in touch with us based on your needs.</p>
+            <p>We're here to help! Please choose the most convenient way to get in touch with us based on your needs.
+            </p>
 
             <section class="contact-options">
-                
+
                 <div class="contact-card">
                     <h3>Contact Form</h3>
-                    <p>Prefer to send a direct message? Fill out the form below and we'll get back to you as soon as possible.</p>
+                    <p>Prefer to send a direct message? Fill out the form below and we'll get back to you as soon as
+                        possible.</p>
                     <form class="contact-form" id="contactForm">
                         <div class="form-group">
                             <label for="name">Your Name:</label>
@@ -93,10 +102,12 @@
                             <label for="message">Message:</label>
                             <textarea id="message" name="message" rows="6" required></textarea>
                         </div>
-                        <button type="submit" class="button-primary"><i class="fas fa-paper-plane"></i> Send Message</button>
+                        <button type="submit" class="button-primary"><i class="fas fa-paper-plane"></i> Send
+                            Message</button>
                         <h3>Frequently Asked Questions (FAQ)</h3>
-                    <p>Before contacting us, you might find an answer to your question in our FAQ section.</p>
-                    <a href="faq.html" class="button-link-small"><i class="fas fa-question-circle"></i> Visit FAQ</a>
+                        <p>Before contacting us, you might find an answer to your question in our FAQ section.</p>
+                        <a href="faq.html" class="button-link-small"><i class="fas fa-question-circle"></i> Visit
+                            FAQ</a>
                     </form>
                     <div id="contactMessage" class="auth-modal-message" style="display: none; margin-top: 20px;"></div>
                 </div>
@@ -108,13 +119,15 @@
         <div class="footer-content">
             <div class="footer-section about-shop">
                 <img style="height:40px;" src="img/cstore.png" alt="CreativeVector Logo" />
-                <p>Your one-stop shop for high-quality digital assets. We offer unique designs for personal and commercial projects, ensuring creativity and value in every product.</p>
-                <p>All digital assets displayed here are purely owned by Alextian Creative Artwork, we do not sell or steal other designers digital assets.</p>
+                <p>Your one-stop shop for high-quality digital assets. We offer unique designs for personal and
+                    commercial projects, ensuring creativity and value in every product.</p>
+                <p>All digital assets displayed here are purely owned by Alextian Creative Artwork, we do not sell or
+                    steal other designers digital assets.</p>
             </div>
             <div class="footer-section">
                 <h3>Quick Links</h3>
                 <ul>
-                    <li><a href="/">Store</a></li> 
+                    <li><a href="/">Store</a></li>
                     <li><a href="user-license.html">License Agreement</a></li>
                     <li><a href="https://admin.creativevector.store/" target="_blank">About</a></li>
                     <li><a href="contact.html">Contact</a></li>
@@ -124,16 +137,18 @@
         </div>
         <div class="footer-bottom">
             &copy; <span id="currentYear"></span> CreativeVector. All rights reserved.
-            <a href="privacy-policy.html" target="_blank">Privacy Policy</a> | <a href="terms-of-service.html" target="_blank">Terms of Service</a>
+            <a href="privacy-policy.html" target="_blank">Privacy Policy</a> | <a href="terms-of-service.html"
+                target="_blank">Terms of Service</a>
         </div>
     </footer>
 
-  <script src="js/show-alert.js"></script>
-  <script src="js/contact-form.js"></script>
-  <script type="module" src="js/user.js"></script> 
+    <script src="js/show-alert.js"></script>
+    <script src="js/contact-form.js"></script>
+    <script type="module" src="js/user.js"></script>
     <script>
         document.getElementById('currentYear').textContent = new Date().getFullYear();
     </script>
 
 </body>
+
 </html>

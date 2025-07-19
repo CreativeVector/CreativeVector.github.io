@@ -1,22 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="index, follow">
-  <meta name="description" content="CreativeVector is a premium vector store offering high-quality digital assets for personal, commercial and extended use. Explore our unique designs and elevate your projects with our exclusive vector art.">
+  <meta name="description"
+    content="CreativeVector is a premium vector store offering high-quality digital assets for personal, commercial and extended use. Explore our unique designs and elevate your projects with our exclusive vector art.">
   <meta name="author" content="Alextian Creative Artwork">
-  <meta name="keywords" content="premium vectors, digital assets, vector art, graphic design, personal use, commercial use, extended use, unique designs, high-quality vectors, CreativeVector, Alextian Creative Artwork, vector store, digital design, creative assets, vector graphics, eps, ai, svg, png, jpg, license agreement, vector portfolio">
+  <meta name="keywords"
+    content="premium vectors, digital assets, vector art, graphic design, personal use, commercial use, extended use, unique designs, high-quality vectors, CreativeVector, Alextian Creative Artwork, vector store, digital design, creative assets, vector graphics, eps, ai, svg, png, jpg, license agreement, vector portfolio">
   <meta property="og:type" content="website" />
   <meta property="og:title" content="License | CreativeVector" />
-  <meta property="og:description" content="CreativeVector is a premium vector store offering high-quality digital assets for personal, commercial and extended use. Explore our unique designs and elevate your projects with our exclusive vector art." />
+  <meta property="og:description"
+    content="CreativeVector is a premium vector store offering high-quality digital assets for personal, commercial and extended use. Explore our unique designs and elevate your projects with our exclusive vector art." />
   <meta property="og:url" content="https://creativevector.store/license.html" />
   <meta property="og:image" content="https://creativevector.store/img/cstore.png" />
   <meta name="google-site-verification" content="_J1nX2G61upYTYfcmSRSifBh6sLBYfo-eEyp4nnZ2IU" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-MHQSM53YE1"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
+    function gtag() { dataLayer.push(arguments); }
     gtag('js', new Date());
 
     gtag('config', 'G-MHQSM53YE1');
@@ -24,257 +28,288 @@
   <meta property="og:site_name" content="License | CreativeVector" />
 
   <title>License | CreativeVector</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="preconnect"
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link rel="stylesheet" href="css/style.css" />
   <link rel="icon" href="img/favicon.ico" type="image/x-icon">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
+
 <body>
-<header class="main-header">
-  <div class="header-container">
-    <div class="logo">
-      <a href="/">
-        <img style="height:40px;" src="img/cstore.png" alt="" />
-      </a>
-    </div>
-    <nav class="main-nav">
-      <ul>
-                    <li><a href="/">Store</a></li>
-                    <li><a href="user-license.html">License Agreement</a></li>
-                    <li><a href="https://admin.creativevector.store/" target="_blank">About</a></li>
-                    <li><a href="contact.html">Contact</a></li>
-                    <li><a href="faq.html" class="active">FAQ</a></li> </ul>
-      </ul>
-    </nav>
-    <div class="user-auth-container">
-      <button id="authButton" class="btn btn-auth">
-        <i class="fas fa-sign-in-alt"></i> Sign In 
-      </button>
-      <div id="userProfileStatus" style="display:none;" class="user-profile-status">
-        <div class="user-avatar-wrapper">
-          <i class="fas fa-user-circle user-avatar"></i>
-        </div>
-        <div class="user-info">
-          <a href="profile.html" id="userProfileLink" class="user-profile-link">
-            <span id="userEmailDisplay"></span>
-          </a>
-          <button id="logoutButton" class="btn-logout">
-            <i class="fas fa-sign-out-alt"></i> Logout
-          </button>
+  <header class="main-header">
+    <div class="header-container">
+      <div class="logo">
+        <a href="/">
+          <img style="height:40px;" src="img/cstore.png" alt="" />
+        </a>
+      </div>
+      <nav class="main-nav">
+        <ul>
+          <li><a href="/">Store</a></li>
+          <li><a href="user-license.html">License Agreement</a></li>
+          <li><a href="https://admin.creativevector.store/" target="_blank">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="faq.html" class="active">FAQ</a></li>
+        </ul>
+        </ul>
+      </nav>
+      <div class="user-auth-container">
+        <button id="authButton" class="btn btn-auth">
+          <i class="fas fa-sign-in-alt"></i> Sign In
+        </button>
+        <div id="userProfileStatus" style="display:none;" class="user-profile-status">
+          <div class="user-avatar-wrapper">
+            <i class="fas fa-user-circle user-avatar"></i>
+          </div>
+          <div class="user-info">
+            <a href="profile.html" id="userProfileLink" class="user-profile-link">
+              <span id="userEmailDisplay"></span>
+            </a>
+            <button id="logoutButton" class="btn-logout">
+              <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</header>
+  </header>
 
-<main class="layout">
-  <div class="sidebar">
-    <div class="tabs">
-    <button id="personal" class="tab active">1. PERSONAL USE</button>
-    <button id="commercial" class="tab">2. COMMERCIAL USE</button>
-    <button id="extended" class="tab">3. EXTENDED USE</button>
-  </div>
-</div>
-  <div class="content-container" id="noteContent">
-    <div id="personal-content" class="license-text active">
+  <main class="layout">
+    <div class="sidebar">
+      <div class="tabs">
+        <button id="personal" class="tab active">1. PERSONAL USE</button>
+        <button id="commercial" class="tab">2. COMMERCIAL USE</button>
+        <button id="extended" class="tab">3. EXTENDED USE</button>
+      </div>
+    </div>
+    <div class="content-container" id="noteContent">
+      <div id="personal-content" class="license-text active">
         <h1>PERSONAL USE LICENSE AGREEMENT</h1>
         <h4>(Copyright &copy; Rendix Alextian, Alextian Creative Artwork, Alextian Artwork, LotusRex, FightingFear)</h4>
-        <p>This Personal Use License <em>(&ldquo;License&rdquo;)</em> is a legal agreement between you <em>(&ldquo;User&rdquo;)</em> and the copyright holders: Rendix Alextian, Alextian Creative Artwork, Alextian Artwork, LotusRex, and FightingFear <em>(&ldquo;Licensors&rdquo;)</em>.</p>
-        <p>By using or downloading any vector artwork <em>(&ldquo;Assets&rdquo;</em>) provided under this License, you agree to the following terms:</p>
+        <p>This Personal Use License <em>(&ldquo;License&rdquo;)</em> is a legal agreement between you
+          <em>(&ldquo;User&rdquo;)</em> and the copyright holders: Rendix Alextian, Alextian Creative Artwork, Alextian
+          Artwork, LotusRex, and FightingFear <em>(&ldquo;Licensors&rdquo;)</em>.</p>
+        <p>By using or downloading any vector artwork <em>(&ldquo;Assets&rdquo;</em>) provided under this License, you
+          agree to the following terms:</p>
         <p></p>
         <h2>1. Permitted Uses</h2>
-        <p>You are granted a non-exclusive, non-transferable license to use the Assets for personal use only, including but not limited to:</p>
+        <p>You are granted a non-exclusive, non-transferable license to use the Assets for personal use only, including
+          but not limited to:</p>
         <ul>
-        <li>Personal art projects</li>
-        <li>Educational purposes</li>
-        <li>Personal social media content (non-commercial)</li>
-        <li>Personal desktop wallpapers or print-outs (non-commercial)</li>
+          <li>Personal art projects</li>
+          <li>Educational purposes</li>
+          <li>Personal social media content (non-commercial)</li>
+          <li>Personal desktop wallpapers or print-outs (non-commercial)</li>
         </ul>
         <p></p>
         <h2>2. Prohibited Uses You may not:</h2>
         <ul>
-        <li>Use the Assets for any commercial, advertising, or promotional purpose</li>
-        <li>Redistribute, resell, sublicense, or share the Assets in any form</li>
-        <li>Modify and claim the Assets as your own original work</li>
-        <li>Use the Assets in any way that infringes upon the intellectual property rights of the Licensors</li>
+          <li>Use the Assets for any commercial, advertising, or promotional purpose</li>
+          <li>Redistribute, resell, sublicense, or share the Assets in any form</li>
+          <li>Modify and claim the Assets as your own original work</li>
+          <li>Use the Assets in any way that infringes upon the intellectual property rights of the Licensors</li>
         </ul>
         <h2>3. Copyright Notice</h2>
-        <p>All vector artworks are copyrighted and remain the intellectual property of: Rendix Alextian, Alextian Creative Artwork, Alextian Artwork, LotusRex, and FightingFear. You must retain and not remove any copyright or watermark where applicable.</p>
+        <p>All vector artworks are copyrighted and remain the intellectual property of: Rendix Alextian, Alextian
+          Creative Artwork, Alextian Artwork, LotusRex, and FightingFear. You must retain and not remove any copyright
+          or watermark where applicable.</p>
         <p></p>
         <h2>4. No Warranty</h2>
-        <p>The Assets are provided "as is" without warranty of any kind. The Licensors shall not be held liable for any damages resulting from the use or inability to use the Assets.</p>
+        <p>The Assets are provided "as is" without warranty of any kind. The Licensors shall not be held liable for any
+          damages resulting from the use or inability to use the Assets.</p>
         <p></p>
         <h2>5. Termination</h2>
-        <p>This License is terminated automatically if you violate any of the terms. Upon termination, you must cease all use of the Assets and destroy all copies.</p>
+        <p>This License is terminated automatically if you violate any of the terms. Upon termination, you must cease
+          all use of the Assets and destroy all copies.</p>
         <p></p>
         <h2>6. Contact</h2>
-        <p>For commercial licensing or extended use, please contact: <strong><a href="mailto:support@creativevector.store">support@creativevector.store</a></strong></p>
-    </div>
+        <p>For commercial licensing or extended use, please contact: <strong><a
+              href="mailto:support@creativevector.store">support@creativevector.store</a></strong></p>
+      </div>
 
-    <div id="commercial-content" class="license-text" style="display: none;">
+      <div id="commercial-content" class="license-text" style="display: none;">
         <h1>COMMERCIAL USE LICENSE AGREEMENT</h1>
-        <p><strong>(Copyright &copy; Rendix Alextian, Alextian Creative Artwork, Alextian Artwork, LotusRex, FightingFear)</strong></p>
-        <p>This Commercial Use License <em>(&ldquo;License&rdquo;)</em> is a binding legal agreement between the licensee <em>(&ldquo;You&rdquo;)</em> and the copyright holders:</p>
-        <p>Rendix Alextian, Alextian Creative Artwork, Alextian Artwork, LotusRex, and FightingFear <em>(&ldquo;Licensors&rdquo;)</em>.</p>
-        <p>By purchasing, downloading, or using any vector artwork <em>(&ldquo;Assets&rdquo;)</em> covered by this License, you agree to comply with the following terms and conditions.</p>
+        <p><strong>(Copyright &copy; Rendix Alextian, Alextian Creative Artwork, Alextian Artwork, LotusRex,
+            FightingFear)</strong></p>
+        <p>This Commercial Use License <em>(&ldquo;License&rdquo;)</em> is a binding legal agreement between the
+          licensee <em>(&ldquo;You&rdquo;)</em> and the copyright holders:</p>
+        <p>Rendix Alextian, Alextian Creative Artwork, Alextian Artwork, LotusRex, and FightingFear
+          <em>(&ldquo;Licensors&rdquo;)</em>.</p>
+        <p>By purchasing, downloading, or using any vector artwork <em>(&ldquo;Assets&rdquo;)</em> covered by this
+          License, you agree to comply with the following terms and conditions.</p>
         <p></p>
         <h2>1. Grant of License</h2>
-        <p>Upon purchase or authorized acquisition, the Licensors grant you a non-exclusive, non-transferable, worldwide license to use the Assets for commercial purposes, including but not limited to:</p>
+        <p>Upon purchase or authorized acquisition, the Licensors grant you a non-exclusive, non-transferable, worldwide
+          license to use the Assets for commercial purposes, including but not limited to:</p>
         <ul>
-        <li>Digital and printed marketing materials</li>
-        <li>Product packaging and merchandise</li>
-        <li>Business branding, logos, or promotional content</li>
-        <li>Social media content and advertisements</li>
-        <li>Commercial websites and apps</li>
+          <li>Digital and printed marketing materials</li>
+          <li>Product packaging and merchandise</li>
+          <li>Business branding, logos, or promotional content</li>
+          <li>Social media content and advertisements</li>
+          <li>Commercial websites and apps</li>
         </ul>
         <p></p>
         <h2>2. Ownership and Copyright</h2>
         <p>All rights, title, and interest in the Assets remain the sole property of:</p>
         <ul>
-        <li>Rendix Alextian, Alextian Creative Artwork, Alextian Artwork, LotusRex, and FightingFear.</li>
-        <li>You are granted rights to use the Assets, not to own or claim authorship of the original works.</li>
+          <li>Rendix Alextian, Alextian Creative Artwork, Alextian Artwork, LotusRex, and FightingFear.</li>
+          <li>You are granted rights to use the Assets, not to own or claim authorship of the original works.</li>
         </ul>
         <p></p>
         <h2>3. Restrictions</h2>
         <p>You may not:</p>
         <ul>
-        <li>Redistribute or resell the Assets in their original or modified form as standalone files (e.g., stock asset, template, or bundle)</li>
-        <li>Use the Assets in obscene, defamatory, or unlawful material</li>
-        <li>Claim the original vector design as your own intellectual property</li>
-        <li>Transfer the license to a third party without prior written consent</li>
+          <li>Redistribute or resell the Assets in their original or modified form as standalone files (e.g., stock
+            asset, template, or bundle)</li>
+          <li>Use the Assets in obscene, defamatory, or unlawful material</li>
+          <li>Claim the original vector design as your own intellectual property</li>
+          <li>Transfer the license to a third party without prior written consent</li>
         </ul>
         <p></p>
         <h2>4. Modifications</h2>
-        <p>You may modify the Assets to suit your needs (e.g., change colors, rearrange elements), provided that the modified version is still used under the terms of this License.</p>
+        <p>You may modify the Assets to suit your needs (e.g., change colors, rearrange elements), provided that the
+          modified version is still used under the terms of this License.</p>
         <p></p>
         <h2>5. Attribution (Optional but Appreciated)</h2>
         <p>Attribution is not required but is appreciated where possible.</p>
         <p>You may credit as: &copy; Alextian Artwork / Rendix Alextian</p>
         <p></p>
         <h2>6. Termination</h2>
-        <p>This License is automatically terminated if any term is violated. Upon termination, you must immediately discontinue use and destroy all copies of the Assets.</p>
+        <p>This License is automatically terminated if any term is violated. Upon termination, you must immediately
+          discontinue use and destroy all copies of the Assets.</p>
         <p></p>
         <h2>7. No Warranty</h2>
-        <p>The Assets are provided &ldquo;as-is&rdquo; without warranties of any kind. The Licensors are not liable for any damages arising from use of the Assets.</p>
+        <p>The Assets are provided &ldquo;as-is&rdquo; without warranties of any kind. The Licensors are not liable for
+          any damages arising from use of the Assets.</p>
         <p></p>
         <h2>8. License Confirmation</h2>
-        <p>Proof of purchase (receipt or license key) must be retained and provided upon request to confirm your legal usage.</p>
+        <p>Proof of purchase (receipt or license key) must be retained and provided upon request to confirm your legal
+          usage.</p>
         <p></p>
         <h2>9. Contact</h2>
-        <p>For custom licenses, extended enterprise rights, or questions, contact: <strong><a href="mailto:support@creativevector.store">support@creativevector.store</a></strong></p>
-    </div>
+        <p>For custom licenses, extended enterprise rights, or questions, contact: <strong><a
+              href="mailto:support@creativevector.store">support@creativevector.store</a></strong></p>
+      </div>
 
-    <div id="extended-content" class="license-text" style="display: none;">
+      <div id="extended-content" class="license-text" style="display: none;">
         <h1>EXTENDED COMMERCIAL LICENSE</h1>
-        <p><strong>(Copyright &copy; Rendix Alextian, Alextian Creative Artwork, Alextian Artwork, LotusRex, FightingFear) </strong></p>
+        <p><strong>(Copyright &copy; Rendix Alextian, Alextian Creative Artwork, Alextian Artwork, LotusRex,
+            FightingFear) </strong></p>
         <p>This license includes all benefits of the Commercial Use License and additionally allows:</p>
         <ul>
-        <li>Use in client projects</li>
-        <li>Distribution in physical products (T-shirts, merchandise, packaging, etc.) exceeding 5,000 units</li>
-        <li>Use in digital products (games, apps, themes) with wide distribution</li>
-        <li>Use in templates or mockups for sale (if not directly extractable)</li>
+          <li>Use in client projects</li>
+          <li>Distribution in physical products (T-shirts, merchandise, packaging, etc.) exceeding 5,000 units</li>
+          <li>Use in digital products (games, apps, themes) with wide distribution</li>
+          <li>Use in templates or mockups for sale (if not directly extractable)</li>
         </ul>
         <h4>You may not:</h4>
         <ul>
-        <li>Resell or sublicense the Assets "as-is"</li>
-        <li>Claim the original artwork as your own</li>
+          <li>Resell or sublicense the Assets "as-is"</li>
+          <li>Claim the original artwork as your own</li>
         </ul>
         <p></p>
-        <p>For licensing involving 100,000+ copies, mass software bundling, or enterprise rights, a custom enterprise license is required.</p>
-        <p>Please contact: <strong><a href="mailto:support@creativevector.store">support@creativevector.store</a></strong></p>
-            </div>
-</div>
-</main>
-
-<footer class="main-footer">
-  <div class="footer-content">
-    <div class="footer-section about-shop">
-      <img style="height:40px;" src="img/cstore.png" alt="Alextian Creative Logo" />
-      <p>Your one-stop shop for high-quality digital assets. We offer unique designs for personal and commercial projects, ensuring creativity and value in every product.</p>
-      <p>All digital assets displayed here are purely owned by Alextian Creative Artwork, we do not sell or steal other designers digital assets.</p>
+        <p>For licensing involving 100,000+ copies, mass software bundling, or enterprise rights, a custom enterprise
+          license is required.</p>
+        <p>Please contact: <strong><a
+              href="mailto:support@creativevector.store">support@creativevector.store</a></strong></p>
+      </div>
     </div>
-    <div class="footer-section">
-      <h3>Quick Links</h3>
-      <ul>
-                    <li><a href="/">Store</a></li> 
-                    <li><a href="user-license.html">License Agreement</a></li>
-                    <li><a href="https://admin.creativevector.store/" target="_blank">About</a></li>
-                    <li><a href="contact.html">Contact</a></li>
-                    <li><a href="faq.html">FAQ</a></li>
-      </ul>
-    </div>
-    
-  </div>
-  <div class="footer-bottom">
-    &copy; <span id="currentYear"></span> CreativeVector. All rights reserved.
-    <a href="privacy-policy.html" target="_blank">Privacy Policy</a> | <a href="terms-of-service.html" target="_blank">Terms of Service</a>
-  </div>
-</footer>
+  </main>
 
-<script>
+  <footer class="main-footer">
+    <div class="footer-content">
+      <div class="footer-section about-shop">
+        <img style="height:40px;" src="img/cstore.png" alt="Alextian Creative Logo" />
+        <p>Your one-stop shop for high-quality digital assets. We offer unique designs for personal and commercial
+          projects, ensuring creativity and value in every product.</p>
+        <p>All digital assets displayed here are purely owned by Alextian Creative Artwork, we do not sell or steal
+          other designers digital assets.</p>
+      </div>
+      <div class="footer-section">
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="/">Store</a></li>
+          <li><a href="user-license.html">License Agreement</a></li>
+          <li><a href="https://admin.creativevector.store/" target="_blank">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+        </ul>
+      </div>
+
+    </div>
+    <div class="footer-bottom">
+      &copy; <span id="currentYear"></span> CreativeVector. All rights reserved.
+      <a href="privacy-policy.html" target="_blank">Privacy Policy</a> | <a href="terms-of-service.html"
+        target="_blank">Terms of Service</a>
+    </div>
+  </footer>
+
+  <script>
 
     window.addEventListener('DOMContentLoaded', () => {
-        const tabs = document.querySelectorAll('.tab');
-        const content = document.getElementById('noteContent');
-        const currentYear = document.getElementById('currentYear');
+      const tabs = document.querySelectorAll('.tab');
+      const content = document.getElementById('noteContent');
+      const currentYear = document.getElementById('currentYear');
 
-        if (currentYear) {
-            currentYear.textContent = new Date().getFullYear();
-        }
+      if (currentYear) {
+        currentYear.textContent = new Date().getFullYear();
+      }
 
-        const licenseContentContainer = document.getElementById('licenseContent');
+      const licenseContentContainer = document.getElementById('licenseContent');
 
-    function showLicenseContent(tabId) {
+      function showLicenseContent(tabId) {
         document.querySelectorAll('.license-text').forEach(contentDiv => {
-            contentDiv.style.display = 'none'; // Sembunyikan semua konten lisensi
+          contentDiv.style.display = 'none'; // Sembunyikan semua konten lisensi
         });
         const activeContent = document.getElementById(`${tabId}-content`);
         if (activeContent) {
-            activeContent.style.display = 'block'; // Tampilkan konten yang sesuai
+          activeContent.style.display = 'block'; // Tampilkan konten yang sesuai
         }
-    }
-        
+      }
 
-        
-        tabs.forEach(tab => {
+
+
+      tabs.forEach(tab => {
         tab.addEventListener('click', () => {
-            tabs.forEach(t => t.classList.remove('active'));
-            tab.classList.add('active');
-            showLicenseContent(tab.id); // Panggil fungsi baru
-            
-            history.pushState(null, '', `#${tab.id}`);
-            window.scrollTo({ top: 0, behavior: 'smooth' }); 
+          tabs.forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          showLicenseContent(tab.id); // Panggil fungsi baru
+
+          history.pushState(null, '', `#${tab.id}`);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
         });
+      });
+
+
+      const hash = window.location.hash.substring(1);
+      const defaultTab = document.getElementById('personal');
+
+      if (hash) {
+        const targetBtn = document.getElementById(hash);
+        if (targetBtn) {
+
+          tabs.forEach(btn => btn.classList.remove('active'));
+
+          targetBtn.classList.add('active');
+
+          loadNote(targetBtn.dataset.file, targetBtn.textContent.trim());
+          return;
+        }
+      }
+
+
+      if (defaultTab) {
+        defaultTab.classList.add('active');
+      } else {
+        console.error("Default 'personal' tab not found in the DOM.");
+        content.innerHTML = `<div class="header">Error</div><div>Default license tab not found.</div>`;
+      }
     });
 
-        
-        const hash = window.location.hash.substring(1);
-        const defaultTab = document.getElementById('personal');
-
-        if (hash) {
-            const targetBtn = document.getElementById(hash);
-            if (targetBtn) {
-                
-                tabs.forEach(btn => btn.classList.remove('active'));
-                
-                targetBtn.classList.add('active');
-                
-                loadNote(targetBtn.dataset.file, targetBtn.textContent.trim());
-                return;
-            }
-        }
-
-        
-        if (defaultTab) {
-            defaultTab.classList.add('active');
-        } else {
-            console.error("Default 'personal' tab not found in the DOM.");
-            content.innerHTML = `<div class="header">Error</div><div>Default license tab not found.</div>`;
-        }
-    });
-
-</script>
-<script src="js/user.js"></script>
+  </script>
+  <script src="js/user.js"></script>
 </body>
+
 </html>

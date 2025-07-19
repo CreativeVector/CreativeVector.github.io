@@ -46,31 +46,31 @@ function generateHtml(template, product) {
 }
 
 function addToSitemap(filename) {
-  const urlEntry = `
+    const urlEntry = `
   <url>
     <loc>${BASE_URL}/products/${filename}.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>`;
 
-  let sitemapContent = '';
-  if (fs.existsSync(sitemapPath)) {
-    sitemapContent = fs.readFileSync(sitemapPath, 'utf8');
-    if (sitemapContent.includes(`${filename}.html`)) {
-      console.log(`🔁 ${filename}.html already exists in sitemap.xml`);
-      return;
-    }
+    let sitemapContent = '';
+    if (fs.existsSync(sitemapPath)) {
+        sitemapContent = fs.readFileSync(sitemapPath, 'utf8');
+        if (sitemapContent.includes(`${filename}.html`)) {
+            console.log(`🔁 ${filename}.html already exists in sitemap.xml`);
+            return;
+        }
 
-    sitemapContent = sitemapContent.replace('</urlset>', `${urlEntry}\n</urlset>`);
-  } else {
-    sitemapContent = `<?xml version="1.0" encoding="UTF-8"?>
+        sitemapContent = sitemapContent.replace('</urlset>', `${urlEntry}\n</urlset>`);
+    } else {
+        sitemapContent = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urlEntry}
 </urlset>`;
-  }
+    }
 
-  fs.writeFileSync(sitemapPath, sitemapContent, 'utf8');
-  console.log(`✅ Added ${filename}.html to sitemap.xml`);
+    fs.writeFileSync(sitemapPath, sitemapContent, 'utf8');
+    console.log(`✅ Added ${filename}.html to sitemap.xml`);
 }
 
 async function generatePages() {

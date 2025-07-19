@@ -31,7 +31,7 @@ let currentPage = 1;
 const itemsPerPage = 12;
 
 
-let previewImageContainer; 
+let previewImageContainer;
 
 let currentPreviewTimeout;
 
@@ -67,16 +67,16 @@ checkoutBtn.addEventListener("click", () => {
     showAlert("Your cart is empty. Please add some items before checking out.", "info");
     return;
   }
-  
-  location.href='/checkout.html';
+
+  location.href = '/checkout.html';
 });
 window.addEventListener('click', (event) => {
-    if (event.target === cartModal) {
-        closeCart();
-    }
-    if (event.target === previewModal) {
-        closePreview();
-    }
+  if (event.target === cartModal) {
+    closeCart();
+  }
+  if (event.target === previewModal) {
+    closePreview();
+  }
 });
 
 let debounceTimeout;
@@ -104,14 +104,14 @@ function updateCartUI() {
     cartTotal.textContent = 'Total: $0.00';
     clearCartBtn.disabled = true;
     checkoutBtn.disabled = true;
-    
+
     if (previewImageContainer) {
-        previewImageContainer.style.display = 'none';
+      previewImageContainer.style.display = 'none';
     }
   } else {
     cartList.innerHTML = cart.map((p, i) => {
       total += p.price;
-      const identifier = p.extractedId || p.filename || 'N/A'; 
+      const identifier = p.extractedId || p.filename || 'N/A';
       return `
         <li class="cart-item" data-preview-url="${p.preview_url}"> 
           <span class="cart-item-number">${i + 1}</span> 
@@ -125,65 +125,65 @@ function updateCartUI() {
     checkoutBtn.disabled = false;
 
     document.querySelectorAll('.remove-btn').forEach(button => {
-        button.addEventListener('click', (event) => {
-            const indexToRemove = event.target.dataset.index;
-            removeFromCart(indexToRemove);
-        });
+      button.addEventListener('click', (event) => {
+        const indexToRemove = event.target.dataset.index;
+        removeFromCart(indexToRemove);
+      });
     });
-    
+
     if (!previewImageContainer) {
-        previewImageContainer = document.getElementById('global-cart-preview'); 
-        
+      previewImageContainer = document.getElementById('global-cart-preview');
+
     }
 
     document.querySelectorAll('.cart-item').forEach(itemElement => {
-        let itemHoverTimeout;
+      let itemHoverTimeout;
 
-        itemElement.addEventListener('mouseenter', () => {
-            clearTimeout(currentPreviewTimeout);
-            clearTimeout(itemHoverTimeout);
+      itemElement.addEventListener('mouseenter', () => {
+        clearTimeout(currentPreviewTimeout);
+        clearTimeout(itemHoverTimeout);
 
-            itemHoverTimeout = setTimeout(() => {
-                const previewUrl = itemElement.dataset.previewUrl;
-                if (previewUrl) {
-                    previewImageContainer.innerHTML = `<img src="${previewUrl}" alt="Product Preview">`;
-                    previewImageContainer.style.display = 'block';
-                    
-                    previewImageContainer.offsetWidth; 
-                    previewImageContainer.style.opacity = '1';
-                }
-            }, 200); 
-        });
+        itemHoverTimeout = setTimeout(() => {
+          const previewUrl = itemElement.dataset.previewUrl;
+          if (previewUrl) {
+            previewImageContainer.innerHTML = `<img src="${previewUrl}" alt="Product Preview">`;
+            previewImageContainer.style.display = 'block';
 
-        itemElement.addEventListener('mouseleave', () => {
-            clearTimeout(itemHoverTimeout);
-            currentPreviewTimeout = setTimeout(() => {
-                previewImageContainer.style.opacity = '0';
-                setTimeout(() => {
-                    previewImageContainer.style.display = 'none';
-                }, 300); 
-            }, 300); 
-        });
+            previewImageContainer.offsetWidth;
+            previewImageContainer.style.opacity = '1';
+          }
+        }, 200);
+      });
+
+      itemElement.addEventListener('mouseleave', () => {
+        clearTimeout(itemHoverTimeout);
+        currentPreviewTimeout = setTimeout(() => {
+          previewImageContainer.style.opacity = '0';
+          setTimeout(() => {
+            previewImageContainer.style.display = 'none';
+          }, 300);
+        }, 300);
+      });
     });
 
-    
+
     if (previewImageContainer) {
-        previewImageContainer.style.display = 'none';
+      previewImageContainer.style.display = 'none';
     }
   }
   saveCart();
 }
 
 function removeFromCart(index) {
-    cart.splice(parseInt(index), 1);
-    updateCartUI();
+  cart.splice(parseInt(index), 1);
+  updateCartUI();
 }
 
 function clearCart() {
-    if (confirm("Are you sure you want to clear your cart?")) {
-        cart = [];
-        updateCartUI();
-    }
+  if (confirm("Are you sure you want to clear your cart?")) {
+    cart = [];
+    updateCartUI();
+  }
 }
 
 function showCart() {
@@ -191,16 +191,16 @@ function showCart() {
   cartModal.style.display = 'flex';
 }
 
-window.closeCart = function() {
+window.closeCart = function () {
   cartModal.style.display = 'none';
 }
 
 
-window.showPreview = function(url, title, desc, filename, price1, price2, price3) {
+window.showPreview = function (url, title, desc, filename, price1, price2, price3) {
   previewImage.src = url;
   previewTitle.textContent = title;
   previewDesc.textContent = desc;
-  previewFilename.textContent = "ID #"+ filename; 
+  previewFilename.textContent = "ID #" + filename;
 
   previewPrice1.innerHTML = `
     <div class="textDesc">
@@ -229,21 +229,21 @@ window.showPreview = function(url, title, desc, filename, price1, price2, price3
   previewModal.style.display = 'flex';
 }
 
-window.closePreview = function() {
+window.closePreview = function () {
   previewModal.style.display = 'none';
 }
 
 function goToLicense1() {
-const url = `https://gist.githubusercontent.com/AlextianCreative/0f5c41f8fa7fa759f9ea97718040b71c/raw/f03644916cba98eec073f4edfaf9e05cea54c3e0/personal.txt`;
-    window.open(url, '_blank');
+  const url = `https://gist.githubusercontent.com/AlextianCreative/0f5c41f8fa7fa759f9ea97718040b71c/raw/f03644916cba98eec073f4edfaf9e05cea54c3e0/personal.txt`;
+  window.open(url, '_blank');
 }
 function goToLicense2() {
-const url = `https://gist.githubusercontent.com/AlextianCreative/0f5c41f8fa7fa759f9ea97718040b71c/raw/f03644916cba98eec073f4edfaf9e05cea54c3e0/commercial.txt`;
-    window.open(url, '_blank');
+  const url = `https://gist.githubusercontent.com/AlextianCreative/0f5c41f8fa7fa759f9ea97718040b71c/raw/f03644916cba98eec073f4edfaf9e05cea54c3e0/commercial.txt`;
+  window.open(url, '_blank');
 }
 function goToLicense3() {
-const url = `https://gist.githubusercontent.com/AlextianCreative/0f5c41f8fa7fa759f9ea97718040b71c/raw/f03644916cba98eec073f4edfaf9e05cea54c3e0/extended.txt`;
-    window.open(url, '_blank');
+  const url = `https://gist.githubusercontent.com/AlextianCreative/0f5c41f8fa7fa759f9ea97718040b71c/raw/f03644916cba98eec073f4edfaf9e05cea54c3e0/extended.txt`;
+  window.open(url, '_blank');
 }
 
 function handleCategoryClick(cat) {
@@ -256,58 +256,58 @@ function handleCategoryClick(cat) {
 
 function renderCategories(categories) {
 
-    const maxVisibleCategories = 9; // Batasi jumlah kategori yang terlihat
-    let isExpanded = false; // Status untuk melacak apakah kategori diperluas
+  const maxVisibleCategories = 9; // Batasi jumlah kategori yang terlihat
+  let isExpanded = false; // Status untuk melacak apakah kategori diperluas
 
-    const allBtn = document.createElement('button');
-    allBtn.textContent = 'All';
-    allBtn.className = 'category-btn ' + (activeCategory === '' ? 'active' : '');
-    allBtn.onclick = () => handleCategoryClick('');
-    categoryTabsContainer.appendChild(allBtn);
+  const allBtn = document.createElement('button');
+  allBtn.textContent = 'All';
+  allBtn.className = 'category-btn ' + (activeCategory === '' ? 'active' : '');
+  allBtn.onclick = () => handleCategoryClick('');
+  categoryTabsContainer.appendChild(allBtn);
 
-    const visibleCategories = categories.slice(0, maxVisibleCategories);
-    const hiddenCategories = categories.slice(maxVisibleCategories);
+  const visibleCategories = categories.slice(0, maxVisibleCategories);
+  const hiddenCategories = categories.slice(maxVisibleCategories);
 
-    // Render kategori yang terlihat
-    visibleCategories.forEach(cat => {
-        const btn = document.createElement('button');
-        btn.textContent = cat;
-        btn.className = 'category-btn ' + (activeCategory === cat ? 'active' : '');
-        btn.onclick = () => handleCategoryClick(cat);
-        categoryTabsContainer.appendChild(btn);
+  // Render kategori yang terlihat
+  visibleCategories.forEach(cat => {
+    const btn = document.createElement('button');
+    btn.textContent = cat;
+    btn.className = 'category-btn ' + (activeCategory === cat ? 'active' : '');
+    btn.onclick = () => handleCategoryClick(cat);
+    categoryTabsContainer.appendChild(btn);
+  });
+
+  // Jika ada kategori yang tersembunyi, buat wadah untuk mereka dan tombol expand/collapse
+  if (hiddenCategories.length > 0) {
+    const hiddenCategoriesContainer = document.createElement('div');
+    hiddenCategoriesContainer.id = 'hiddenCategoriesContainer';
+    hiddenCategoriesContainer.style.display = 'none'; // Sembunyikan secara default
+
+    hiddenCategories.forEach(cat => {
+      const btn = document.createElement('button');
+      btn.textContent = cat;
+      btn.className = 'category-btn ' + (activeCategory === cat ? 'active' : '');
+      btn.onclick = () => handleCategoryClick(cat);
+      hiddenCategoriesContainer.appendChild(btn);
     });
+    categoryTabsContainer.appendChild(hiddenCategoriesContainer);
 
-    // Jika ada kategori yang tersembunyi, buat wadah untuk mereka dan tombol expand/collapse
-    if (hiddenCategories.length > 0) {
-        const hiddenCategoriesContainer = document.createElement('div');
-        hiddenCategoriesContainer.id = 'hiddenCategoriesContainer';
-        hiddenCategoriesContainer.style.display = 'none'; // Sembunyikan secara default
-        
-        hiddenCategories.forEach(cat => {
-            const btn = document.createElement('button');
-            btn.textContent = cat;
-            btn.className = 'category-btn ' + (activeCategory === cat ? 'active' : '');
-            btn.onclick = () => handleCategoryClick(cat);
-            hiddenCategoriesContainer.appendChild(btn);
-        });
-        categoryTabsContainer.appendChild(hiddenCategoriesContainer);
-
-        const toggleButton = document.createElement('button');
-        toggleButton.id = 'toggleCategoriesBtn';
+    const toggleButton = document.createElement('button');
+    toggleButton.id = 'toggleCategoriesBtn';
+    toggleButton.textContent = 'Expand ▼';
+    toggleButton.className = 'category-toggle-btn'; // Tambahkan kelas untuk styling
+    toggleButton.onclick = () => {
+      isExpanded = !isExpanded;
+      if (isExpanded) {
+        hiddenCategoriesContainer.style.display = 'block';
+        toggleButton.textContent = 'Collapse ▲';
+      } else {
+        hiddenCategoriesContainer.style.display = 'none';
         toggleButton.textContent = 'Expand ▼';
-        toggleButton.className = 'category-toggle-btn'; // Tambahkan kelas untuk styling
-        toggleButton.onclick = () => {
-            isExpanded = !isExpanded;
-            if (isExpanded) {
-                hiddenCategoriesContainer.style.display = 'block';
-                toggleButton.textContent = 'Collapse ▲';
-            } else {
-                hiddenCategoriesContainer.style.display = 'none';
-                toggleButton.textContent = 'Expand ▼';
-            }
-        };
-        categoryTabsContainer.appendChild(toggleButton);
-    }
+      }
+    };
+    categoryTabsContainer.appendChild(toggleButton);
+  }
 }
 function highlightActiveCategory() {
   document.querySelectorAll('.categories .category-btn').forEach(btn => {
@@ -326,22 +326,22 @@ function renderProducts() {
     filteredProducts = filteredProducts.filter(p => p.category === activeCategory);
   }
   if (searchQuery) {
-       filteredProducts = allProducts.filter(p => {
-      const productCategory = p.category ? p.category.toLowerCase() : ''; 
-      const productTitle = p.keyword ? p.keyword.toLowerCase() : ''; 
+    filteredProducts = allProducts.filter(p => {
+      const productCategory = p.category ? p.category.toLowerCase() : '';
+      const productTitle = p.keyword ? p.keyword.toLowerCase() : '';
 
       const matchesCategory = activeCategory === '' || productCategory === activeCategory.toLowerCase();
       const matchesSearch = productTitle.includes(searchQuery);
 
       return matchesCategory && matchesSearch;
-  });   
+    });
   }
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
 
   if (currentPage > totalPages && totalPages > 0) {
-      currentPage = totalPages;
+    currentPage = totalPages;
   } else if (totalPages === 0) {
-      currentPage = 1;
+    currentPage = 1;
   }
 
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -387,124 +387,124 @@ function renderProducts() {
     storeDiv.innerHTML += html;
   });
 
-const resultDiv = document.getElementById('searchResultCount');
-const isFiltered = activeCategory || searchQuery;
-const countMessageParts = [];
+  const resultDiv = document.getElementById('searchResultCount');
+  const isFiltered = activeCategory || searchQuery;
+  const countMessageParts = [];
 
-if (searchQuery) countMessageParts.push(`<span class="keyword">${searchQuery}</span>`);
-if (activeCategory) countMessageParts.push(`<span class="category">${activeCategory}</span>`);
-resultDiv.style.display = 'block';
-let message = `Found <b>${filteredProducts.length}</b> product${filteredProducts.length !== 1 ? 's' : ''}`;
-if (countMessageParts.length > 0) {
-  message += ` by <b>${countMessageParts.join(' in ')}</b>`;
-}
+  if (searchQuery) countMessageParts.push(`<span class="keyword">${searchQuery}</span>`);
+  if (activeCategory) countMessageParts.push(`<span class="category">${activeCategory}</span>`);
+  resultDiv.style.display = 'block';
+  let message = `Found <b>${filteredProducts.length}</b> product${filteredProducts.length !== 1 ? 's' : ''}`;
+  if (countMessageParts.length > 0) {
+    message += ` by <b>${countMessageParts.join(' in ')}</b>`;
+  }
 
-resultDiv.innerHTML = message;
-renderPaginationControls(totalPages);
+  resultDiv.innerHTML = message;
+  renderPaginationControls(totalPages);
 }
 
 function renderPaginationControls(totalPages) {
-    paginationControls.innerHTML = '';
+  paginationControls.innerHTML = '';
 
-    if (totalPages <= 1) {
-        return;
+  if (totalPages <= 1) {
+    return;
+  }
+
+  const prevButton = document.createElement('button');
+  prevButton.textContent = 'Previous';
+  prevButton.classList.add('pagination-btn');
+  prevButton.disabled = (currentPage === 1);
+  prevButton.onclick = () => {
+    if (currentPage > 1) {
+      currentPage--;
+      updateURLParams(searchQuery, currentPage, activeCategory);
+      renderProducts();
+      window.scrollTo(0, 0);
     }
+  };
+  paginationControls.appendChild(prevButton);
 
-    const prevButton = document.createElement('button');
-    prevButton.textContent = 'Previous';
-    prevButton.classList.add('pagination-btn');
-    prevButton.disabled = (currentPage === 1);
-    prevButton.onclick = () => {
-        if (currentPage > 1) {
-            currentPage--;
-            updateURLParams(searchQuery, currentPage, activeCategory);
-            renderProducts();
-            window.scrollTo(0, 0);
-        }
+  const maxPageButtons = 5;
+  let startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
+  let endPage = Math.min(totalPages, startPage + maxPageButtons - 1);
+
+  if (endPage - startPage + 1 < maxPageButtons) {
+    startPage = Math.max(1, endPage - maxPageButtons + 1);
+  }
+
+  for (let i = startPage; i <= endPage; i++) {
+    const pageButton = document.createElement('button');
+    pageButton.textContent = i;
+    pageButton.classList.add('pagination-btn');
+    if (i === currentPage) {
+      pageButton.classList.add('active');
+    }
+    pageButton.onclick = () => {
+      currentPage = i;
+      updateURLParams(searchQuery, currentPage, activeCategory);
+      renderProducts();
+      window.scrollTo(0, 0);
     };
-    paginationControls.appendChild(prevButton);
 
-    const maxPageButtons = 5;
-    let startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
-    let endPage = Math.min(totalPages, startPage + maxPageButtons - 1);
+    paginationControls.appendChild(pageButton);
+  }
 
-    if (endPage - startPage + 1 < maxPageButtons) {
-        startPage = Math.max(1, endPage - maxPageButtons + 1);
+  const nextButton = document.createElement('button');
+  nextButton.textContent = 'Next';
+  nextButton.classList.add('pagination-btn');
+  nextButton.disabled = (currentPage === totalPages);
+  nextButton.onclick = () => {
+    if (currentPage < totalPages) {
+      currentPage++;
+      updateURLParams(searchQuery, currentPage, activeCategory);
+      renderProducts();
+      window.scrollTo(0, 0);
     }
-
-    for (let i = startPage; i <= endPage; i++) {
-        const pageButton = document.createElement('button');
-        pageButton.textContent = i;
-        pageButton.classList.add('pagination-btn');
-        if (i === currentPage) {
-            pageButton.classList.add('active');
-        }
-        pageButton.onclick = () => {
-            currentPage = i;
-            updateURLParams(searchQuery, currentPage, activeCategory);
-            renderProducts();
-            window.scrollTo(0, 0);
-          };
-
-        paginationControls.appendChild(pageButton);
-    }
-
-    const nextButton = document.createElement('button');
-    nextButton.textContent = 'Next';
-    nextButton.classList.add('pagination-btn');
-    nextButton.disabled = (currentPage === totalPages);
-    nextButton.onclick = () => {
-        if (currentPage < totalPages) {
-            currentPage++;
-            updateURLParams(searchQuery, currentPage, activeCategory);
-            renderProducts();
-            window.scrollTo(0, 0);
-        }
-    };
-    paginationControls.appendChild(nextButton);
+  };
+  paginationControls.appendChild(nextButton);
 }
 
-window.setLicense = function(val) {
+window.setLicense = function (val) {
   selectedLicense = val;
   currentPage = 1;
-  renderProducts(); 
+  renderProducts();
 }
 
 
 
 function extractIdFromUrl(url) {
-    if (!url) return '';
-    const urlParts = url.split('/');
-    let filename = urlParts[urlParts.length - 1];
+  if (!url) return '';
+  const urlParts = url.split('/');
+  let filename = urlParts[urlParts.length - 1];
 
-    const dotIndex = filename.indexOf('.');
-    if (dotIndex !== -1) {
-        filename = filename.substring(0, dotIndex);
-    }
-    if (filename.startsWith('preview_') && filename.length > 'preview_'.length) {
-        return filename.substring('preview_'.length);
-    }
-    return '';
+  const dotIndex = filename.indexOf('.');
+  if (dotIndex !== -1) {
+    filename = filename.substring(0, dotIndex);
+  }
+  if (filename.startsWith('preview_') && filename.length > 'preview_'.length) {
+    return filename.substring('preview_'.length);
+  }
+  return '';
 }
 
-window.addToCart = function(product) {
-  
-  
-  const extractedId = product.filename || extractIdFromUrl(product.preview_url); 
-  
-  
-  const productWithCartDetails = { 
-      ...product, 
-      extractedId: extractedId, 
-      license: product.license, 
-      price: product.price, 
-      preview_url: product.preview_url 
-  }; 
+window.addToCart = function (product) {
 
-  const existingProductIndex = cart.findIndex(item => 
-      item.id === productWithCartDetails.id && 
-      item.license === productWithCartDetails.license && 
-      item.filename === productWithCartDetails.filename 
+
+  const extractedId = product.filename || extractIdFromUrl(product.preview_url);
+
+
+  const productWithCartDetails = {
+    ...product,
+    extractedId: extractedId,
+    license: product.license,
+    price: product.price,
+    preview_url: product.preview_url
+  };
+
+  const existingProductIndex = cart.findIndex(item =>
+    item.id === productWithCartDetails.id &&
+    item.license === productWithCartDetails.license &&
+    item.filename === productWithCartDetails.filename
   );
 
   if (existingProductIndex > -1) {
@@ -531,7 +531,7 @@ async function loadProducts() {
     const categories = [...new Set(data.map(p => p.category).filter(Boolean))];
     renderCategories(categories);
     renderProducts();
-    updateCartUI(); 
+    updateCartUI();
   } catch (err) {
     storeDiv.innerHTML = `<p style="color:red;">❌ Failed to load products: ${err.message}</p>`;
     console.error('Fetch error:', err);
@@ -545,8 +545,8 @@ document.addEventListener('DOMContentLoaded', () => {
     currentPage = page;
     activeCategory = category;
     searchInput.value = query;
-    loadProducts(); 
-    updateCartUI(); 
+    loadProducts();
+    updateCartUI();
   } else {
     console.error("Error: Supabase global object or createClient function not found. Is Supabase SDK loaded correctly?");
   }

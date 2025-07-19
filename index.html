@@ -1,21 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="index, follow">
-  <meta name="description" content="CreativeVector is a premium vector store offering high-quality digital assets for personal, commercial and extended use. Explore our unique designs and elevate your projects with our exclusive vector art.">
+  <meta name="description"
+    content="CreativeVector is a premium vector store offering high-quality digital assets for personal, commercial and extended use. Explore our unique designs and elevate your projects with our exclusive vector art.">
   <meta name="author" content="Alextian Creative Artwork">
-  <meta name="keywords" content="premium vectors, digital assets, vector art, graphic design, personal use, commercial use, extended use, unique designs, high-quality vectors, CreativeVector, Alextian Creative Artwork, vector store, digital design, creative assets, vector graphics, eps, ai, svg, png, jpg, license agreement, vector portfolio">
+  <meta name="keywords"
+    content="premium vectors, digital assets, vector art, graphic design, personal use, commercial use, extended use, unique designs, high-quality vectors, CreativeVector, Alextian Creative Artwork, vector store, digital design, creative assets, vector graphics, eps, ai, svg, png, jpg, license agreement, vector portfolio">
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Premium Quality Vectors | CreativeVector" />
-  <meta property="og:description" content="CreativeVector is a premium vector store offering high-quality digital assets for personal, commercial and extended use. Explore our unique designs and elevate your projects with our exclusive vector art." />
+  <meta property="og:description"
+    content="CreativeVector is a premium vector store offering high-quality digital assets for personal, commercial and extended use. Explore our unique designs and elevate your projects with our exclusive vector art." />
   <meta property="og:url" content="https://creativevector.store" />
   <meta property="og:image" content="https://creativevector.store/img/cstore.png" />
   <meta property="og:site_name" content="CreativeVector Store" />
-  
+
   <title>Premium Quality Vectors | CreativeVector</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="preconnect"
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link rel="stylesheet" href="css/style.css" />
   <link rel="icon" href="img/favicon.ico" type="image/x-icon">
@@ -24,12 +30,13 @@
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-MHQSM53YE1"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
+    function gtag() { dataLayer.push(arguments); }
     gtag('js', new Date());
 
     gtag('config', 'G-MHQSM53YE1');
   </script>
 </head>
+
 <body>
   <header class="main-header">
     <div class="header-container">
@@ -40,32 +47,33 @@
       </div>
       <nav class="main-nav">
         <ul>
-                    <li><a href="/">Store</a></li>
-                    <li><a href="user-license.html">License Agreement</a></li>
-                    <li><a href="https://admin.creativevector.store/" target="_blank">About</a></li>
-                    <li><a href="contact.html">Contact</a></li>
-                    <li><a href="faq.html" class="active">FAQ</a></li> </ul>
+          <li><a href="/">Store</a></li>
+          <li><a href="user-license.html">License Agreement</a></li>
+          <li><a href="https://admin.creativevector.store/" target="_blank">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="faq.html" class="active">FAQ</a></li>
+        </ul>
         </ul>
       </nav>
       <!-- USER ACCOUNT -->
       <div class="user-auth-container">
         <button id="authButton" class="btn btn-auth">
-            <i class="fas fa-sign-in-alt"></i> Sign In 
+          <i class="fas fa-sign-in-alt"></i> Sign In
         </button>
-      <div id="userProfileStatus" style="display:none;" class="user-profile-status">
+        <div id="userProfileStatus" style="display:none;" class="user-profile-status">
           <div class="user-avatar-wrapper">
-              <i class="fas fa-user-circle user-avatar"></i>
+            <i class="fas fa-user-circle user-avatar"></i>
           </div>
           <div class="user-info">
-              <a href="profile.html" id="userProfileLink" class="user-profile-link">
-                  <span id="userEmailDisplay"></span>
-              </a>
-              <button id="logoutButton" class="btn-logout">
-                  <i class="fas fa-sign-out-alt"></i> Logout
-              </button>
+            <a href="profile.html" id="userProfileLink" class="user-profile-link">
+              <span id="userEmailDisplay"></span>
+            </a>
+            <button id="logoutButton" class="btn-logout">
+              <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
           </div>
+        </div>
       </div>
-</div>  
     </div>
   </header>
 
@@ -81,9 +89,9 @@
       </div>
       <h4>Category</h4>
       <div class="categories" id="categoryTabs">
-        
-        </div>
-        <div class="search-box-wrapper">
+
+      </div>
+      <div class="search-box-wrapper">
         <input type="text" id="searchInput" placeholder="Search products..." />
         <i class="fas fa-search search-icon"></i>
       </div>
@@ -101,7 +109,7 @@
 
   <main id="store" class="store"></main>
   <div id="pagination-controls" class="pagination-controls">
-    </div>
+  </div>
 
   <div id="cartModal" class="modal">
     <div class="modal-content cart-modal-content">
@@ -120,29 +128,33 @@
     <div class="footer-content">
       <div class="footer-section about-shop">
         <img loading="lazy" style="height:40px;" src="img/cstore.png" alt="Alextian Creative Logo" />
-        <p>Your one-stop shop for high-quality digital assets. We offer unique designs for personal and commercial projects, ensuring creativity and value in every product.</p>
-        <p>All digital assets displayed here are purely owned by Alextian Creative Artwork, we do not sell or steal other designers digital assets.</p>
+        <p>Your one-stop shop for high-quality digital assets. We offer unique designs for personal and commercial
+          projects, ensuring creativity and value in every product.</p>
+        <p>All digital assets displayed here are purely owned by Alextian Creative Artwork, we do not sell or steal
+          other designers digital assets.</p>
       </div>
       <div class="footer-section">
         <h3>Quick Links</h3>
         <ul>
-  <li><a href="/">Store</a></li> 
-                    <li><a href="user-license.html">License Agreement</a></li>
-                    <li><a href="https://admin.creativevector.store/" target="_blank">About</a></li>
-                    <li><a href="contact.html">Contact</a></li>
-                    <li><a href="faq.html">FAQ</a></li>
+          <li><a href="/">Store</a></li>
+          <li><a href="user-license.html">License Agreement</a></li>
+          <li><a href="https://admin.creativevector.store/" target="_blank">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="faq.html">FAQ</a></li>
       </div>
     </div>
     <div class="footer-bottom">
-        &copy; <span id="currentYear"></span> CreativeVector. All rights reserved.
-        <a href="privacy-policy.html" target="_blank">Privacy Policy</a> | <a href="terms-of-service.html" target="_blank">Terms of Service</a>
-        </div>
+      &copy; <span id="currentYear"></span> CreativeVector. All rights reserved.
+      <a href="privacy-policy.html" target="_blank">Privacy Policy</a> | <a href="terms-of-service.html"
+        target="_blank">Terms of Service</a>
+    </div>
   </footer>
 
   <div id="global-cart-preview" style="display: none;"></div>
   <script src="js/show-alert.js"></script>
   <script type="module" src="js/product.js"></script>
-  <script type="module" src="js/user.js"></script> 
+  <script type="module" src="js/user.js"></script>
 
 </body>
+
 </html>

@@ -18,27 +18,27 @@ contactForm.addEventListener('submit', async (event) => {
 
     showContactMessage('Sending your message...', 'info');
 
-try {
-    const response = await fetch('https://lekxtacqnusomlvtfxcz.supabase.co/functions/v1/contact-email-ts', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ name, email, subject, message })
-    });
+    try {
+        const response = await fetch('https://lekxtacqnusomlvtfxcz.supabase.co/functions/v1/contact-email-ts', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ name, email, subject, message })
+        });
 
-    const result = await response.json();
+        const result = await response.json();
 
-    if (!response.ok) {
-        throw new Error(result.error || 'Unknown error');
+        if (!response.ok) {
+            throw new Error(result.error || 'Unknown error');
+        }
+
+        showContactMessage('Thank you for your message! We will get back to you soon.', 'success');
+        contactForm.reset();
+    } catch (error) {
+        console.error('Error submitting contact form:', error.message);
+        showContactMessage(`Failed to send message: ${error.message}`, 'error');
     }
-
-    showContactMessage('Thank you for your message! We will get back to you soon.', 'success');
-    contactForm.reset();
-} catch (error) {
-    console.error('Error submitting contact form:', error.message);
-    showContactMessage(`Failed to send message: ${error.message}`, 'error');
-}
 
 });
 
