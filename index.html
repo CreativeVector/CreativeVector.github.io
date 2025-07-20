@@ -108,7 +108,21 @@
 
 
   <main id="store" class="store"></main>
-  <div id="pagination-controls" class="pagination-controls">
+  <div class="pagination-controls" id="pagination-controls">
+            <span id="totalPagesDisplay" class="pagination-info"></span>
+
+            <button id="prevPage" class="pagination-btn">Previous</button>
+
+            <div class="pagination-numbers" id="paginationNumbers">
+                </div>
+
+            <button id="nextPage" class="pagination-btn">Next</button>
+
+            <div class="page-input-group">
+                <input type="number" id="pageInput" class="page-input" min="1" value="1">
+                <button id="goToPageButton" class="go-btn">Go</button>
+            </div>
+        </div>
   </div>
 
   <div id="cartModal" class="modal">

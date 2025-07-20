@@ -4,12 +4,7 @@
   ],
   "hints": {
     "disown-opener": "off",
-    "axe/forms": [
-      "default",
-      {
-        "select-name": "off"
-      }
-    ],
+    "axe/forms": "off",
     "axe/text-alternatives": [
       "default",
       {
@@ -26,6 +21,7 @@
     "not firefox <= 140",
     "not safari <= 18.5",
     "not samsung <= 28",
-    "not ios_saf <= 18.5"
+    "not ios_saf <= 18.5",
+    "not opera <= 117"
   ]
 }

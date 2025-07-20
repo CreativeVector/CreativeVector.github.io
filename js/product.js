@@ -29,10 +29,10 @@ let selectedLicense = 'personal';
 let searchQuery = '';
 let currentPage = 1;
 const itemsPerPage = 24;
-
-
+let totalPagesDisplay;
+let pageInput;
+let goToPageButton;
 let previewImageContainer;
-
 let currentPreviewTimeout;
 
 
@@ -59,6 +59,9 @@ const cartCountSpan = document.querySelector('.cart-count');
 const searchInput = document.getElementById('searchInput');
 const paginationControls = document.getElementById('pagination-controls');
 
+totalPagesDisplay = document.createElement('span');
+totalPagesDisplay.id = 'totalPagesDisplay';
+totalPagesDisplay.style.marginRight = '15px';
 
 cartIcon.addEventListener("click", showCart);
 clearCartBtn.addEventListener("click", clearCart);
@@ -193,57 +196,6 @@ function showCart() {
 
 window.closeCart = function () {
   cartModal.style.display = 'none';
-}
-
-
-window.showPreview = function (url, title, desc, filename, price1, price2, price3) {
-  previewImage.src = url;
-  previewTitle.textContent = title;
-  previewDesc.textContent = desc;
-  previewFilename.textContent = "ID #" + filename;
-
-  previewPrice1.innerHTML = `
-    <div class="textDesc">
-      <a href="https://gist.githubusercontent.com/AlextianCreative/0f5c41f8fa7fa759f9ea97718040b71c/raw/f03644916cba98eec073f4edfaf9e05cea54c3e0/personal.txt" target="_blank" class="btn" style="text-decoration: none;font-weight: bold;">Personal License</a>
-      <h1>$${parseFloat(price1).toFixed(2)}</h1>
-    </div>
-  `;
-  previewPrice2.innerHTML = `
-    <div class="textDesc">
-      <a href="https://gist.githubusercontent.com/AlextianCreative/0f5c41f8fa7fa759f9ea97718040b71c/raw/f03644916cba98eec073f4edfaf9e05cea54c3e0/commercial.txt" target="_blank" class="btn" style="text-decoration: none;font-weight: bold;">Commercial License</a>
-      <h1>$${parseFloat(price2).toFixed(2)}</h1>
-    </div>
-  `;
-  previewPrice3.innerHTML = `
-    <div class="textDesc">
-      <a href="https://gist.githubusercontent.com/AlextianCreative/0f5c41f8fa7fa759f9ea97718040b71c/raw/f03644916cba98eec073f4edfaf9e05cea54c3e0/extended.txt" target="_blank" class="btn" style="text-decoration: none;font-weight: bold;">Extended License</a>
-      <h1>$${parseFloat(price3).toFixed(2)}</h1>
-    </div>
-  `;
-
-  previewIcon1.innerHTML = `
-    <img src="img/eps.png" class="icon" alt="EPS">
-    <img src="img/jpg.png" class="icon" alt="JPG">
-  `;
-
-  previewModal.style.display = 'flex';
-}
-
-window.closePreview = function () {
-  previewModal.style.display = 'none';
-}
-
-function goToLicense1() {
-  const url = `https://gist.githubusercontent.com/AlextianCreative/0f5c41f8fa7fa759f9ea97718040b71c/raw/f03644916cba98eec073f4edfaf9e05cea54c3e0/personal.txt`;
-  window.open(url, '_blank');
-}
-function goToLicense2() {
-  const url = `https://gist.githubusercontent.com/AlextianCreative/0f5c41f8fa7fa759f9ea97718040b71c/raw/f03644916cba98eec073f4edfaf9e05cea54c3e0/commercial.txt`;
-  window.open(url, '_blank');
-}
-function goToLicense3() {
-  const url = `https://gist.githubusercontent.com/AlextianCreative/0f5c41f8fa7fa759f9ea97718040b71c/raw/f03644916cba98eec073f4edfaf9e05cea54c3e0/extended.txt`;
-  window.open(url, '_blank');
 }
 
 function handleCategoryClick(cat) {
@@ -406,8 +358,14 @@ function renderPaginationControls(totalPages) {
   paginationControls.innerHTML = '';
 
   if (totalPages <= 1) {
+    paginationControls.style.display = 'none';
     return;
   }
+  else {
+    paginationControls.style.display = 'flex';
+  }
+  totalPagesDisplay.textContent = `${totalPages} pages`;
+  paginationControls.appendChild(totalPagesDisplay);
 
   const prevButton = document.createElement('button');
   prevButton.textContent = 'Previous';
@@ -418,10 +376,14 @@ function renderPaginationControls(totalPages) {
       currentPage--;
       updateURLParams(searchQuery, currentPage, activeCategory);
       renderProducts();
-      window.scrollTo(0, 0);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
   paginationControls.appendChild(prevButton);
+
+  const paginationNumbersDiv = document.createElement('div');
+  paginationNumbersDiv.classList.add('pagination-numbers');
+  paginationControls.appendChild(paginationNumbersDiv);
 
   const maxPageButtons = 5;
   let startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
@@ -461,6 +423,62 @@ function renderPaginationControls(totalPages) {
     }
   };
   paginationControls.appendChild(nextButton);
+
+  if (!document.getElementById('pageInputContainer')) {
+    const pageInputContainer = document.createElement('div');
+    pageInputContainer.id = 'pageInputContainer';
+    pageInputContainer.style.display = 'flex';
+    pageInputContainer.style.alignItems = 'center';
+    pageInputContainer.style.marginLeft = '20px';
+
+    pageInput = document.createElement('input');
+    pageInput.type = 'number';
+    pageInput.id = 'pageInput';
+    pageInput.min = '1';
+    pageInput.max = totalPages.toString();
+    pageInput.value = currentPage.toString();
+    pageInput.style.width = '70px';
+    pageInput.style.padding = '8px 15px';
+    pageInput.style.border = '1px solid #ccc';
+    pageInput.style.borderRadius = '5px';
+    pageInput.style.textAlign = 'center';
+    pageInput.style.fontSize = '1rem';
+
+    goToPageButton = document.createElement('button');
+    goToPageButton.textContent = 'Go';
+    goToPageButton.classList.add('pagination-btn');
+    goToPageButton.style.marginLeft = '5px';
+
+    pageInputContainer.appendChild(pageInput);
+    pageInputContainer.appendChild(goToPageButton);
+    paginationControls.appendChild(pageInputContainer);
+
+    // Event listener untuk tombol 'Go'
+    goToPageButton.addEventListener('click', () => {
+      const pageNum = parseInt(pageInput.value, 10);
+      if (!isNaN(pageNum) && pageNum >= 1 && pageNum <= totalPages) {
+        currentPage = pageNum;
+        updateURLParams(searchQuery, currentPage, activeCategory);
+        renderProducts();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        showAlert(`Please enter a valid page number between 1 and ${totalPages}.`, "error");
+        pageInput.value = currentPage.toString();
+      }
+    });
+
+    pageInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        goToPageButton.click();
+      }
+    });
+  } else {
+
+    pageInput = document.getElementById('pageInput');
+    goToPageButton = document.getElementById('goToPageButton');
+    pageInput.max = totalPages.toString();
+    pageInput.value = currentPage.toString();
+  }
 }
 
 window.setLicense = function (val) {
