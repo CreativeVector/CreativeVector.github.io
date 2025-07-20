@@ -9,6 +9,23 @@
       {
         "select-name": "off"
       }
+    ],
+    "axe/text-alternatives": [
+      "default",
+      {
+        "image-alt": "off"
+      }
     ]
-  }
+  },
+  "browserslist": [
+    "defaults",
+    "not ie 11",
+    "not and_chr <= 138",
+    "not chrome <= 138",
+    "not edge <= 138",
+    "not firefox <= 140",
+    "not safari <= 18.5",
+    "not samsung <= 28",
+    "not ios_saf <= 18.5"
+  ]
 }
