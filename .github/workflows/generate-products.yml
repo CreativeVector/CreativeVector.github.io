@@ -6,9 +6,21 @@ on:
       - generate.js
       - template/**
       - .github/workflows/generate-products.yml
+  # --- Tambahkan bagian ini untuk mengizinkan eksekusi manual dari UI ---
+  workflow_dispatch:
+    inputs:
+      # Anda bisa menambahkan input opsional di sini jika ingin memberikan parameter saat memicu manual.
+      # Contoh:
+      force_regeneration:
+        description: 'Paksa regenerasi semua halaman (abaikan perubahan file)'
+        required: false
+        default: false
+        type: boolean
+  # --- Akhir penambahan ---
+
 permissions:
   contents: write
-  
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -27,15 +39,31 @@ jobs:
       run: npm install node-fetch@2
 
     - name: Run generator
-      run: node generate.js
+      # Anda bisa menggunakan input dari workflow_dispatch di sini jika diperlukan
+      run: |
+        if ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.force_regeneration == 'true' }}; then
+          echo "Memaksa regenerasi penuh..."
+          # Anda mungkin perlu menambahkan logika di generate.js untuk menangani mode "force" ini
+          node generate.js --force
+        else
+          node generate.js
+        fi
 
-    - name: Set up push permissions
-      run: git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
-
-    - name: Commit and push changes
+    - name: Configure Git for Push
       run: |
         git config --global user.name "github-actions"
         git config --global user.email "github-actions@github.com"
+        # Tidak perlu set-url lagi, actions/checkout@v3 sudah menanganinya dengan benar
+
+    - name: Commit and Push Changes
+      run: |
+        # Periksa apakah ada perubahan pada direktori products/
         git add products/
-        git commit -m "Auto-generate product pages [skip ci]" || echo "No changes"
-        git push origin main
+        git diff-index --quiet HEAD || git commit -m "Auto-generate product pages [skip ci]"
+        
+        # Hanya push jika ada commit baru
+        if [ "$(git log -1 --pretty=format:%s)" != "Auto-generate product pages [skip ci]" ]; then
+          echo "Tidak ada perubahan baru untuk di-commit."
+        else
+          git push origin main
+        fi
