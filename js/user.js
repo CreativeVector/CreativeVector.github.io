@@ -39,25 +39,39 @@ async function updateAuthUI() {
         console.warn("Supabase client not initialized yet for updateAuthUI.");
         return;
     }
+
     const { data: { user } } = await supabase.auth.getUser();
 
     if (user) {
+        // Pengguna login: Ambil nama lengkap dari CustomerData
+        const { data: customerData, error: customerDataError } = await supabase
+            .from('CustomerData')
+            .select('first_name, last_name')
+            .eq('user_id', user.id)
+            .single();
 
-        userEmailDisplay.textContent = user.email;
-
+        if (customerDataError && customerDataError.code !== 'PGRST116') { // PGRST116 means "No rows found"
+            console.error('Error fetching customer data for display:', customerDataError.message);
+            userEmailDisplay.textContent = user.email; // Fallback ke email jika ada error
+            // showAlert('Gagal memuat nama profil.', 'warning'); // Jika Anda memiliki showAlert global
+        } else if (customerData) {
+            // Tampilkan nama lengkap jika ditemukan
+            userEmailDisplay.textContent = `${customerData.first_name || ''} ${customerData.last_name || ''}`.trim();
+        } else {
+            // Jika data CustomerData tidak ditemukan (misal, pengguna lama sebelum fitur ini ada)
+            userEmailDisplay.textContent = user.email; // Fallback ke email
+            // showAlert('Nama profil tidak ditemukan, menampilkan email.', 'info'); // Jika Anda memiliki showAlert global
+        }
 
         if (userProfileStatus) {
-
-            userProfileStatus.style.display = 'flex';
+            userProfileStatus.style.display = 'flex'; // Atau 'block', tergantung CSS Anda
         }
         if (authButton) {
             authButton.style.display = 'none';
         }
     } else {
-
-        userEmailDisplay.textContent = '';
-
-
+        // Pengguna belum login
+        userEmailDisplay.textContent = ''; // Kosongkan tampilan nama/email
         if (userProfileStatus) {
             userProfileStatus.style.display = 'none';
         }
@@ -66,7 +80,6 @@ async function updateAuthUI() {
         }
     }
 }
-
 
 async function handleLogout(event) {
     if (event) event.preventDefault();

@@ -64,15 +64,15 @@
                     </div>
                 </div>
             </div>
-            
+
     </header>
 
     <main class="checkout-container">
         <a href="/" class="btn" style="text-decoration: none;font-weight: bold;">Back to store</a>
-        <h2 style="font-family: 'Poppins', sans-serif;">Complete Your Purchase</h2>
+        <h2>Complete Your Purchase</h2>
 
         <div class="cart-summary">
-            <h3 style="font-family: 'Poppins', sans-serif;">Order Summary</h3>
+            <h3>Order Summary</h3>
             <ul id="summaryList">
             </ul>
             <div id="summaryTotal" class="summary-total"></div>
@@ -86,8 +86,7 @@
         </div>
         <p class="note">*You will not see your purchase history if you are not logged in.</p>
         <p class="note">By purchasing the product you choose, you agree to our <a href="/user-license.html">License
-                Agreement</a>. If you have any issues, please <a
-                href="/contact.html">contact us</a>.</p>
+                Agreement</a>. If you have any issues, please <a href="/contact.html">contact us</a>.</p>
         <p class="note">After successful payment, the ordered files will be sent within 1 working day.</p>
     </main>
 
@@ -111,7 +110,7 @@
             </div>
         </div>
         <div class="footer-bottom">
-            &copy; <span id="currentYear"></span> CreativeVector. All rights reserved.
+            &copy; <span id="currentYear"></span> CreativeVector. All rights reserved.<br>
             <a href="privacy-policy.html" target="_blank">Privacy Policy</a> | <a href="terms-of-service.html"
                 target="_blank">Terms of Service</a>
         </div>
@@ -127,9 +126,22 @@
         const summaryTotalDiv = document.getElementById('summaryTotal');
         const checkoutMessageDiv = document.getElementById('checkoutMessage');
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
-        let totalAmount = 0;
+
+        // Ambil mata uang yang dipilih dari localStorage
+        let currentCurrency = localStorage.getItem('currentCurrency') || 'USD';
 
         document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        // Fungsi untuk memformat harga (sama seperti di product.js)
+        function formatPrice(amount, currency) {
+            if (currency === 'IDR') {
+                if (amount >= 1000) {
+                    return `IDR ${(amount / 1000).toFixed(0)}K`;
+                }
+                return `IDR ${amount.toFixed(0)}`;
+            }
+            return `$${amount.toFixed(2)}`;
+        }
 
         function displayCartSummary() {
             if (cart.length === 0) {
@@ -140,39 +152,48 @@
             }
 
             summaryList.innerHTML = '';
-            totalAmount = 0;
+            let totalAmountForDisplay = 0; // Total untuk ditampilkan (bisa USD atau IDR)
+            let totalAmountForPayPal = 0; // Total untuk PayPal (selalu USD)
             let productIdsForPayPal = [];
 
             cart.forEach((item, i) => {
-
                 const identifier = item.extractedId || item.filename || 'N/A';
+
+                // Pilih harga yang akan ditampilkan berdasarkan mata uang yang aktif
+                const displayPrice = currentCurrency === 'USD' ? item.price_usd : item.price_idr;
+
+                // Harga untuk PayPal selalu USD
+                const priceForPayPal = item.price_usd;
 
                 const itemElement = document.createElement('li');
                 itemElement.classList.add('summary-item');
 
                 itemElement.innerHTML = `
-                    <span class="summary-item-number">${i + 1}.</span>
-                    <span class="summary-item-info">${item.title} (${item.license} #${identifier})</span>
-                    <span class="summary-item-price">$${parseFloat(item.price).toFixed(2)}</span>
-                    <div class="summary-item-preview">
-                        <img src="${item.preview_url}" alt="Product Preview">
-                    </div>
-                `;
+                <span class="summary-item-number">${i + 1}.</span>
+                <span class="summary-item-info">${item.title} (${item.license} #${identifier})</span>
+                <span class="summary-item-price">${formatPrice(displayPrice, currentCurrency)}</span> <div class="summary-item-preview">
+                    <img src="${item.preview_url}" alt="Product Preview">
+                </div>
+            `;
                 summaryList.appendChild(itemElement);
-                totalAmount += item.price;
+
+                totalAmountForDisplay += displayPrice; // Akumulasi total untuk tampilan
+                totalAmountForPayPal += priceForPayPal; // Akumulasi total untuk PayPal (USD)
 
                 if (item.extractedId) {
                     productIdsForPayPal.push(item.extractedId);
                 }
             });
 
-            summaryTotalDiv.textContent = `Total : $${totalAmount.toFixed(2)}`;
+            // Tampilkan total yang diformat sesuai mata uang yang aktif
+            summaryTotalDiv.textContent = `Total : ${formatPrice(totalAmountForDisplay, currentCurrency)}`;
 
             const orderDescription = productIdsForPayPal.length > 0
                 ? `Purchase from Alextian Creative Store (IDs: ${productIdsForPayPal.join(', ')})`
                 : 'Purchase from Alextian Creative Store';
 
-            initPayPalButtons(orderDescription);
+            // Lewatkan totalAmountForPayPal (dalam USD) ke initPayPalButtons
+            initPayPalButtons(orderDescription, totalAmountForPayPal);
         }
 
         function showMessage(message, type = 'info') {
@@ -182,8 +203,8 @@
             checkoutMessageDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
 
-
-        function initPayPalButtons(orderDescription) {
+        // Ubah fungsi ini untuk menerima totalAmountForPayPal
+        function initPayPalButtons(orderDescription, totalAmountForPayPal) {
             if (cart.length === 0) {
                 return;
             }
@@ -196,13 +217,20 @@
                         return actions.reject('CART_EMPTY');
                     }
 
+                    // Periksa apakah totalAmountForPayPal adalah angka yang valid dan lebih dari 0
+                    if (isNaN(totalAmountForPayPal) || totalAmountForPayPal <= 0) {
+                        showAlert('Total amount is invalid. Please check your cart.', 'error');
+                        return actions.reject('INVALID_TOTAL_AMOUNT');
+                    }
+
                     return fetch('https://lekxtacqnusomlvtfxcz.supabase.co/functions/v1/create-paypal-order', { // sandbox
                         method: 'post',
                         headers: {
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({
-                            cartItems: cart
+                            cartItems: cart,
+                            totalAmountUSD: totalAmountForPayPal // Kirim total dalam USD
                         })
                     }).then(function (response) {
                         if (!response.ok) {
@@ -229,7 +257,7 @@
                         body: JSON.stringify({
                             orderID: data.orderID,
                             paymentSource: data.paymentSource,
-                            cart_items: JSON.parse(localStorage.getItem('cart'))
+                            cart_items: JSON.parse(localStorage.getItem('cart')) // Tetap kirim cart_items lengkap
                         })
                     }).then(function (response) {
                         return response.json();

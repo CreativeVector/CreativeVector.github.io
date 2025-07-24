@@ -34,6 +34,7 @@ let pageInput;
 let goToPageButton;
 let previewImageContainer;
 let currentPreviewTimeout;
+let currentCurrency = localStorage.getItem('currentCurrency') || 'USD';
 
 
 const cartIcon = document.getElementById("cartIcon");
@@ -58,6 +59,7 @@ const categoryTabsContainer = document.getElementById('categoryTabs');
 const cartCountSpan = document.querySelector('.cart-count');
 const searchInput = document.getElementById('searchInput');
 const paginationControls = document.getElementById('pagination-controls');
+const currToggle = document.getElementById('currToggle');
 
 totalPagesDisplay = document.createElement('span');
 totalPagesDisplay.id = 'totalPagesDisplay';
@@ -81,6 +83,7 @@ window.addEventListener('click', (event) => {
     closePreview();
   }
 });
+currToggle.addEventListener('click', toggleCurrency);
 
 let debounceTimeout;
 searchInput.addEventListener('input', (e) => {
@@ -97,14 +100,23 @@ function saveCart() {
   localStorage.setItem('cart', JSON.stringify(cart));
 }
 
+function clearCartOnCurrencyChange() {
+    // Hapus semua item dari keranjang
+    localStorage.removeItem('cart');
+    cart = []; // Pastikan variabel 'cart' di memori juga dikosongkan
+    updateCartUI(); // Perbarui tampilan UI keranjang
+    showAlert("Cart has been cleared due to currency change. Please add items again.", "info");
+    console.log("Cart cleared due to currency change.");
+}
+
 function updateCartUI() {
   cartCountSpan.textContent = cart.length;
   cartIcon.setAttribute('data-count', cart.length);
 
   let total = 0;
   if (cart.length === 0) {
-    cartList.innerHTML = '<li class="empty-cart-message">Your cart is empty.</li>';
-    cartTotal.textContent = 'Total: $0.00';
+   cartList.innerHTML = '<li class="empty-cart-message">Your cart is empty.</li>';
+    cartTotal.textContent = `Total: ${formatPrice(0, currentCurrency)}`;
     clearCartBtn.disabled = true;
     checkoutBtn.disabled = true;
 
@@ -113,17 +125,20 @@ function updateCartUI() {
     }
   } else {
     cartList.innerHTML = cart.map((p, i) => {
-      total += p.price;
+      const itemPrice = (p.selectedCurrency === currentCurrency) ? p.price : 
+                        (currentCurrency === 'IDR' ? (p.idr_price_from_data || p.price * IDR_CONVERSION_RATE) : (p.usd_price_from_data || p.price / IDR_CONVERSION_RATE));
+      
+      total += itemPrice;
       const identifier = p.extractedId || p.filename || 'N/A';
       return `
         <li class="cart-item" data-preview-url="${p.preview_url}"> 
           <span class="cart-item-number">${i + 1}</span> 
           <span class="cart-item-info">${p.title} - ${p.license} #${identifier}</span>
-          <span class="cart-item-price">$${parseFloat(p.price).toFixed(2)}</span>
+          <span class="cart-item-price">${formatPrice(itemPrice, currentCurrency)}</span>
           <button class="remove-btn" data-index="${i}">✕</button>
         </li>`;
     }).join('');
-    cartTotal.textContent = `Total: $${total.toFixed(2)}`;
+    cartTotal.textContent = `Total: ${formatPrice(total, currentCurrency)}`;
     clearCartBtn.disabled = false;
     checkoutBtn.disabled = false;
 
@@ -175,6 +190,29 @@ function updateCartUI() {
     }
   }
   saveCart();
+}
+
+function toggleCurrency() {
+    const oldCurrency = currentCurrency;
+    currentCurrency = (oldCurrency === 'USD') ? 'IDR' : 'USD';
+
+    if (currentCurrency !== oldCurrency) {
+        clearCartOnCurrencyChange();
+    }
+    
+    localStorage.setItem('currentCurrency', currentCurrency);
+    currToggle.textContent = `${currentCurrency === 'USD' ? 'USD / IDR' : 'IDR / USD'}`;
+    renderProducts();
+    updateCartUI();
+}
+function formatPrice(amount, currency) {
+    if (currency === 'IDR') {
+        if (amount >= 1000) {
+            return `IDR ${(amount / 1000).toFixed(0)}K`;
+        }
+        return `IDR ${amount.toFixed(0)}`;
+    }
+    return `$${amount.toFixed(2)}`;
 }
 
 function removeFromCart(index) {
@@ -309,7 +347,14 @@ function renderProducts() {
   }
 
   productsToDisplay.forEach(p => {
-    const price = selectedLicense === 'commercial' ? p.price_commercial : selectedLicense === 'extended' ? p.price_extended : p.price;
+   let price;
+    if (currentCurrency === 'USD') {
+        price = selectedLicense === 'commercial' ? p.price_commercial : selectedLicense === 'extended' ? p.price_extended : p.price;
+    } else { // currentCurrency === 'IDR'
+        price = selectedLicense === 'commercial' ? p.idr_commercial : selectedLicense === 'extended' ? p.idr_extended : p.idr_price;
+    }
+    const formattedPrice = formatPrice(price, currentCurrency); // Gunakan fungsi formatPrice
+
     const productUrl = `products/${p.filename}.html`;
     const html = `
     
@@ -317,7 +362,10 @@ function renderProducts() {
         <div class="image-wrapper">
           <a href="${productUrl}" class="product-link">
             <img src="${p.preview_url}" alt="${p.title}"/>
-           </a>
+            <div class="preview-overlay">
+                <i class="fas fa-eye"></i> <span>View Product</span>
+            </div>
+        </a>
         </div>
         <h2>${p.title}</h2>
         <id>ID #${p.filename}</id>
@@ -327,11 +375,11 @@ function renderProducts() {
             <img src="img/jpg.png" class="icon" alt="JPG">
           </div>
           <div class="product-price">
-            <span class="price">$${parseFloat(price).toFixed(2)}</span>
+            <span class="price">${formattedPrice}</span> 
             <span class="license-type">${selectedLicense.charAt(0).toUpperCase() + selectedLicense.slice(1)} License</span>
           </div>
         </div>
-        <button class="btn add-to-cart-btn" onclick='addToCart({...${JSON.stringify(p).replace(/'/g, "\\'")}, price:${price}, license: "${selectedLicense}"})'>+ Add to Cart</button>
+        <button class="btn add-to-cart-btn" onclick='addToCart({...${JSON.stringify(p).replace(/'/g, "\\'")}, price:${price}, selectedCurrency: "${currentCurrency}", license: "${selectedLicense}"})'>+ Add to Cart</button>
       </div>
    
     `;
@@ -505,23 +553,36 @@ function extractIdFromUrl(url) {
 }
 
 window.addToCart = function (product) {
+ const extractedId = product.filename || extractIdFromUrl(product.preview_url);
+  
+  // Ambil harga asli dalam USD dan IDR dari objek produk yang lengkap
+  let originalPriceUSD, originalPriceIDR;
+  if (product.license === 'personal') {
+      originalPriceUSD = product.price;
+      originalPriceIDR = product.idr_price;
+  } else if (product.license === 'commercial') {
+      originalPriceUSD = product.price_commercial;
+      originalPriceIDR = product.idr_commercial;
+  } else if (product.license === 'extended') {
+      originalPriceUSD = product.price_extended;
+      originalPriceIDR = product.idr_extended;
+  }
+  const productWithCartDetails = { 
+      ...product, 
+      extractedId: extractedId, 
+      license: product.license, 
+      // Simpan harga dalam USD dan IDR agar bisa di-toggle di keranjang
+      price_usd: originalPriceUSD, 
+      price_idr: originalPriceIDR,
+      selectedCurrencyAtAddToCart: currentCurrency, 
+      price: (currentCurrency === 'USD' ? originalPriceUSD : originalPriceIDR),
+      preview_url: product.preview_url 
+  }; 
 
-
-  const extractedId = product.filename || extractIdFromUrl(product.preview_url);
-
-
-  const productWithCartDetails = {
-    ...product,
-    extractedId: extractedId,
-    license: product.license,
-    price: product.price,
-    preview_url: product.preview_url
-  };
-
-  const existingProductIndex = cart.findIndex(item =>
-    item.id === productWithCartDetails.id &&
-    item.license === productWithCartDetails.license &&
-    item.filename === productWithCartDetails.filename
+   const existingProductIndex = cart.findIndex(item => 
+      item.id === productWithCartDetails.id && 
+      item.license === productWithCartDetails.license && 
+      item.filename === productWithCartDetails.filename 
   );
 
   if (existingProductIndex > -1) {
@@ -564,6 +625,7 @@ document.addEventListener('DOMContentLoaded', () => {
     searchInput.value = query;
     loadProducts();
     updateCartUI();
+    currToggle.textContent = `${currentCurrency === 'USD' ? 'USD / IDR' : 'IDR / USD'}`;
   } else {
     console.error("Error: Supabase global object or createClient function not found. Is Supabase SDK loaded correctly?");
   }

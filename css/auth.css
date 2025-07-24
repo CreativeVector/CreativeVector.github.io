@@ -1,5 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+
 body {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Plus Jakarta Sans', sans-serif;
     background-color: #f4f7f6;
     display: flex;
     justify-content: center;
@@ -11,23 +13,25 @@ body {
 .auth-container {
     background-color: #333333;
     padding: 40px;
-    border-radius: 8px;
+    border-radius: 12px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     text-align: center;
     width: 100%;
-    max-width: 400px;
+    max-width: 500px;
 }
 
 .auth-container h2 {
     margin-bottom: 25px;
     color: white
 }
+
 .auth-form {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
-
+.auth-form input[type="firstName"],
+.auth-form input[type="lastName"],
 .auth-form input[type="email"],
 .auth-form input[type="password"] {
     width: calc(100% - 20px);
@@ -36,7 +40,7 @@ body {
     border: 1px solid #ddd;
     border-radius: 5px;
     display: flex;
-    background-color: white;
+    background-color: rgb(220, 220, 220);
     font-size: 16px;
 }
 
@@ -57,12 +61,40 @@ body {
     background-color: #0056b3;
 }
 
+.phone-input-group {
+    display: flex;
+    /* Untuk menempatkan select dan input dalam satu baris */
+    width: calc(100% - 20px);
+    /* Sesuaikan dengan lebar input lainnya */
+    margin-bottom: 15px;
+}
+
+.phone-input-group select,
+.phone-input-group input[type="tel"] {
+    padding: 12px 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    background-color: white;
+}
+
+.phone-input-group select {
+
+    width: 120px;
+    margin-right: 10px;
+    
+}
+
+.phone-input-group input[type="tel"] {
+    flex-grow: 1;
+}
+
 .message {
     margin-top: 20px;
     padding: 10px;
     border-radius: 5px;
     font-size: 14px;
-    
+
 }
 
 .message.success {
