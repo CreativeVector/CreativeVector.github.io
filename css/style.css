@@ -304,7 +304,7 @@ body {
     background-repeat: no-repeat;
     background-position: right 10px top 50%;
     background-size: 12px;
-    width: 125px;
+    width: 135px;
 }
 
 #licenseSelector:focus {
@@ -412,30 +412,41 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(255, 255, 255, 0.438); /* Warna overlay semi-transparan */
+    background-color: rgba(255, 255, 255, 0.438);
+    /* Warna overlay semi-transparan */
     color: var(--text-color-dark);
     display: flex;
-    flex-direction: column; /* Untuk menumpuk ikon dan teks */
+    flex-direction: column;
+    /* Untuk menumpuk ikon dan teks */
     justify-content: center;
     align-items: center;
-    opacity: 0; /* Sembunyikan secara default */
-    transition: opacity 0.3s ease; /* Transisi halus saat muncul/hilang */
-    pointer-events: none; /* Penting agar tidak menghalangi klik pada gambar di bawahnya saat tidak terlihat */
+    opacity: 0;
+    /* Sembunyikan secara default */
+    transition: opacity 0.3s ease;
+    /* Transisi halus saat muncul/hilang */
+    pointer-events: none;
+    /* Penting agar tidak menghalangi klik pada gambar di bawahnya saat tidak terlihat */
 }
 
 .preview-overlay i {
-    font-size: 2.5em; /* Ukuran ikon */
+    font-size: 2.5em;
+    /* Ukuran ikon */
     margin-bottom: 5px;
 }
 
 .preview-overlay span {
-    font-size: 1.1em; /* Ukuran teks */
+    font-size: 1.1em;
+    /* Ukuran teks */
     font-weight: bold;
 }
+
 .image-wrapper:hover .preview-overlay {
-    opacity: 1; /* Tampilkan overlay saat hover */
-    pointer-events: auto; /* Aktifkan interaksi dengan overlay */
+    opacity: 1;
+    /* Tampilkan overlay saat hover */
+    pointer-events: auto;
+    /* Aktifkan interaksi dengan overlay */
 }
+
 .image-wrapper img {
     position: absolute;
     top: 50%;
@@ -483,12 +494,17 @@ body {
 }
 
 .product-meta {
-    margin-top: auto;
-    display: flex;
+    display: block;
     flex-direction: column;
     gap: 0.5rem;
 }
+.format-div {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    width: fit-content;
 
+}
 .format-icons {
     display: flex;
     gap: 8px;
@@ -1933,10 +1949,12 @@ body {
     gap: 8px;
     border: none;
 }
+
 .curr-toggle {
-margin: auto;
+    margin: auto;
 
 }
+
 .curr-button {
     background-color: var(--text-color-dark);
     color: white;
@@ -2044,7 +2062,7 @@ margin: auto;
 }
 
 .contact-options {
-    display: flexbox;
+    display: grid;
     grid-template-rows: repeat(auto-fit, minmax(300px, 1fr));
     gap: 30px;
     margin-top: 40px;
@@ -2055,7 +2073,7 @@ margin: auto;
 .contact-card {
     background-color: #fff;
     padding: 30px;
-    border-radius: 8px;
+    border-radius: 20px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
     display: flex;
     flex-direction: column;
@@ -2077,6 +2095,12 @@ margin: auto;
     /* Memastikan p mengisi ruang yang tersedia */
 }
 
+.contact-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+
+}
 /* Gaya untuk form kontak */
 .contact-form .form-group {
     margin-bottom: 15px;
@@ -2113,7 +2137,21 @@ margin: auto;
     min-height: 120px;
 }
 
-/* Gaya untuk tombol utama (bisa disamakan dengan button-primary yang sudah ada) */
+.button-contact {
+    display: inline-block;
+    background-color: var(--primary-color);
+    color: white;
+    padding: 12px 25px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    border: none;
+    cursor: pointer;
+    font-size: 1em;
+    width: auto;
+}
+
 .button-primary {
     display: inline-block;
     background-color: var(--primary-color);
@@ -2124,19 +2162,19 @@ margin: auto;
     font-weight: bold;
     transition: background-color 0.3s ease;
     border: none;
-    /* Pastikan tidak ada border */
     cursor: pointer;
     font-size: 1em;
     width: auto;
-    /* Agar tidak selalu 100% */
+}
+.button-contact i,
+.button-primary i {
+    margin-right: 8px;
 }
 
 .button-primary:hover {
     background-color: var(--primary-hover-color);
-    /* Warna hover sedikit lebih gelap */
 }
 
-/* Gaya untuk tombol link kecil */
 .button-link-small {
     display: inline-block;
     background-color: #eee;
@@ -2736,4 +2774,10 @@ margin: auto;
     text-align: center;
     padding: 20px;
     color: var(--text-color-medium);
+}
+
+.refresh-local-storage {
+    display: grid;
+    justify-content: center;
+    margin-top: 20px;
 }

@@ -22,7 +22,7 @@
     ],
     "DefaultChangeFrequency": "monthly",
     "TabCharacters": "\t",
-    "bIncludeWWW": true,
+    "bIncludeWWW": false,
     "bRemoveFileExtentions": false,
     "bUseTrailingSlash": false,
     "bAutomaticallyUpdateSitemap": true,

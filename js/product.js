@@ -101,12 +101,12 @@ function saveCart() {
 }
 
 function clearCartOnCurrencyChange() {
-    // Hapus semua item dari keranjang
-    localStorage.removeItem('cart');
-    cart = []; // Pastikan variabel 'cart' di memori juga dikosongkan
-    updateCartUI(); // Perbarui tampilan UI keranjang
-    showAlert("Cart has been cleared due to currency change. Please add items again.", "info");
-    console.log("Cart cleared due to currency change.");
+  // Hapus semua item dari keranjang
+  localStorage.removeItem('cart');
+  cart = []; // Pastikan variabel 'cart' di memori juga dikosongkan
+  updateCartUI(); // Perbarui tampilan UI keranjang
+  showAlert("Cart has been cleared due to currency change. Please add items again.", "info");
+  console.log("Cart cleared due to currency change.");
 }
 
 function updateCartUI() {
@@ -115,7 +115,7 @@ function updateCartUI() {
 
   let total = 0;
   if (cart.length === 0) {
-   cartList.innerHTML = '<li class="empty-cart-message">Your cart is empty.</li>';
+    cartList.innerHTML = '<li class="empty-cart-message">Your cart is empty.</li>';
     cartTotal.textContent = `Total: ${formatPrice(0, currentCurrency)}`;
     clearCartBtn.disabled = true;
     checkoutBtn.disabled = true;
@@ -125,9 +125,9 @@ function updateCartUI() {
     }
   } else {
     cartList.innerHTML = cart.map((p, i) => {
-      const itemPrice = (p.selectedCurrency === currentCurrency) ? p.price : 
-                        (currentCurrency === 'IDR' ? (p.idr_price_from_data || p.price * IDR_CONVERSION_RATE) : (p.usd_price_from_data || p.price / IDR_CONVERSION_RATE));
-      
+      const itemPrice = (p.selectedCurrency === currentCurrency) ? p.price :
+        (currentCurrency === 'IDR' ? (p.idr_price_from_data || p.price * IDR_CONVERSION_RATE) : (p.usd_price_from_data || p.price / IDR_CONVERSION_RATE));
+
       total += itemPrice;
       const identifier = p.extractedId || p.filename || 'N/A';
       return `
@@ -193,26 +193,26 @@ function updateCartUI() {
 }
 
 function toggleCurrency() {
-    const oldCurrency = currentCurrency;
-    currentCurrency = (oldCurrency === 'USD') ? 'IDR' : 'USD';
+  const oldCurrency = currentCurrency;
+  currentCurrency = (oldCurrency === 'USD') ? 'IDR' : 'USD';
 
-    if (currentCurrency !== oldCurrency) {
-        clearCartOnCurrencyChange();
-    }
-    
-    localStorage.setItem('currentCurrency', currentCurrency);
-    currToggle.textContent = `${currentCurrency === 'USD' ? 'USD / IDR' : 'IDR / USD'}`;
-    renderProducts();
-    updateCartUI();
+  if (currentCurrency !== oldCurrency) {
+    clearCartOnCurrencyChange();
+  }
+
+  localStorage.setItem('currentCurrency', currentCurrency);
+  currToggle.textContent = `${currentCurrency === 'USD' ? 'USD / IDR' : 'IDR / USD'}`;
+  renderProducts();
+  updateCartUI();
 }
 function formatPrice(amount, currency) {
-    if (currency === 'IDR') {
-        if (amount >= 1000) {
-            return `IDR ${(amount / 1000).toFixed(0)}K`;
-        }
-        return `IDR ${amount.toFixed(0)}`;
+  if (currency === 'IDR') {
+    if (amount >= 1000) {
+      return `IDR ${(amount / 1000).toFixed(0)}K`;
     }
-    return `$${amount.toFixed(2)}`;
+    return `IDR ${amount.toFixed(0)}`;
+  }
+  return `$${amount.toFixed(2)}`;
 }
 
 function removeFromCart(index) {
@@ -347,11 +347,11 @@ function renderProducts() {
   }
 
   productsToDisplay.forEach(p => {
-   let price;
+    let price;
     if (currentCurrency === 'USD') {
-        price = selectedLicense === 'commercial' ? p.price_commercial : selectedLicense === 'extended' ? p.price_extended : p.price;
+      price = selectedLicense === 'commercial' ? p.price_commercial : selectedLicense === 'extended' ? p.price_extended : p.price;
     } else { // currentCurrency === 'IDR'
-        price = selectedLicense === 'commercial' ? p.idr_commercial : selectedLicense === 'extended' ? p.idr_extended : p.idr_price;
+      price = selectedLicense === 'commercial' ? p.idr_commercial : selectedLicense === 'extended' ? p.idr_extended : p.idr_price;
     }
     const formattedPrice = formatPrice(price, currentCurrency); // Gunakan fungsi formatPrice
 
@@ -370,10 +370,16 @@ function renderProducts() {
         <h2>${p.title}</h2>
         <id>ID #${p.filename}</id>
         <div class="product-meta">
-          <div class="format-icons">
-            <img src="img/eps.png" class="icon" alt="EPS">
-            <img src="img/jpg.png" class="icon" alt="JPG">
-          </div>
+          <div class="format-div">
+            <div class="format-icons">
+                <img src="img/eps.png" class="icon" alt="EPS">
+                <img src="img/jpg.png" class="icon" alt="JPG">
+              </div>
+              <button class="btn" style="height: 20px; padding: 0 10px; font-size: 0.7rem; margin-top: 3px;"
+                onclick="window.location.href='/?category=${p.category}'">${p.category}</button>
+        </div>
+          
+          
           <div class="product-price">
             <span class="price">${formattedPrice}</span> 
             <span class="license-type">${selectedLicense.charAt(0).toUpperCase() + selectedLicense.slice(1)} License</span>
@@ -553,36 +559,36 @@ function extractIdFromUrl(url) {
 }
 
 window.addToCart = function (product) {
- const extractedId = product.filename || extractIdFromUrl(product.preview_url);
-  
+  const extractedId = product.filename || extractIdFromUrl(product.preview_url);
+
   // Ambil harga asli dalam USD dan IDR dari objek produk yang lengkap
   let originalPriceUSD, originalPriceIDR;
   if (product.license === 'personal') {
-      originalPriceUSD = product.price;
-      originalPriceIDR = product.idr_price;
+    originalPriceUSD = product.price;
+    originalPriceIDR = product.idr_price;
   } else if (product.license === 'commercial') {
-      originalPriceUSD = product.price_commercial;
-      originalPriceIDR = product.idr_commercial;
+    originalPriceUSD = product.price_commercial;
+    originalPriceIDR = product.idr_commercial;
   } else if (product.license === 'extended') {
-      originalPriceUSD = product.price_extended;
-      originalPriceIDR = product.idr_extended;
+    originalPriceUSD = product.price_extended;
+    originalPriceIDR = product.idr_extended;
   }
-  const productWithCartDetails = { 
-      ...product, 
-      extractedId: extractedId, 
-      license: product.license, 
-      // Simpan harga dalam USD dan IDR agar bisa di-toggle di keranjang
-      price_usd: originalPriceUSD, 
-      price_idr: originalPriceIDR,
-      selectedCurrencyAtAddToCart: currentCurrency, 
-      price: (currentCurrency === 'USD' ? originalPriceUSD : originalPriceIDR),
-      preview_url: product.preview_url 
-  }; 
+  const productWithCartDetails = {
+    ...product,
+    extractedId: extractedId,
+    license: product.license,
+    // Simpan harga dalam USD dan IDR agar bisa di-toggle di keranjang
+    price_usd: originalPriceUSD,
+    price_idr: originalPriceIDR,
+    selectedCurrencyAtAddToCart: currentCurrency,
+    price: (currentCurrency === 'USD' ? originalPriceUSD : originalPriceIDR),
+    preview_url: product.preview_url
+  };
 
-   const existingProductIndex = cart.findIndex(item => 
-      item.id === productWithCartDetails.id && 
-      item.license === productWithCartDetails.license && 
-      item.filename === productWithCartDetails.filename 
+  const existingProductIndex = cart.findIndex(item =>
+    item.id === productWithCartDetails.id &&
+    item.license === productWithCartDetails.license &&
+    item.filename === productWithCartDetails.filename
   );
 
   if (existingProductIndex > -1) {
@@ -611,7 +617,8 @@ async function loadProducts() {
     renderProducts();
     updateCartUI();
   } catch (err) {
-    storeDiv.innerHTML = `<p style="color:red;">❌ Failed to load products: ${err.message}</p>`;
+    storeDiv.innerHTML = `<p style="color:red;">❌ Failed to load products: ${err.message}</p> 
+    <button class="btn fas fa-arrows-rotate" onclick="localStorage.clear()"> Refresh</button>`;
     console.error('Fetch error:', err);
   }
 }
