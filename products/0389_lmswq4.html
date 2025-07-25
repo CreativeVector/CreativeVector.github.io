@@ -23,6 +23,7 @@
   <script src="/js/show-alert.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <meta name="google-site-verification" content="_J1nX2G61upYTYfcmSRSifBh6sLBYfo-eEyp4nnZ2IU" />
+  <div id="globalAlertContainer" style="position: fixed; top: 20px; right: 20px; z-index: 9999;"></div>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-MHQSM53YE1"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -101,6 +102,9 @@
   <div id="globalAlertContainer" style="position: fixed; top: 20px; right: 20px; z-index: 9999;"></div>
   <main class="layout" style="padding: 40px 20px;">
     <div class="content" style="width:100%;">
+      <button class="btn" id="postToInstagramButton" >
+        <i class="fab fa-instagram"></i> Post to Instagram
+    </button>
       <div class="image-wrapper" style="max-width: 1200px; margin: 5px auto;">
         <img src="https://res.cloudinary.com/dpb7gy4mk/image/upload/v1753370541/preview_0389_lmswq4.jpg" alt="Red Ribbon Flying with Balloons, Vector Illustration" style="width: 100%; border-radius:10px; cursor: zoom-in;"
           onclick="openImagePreview('https://res.cloudinary.com/dpb7gy4mk/image/upload/v1753370541/preview_0389_lmswq4.jpg')" />
@@ -120,15 +124,15 @@
       <div class="preview-price-section">
         <div class="textDesc">
           <a href="/user-license.html#personal" target="_blank" class="btn license-button">Personal License</a>
-          <h1>$ 2.00</h1>
+          <h1 id="personalPriceDisplay"></h1>
         </div>
         <div class="textDesc">
           <a href="/user-license.html#commercial" target="_blank" class="btn license-button">Commercial License</a>
-          <h1>$ 14.00</h1>
+          <h1 id="commercialPriceDisplay"></h1>
         </div>
         <div class="textDesc">
           <a href="/user-license.html#extended" target="_blank" class="btn license-button">Extended License</a>
-          <h1>$ 22.00</h1>
+          <h1 id="extendedPriceDisplay"></h1>
         </div>
       </div>
 
@@ -144,7 +148,8 @@
           <option value="commercial">Commercial</option>
           <option value="extended">Extended</option>
         </select>
-        <button class="btn" onclick="addToCartFromTemplate()" >+ Add to Cart</button>
+        <button class="btn" id="addToCartButton"> + Add to Cart
+        </button>
       </div>
     </div>
   </main>
@@ -156,41 +161,30 @@
     <img id="popupImage" src="" style="max-width:100vw; max-height:100vh; border-radius:8px;" alt="Preview">
   </div>
 
+  <div id="instagramModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.8); z-index:9999; justify-content:center; align-items:center;">
+    <div style="background:#fff; padding:30px; border-radius:10px; max-width:500px; text-align:center;">
+        <span onclick="closeInstagramModal()" style="position:absolute; top:10px; right:10px; font-size:2rem; cursor:pointer; color:#000;">&times;</span>
+        <h3>Post to Instagram</h3>
+        <p>Follow these steps to share this product on Instagram:</p>
+        <div style="margin: 20px 0;">
+            <p><strong>1. Download the image:</strong></p>
+            <a id="downloadImageLink" href="#" download class="btn" style="background-color: #3897f0;">
+                Download Image
+            </a>
+        </div>
+        <div style="margin: 20px 0;">
+            <p><strong>2. Copy the caption:</strong></p>
+            <textarea id="instagramCaptionTextarea" rows="6" style="width:100%; resize:none; padding:10px; border:1px solid #ccc;"></textarea>
+            <button class="btn" onclick="copyCaption()" style="margin-top:10px; background-color: #4CAF50;">Copy Caption</button>
+        </div>
+        <p style="font-size:14px; color:#555;"><strong>3. Open your Instagram app</strong>, create a new post with the downloaded image, and paste the caption.</p>
+    </div>
+</div>
+
   <script>
-    function addToCartFromTemplate() {
-      const selectedLicense = window.selectedLicense || 'personal';
+    document.getElementById("currentYear").textContent = new Date().getFullYear();
 
-      const product = {
-        title: "Red Ribbon Flying with Balloons, Vector Illustration",
-        filename: "0389_lmswq4",
-        price: selectedLicense === 'commercial'
-          ? parseFloat("14.00")
-          : selectedLicense === 'extended'
-            ? parseFloat("22.00")
-            : parseFloat("2.00"),
-        price_commercial: parseFloat("14.00"),
-        price_extended: parseFloat("22.00"),
-        preview_url: "https://res.cloudinary.com/dpb7gy4mk/image/upload/v1753370541/preview_0389_lmswq4.jpg",
-        license: selectedLicense,
-        extractedId: "0389_lmswq4"
-      };
-
-      const cart = JSON.parse(localStorage.getItem('cart')) || [];
-
-      const exists = cart.find(p =>
-        p.filename === product.filename &&
-        p.license === product.license
-      );
-
-      if (exists) {
-        showAlert(`"${product.title}" with "${product.license}" license is already in your cart.`, "error");
-        return;
-      }
-
-      cart.push(product);
-      localStorage.setItem('cart', JSON.stringify(cart));
-      showAlert("Added to cart.", "success");
-    }
+    // Fungsi image preview (tetap di sini karena spesifik ke template ini)
     function openImagePreview(url) {
       const popup = document.getElementById('imgPreviewPopup');
       const img = document.getElementById('popupImage');
@@ -201,49 +195,38 @@
     function closeImagePreview() {
       document.getElementById('imgPreviewPopup').style.display = 'none';
     }
-    document.addEventListener('DOMContentLoaded', function () {
-      // Cari elemen yang berisi kata kunci
-      const keywordContainer = document.querySelector('.preview-keyword');
 
-      // Pastikan elemen ditemukan dan berisi teks
+    // Fungsi keyword dan category (tetap di sini)
+    document.addEventListener('DOMContentLoaded', function () {
+      const keywordContainer = document.querySelector('.preview-keyword');
       if (keywordContainer && keywordContainer.textContent.trim() !== '') {
         const rawKeywords = keywordContainer.textContent.trim();
-
-        // Hapus isi teks saat ini dari container
         keywordContainer.textContent = '';
-
-        // Bagi string kata kunci berdasarkan koma (,)
         const keywordsArray = rawKeywords.split(',');
-
-        // Iterasi melalui setiap kata kunci
         keywordsArray.forEach(keyword => {
           const trimmedKeyword = keyword.trim();
-
-          // Jika kata kunci tidak kosong (setelah trim)
           if (trimmedKeyword) {
-            // Buat elemen <a> sebagai link pencarian
             const keywordLink = document.createElement('a');
             keywordLink.classList.add('keyword-item');
             keywordLink.href = `/?q=${encodeURIComponent(trimmedKeyword)}`;
             keywordLink.textContent = trimmedKeyword;
             keywordLink.style.marginRight = '6px';
             keywordLink.style.textDecoration = 'none';
-
             keywordContainer.appendChild(keywordLink);
           }
         });
       }
-    });
-    document.addEventListener('DOMContentLoaded', function () {
-      // Cari elemen yang berisi kata kunci
-      const categoryText = document.querySelector('.category-search');
-      const categoryLink = document.createElement('a');
-      categoryLink.href = `/?q=${encodeURIComponent(categoryText)}`;
-      categoryLink.textContent = categoryText;
 
+      const categoryButton = document.querySelector('.category-search');
+      if (categoryButton) {
+        const categoryText = categoryButton.textContent.trim();
+        categoryButton.onclick = () => {
+          window.location.href = `/?category=${encodeURIComponent(categoryText)}`;
+        };
+      }
     });
   </script>
-
+  <script type="module" src="../js/product-page.js"></script>
   <script type="module" src="../js/user.js"></script>
   <script type="module" src="../js/product.js"></script>
   <footer class="main-footer">
