@@ -47,12 +47,12 @@ async function generateInstagramPost() {
     }
 
     // Mendapatkan data produk
-    const title = productData.title || '';
-    const filename = productData.filename || '';
+    const title = productData.title || 'CreativeVector';
+    const filename = productData.filename || 'asset';
     const keywords = productData.keyword || '';
     const imageUrl = productData.preview_url || '';
 
-    // Menggabungkan title dan filename
+    const downloadFileName = `${title.replace(/\s+/g, '-')}-${filename}.jpg`;
     const postTitle = `${title} (ID #${filename})`;
 
     // Memformat keywords menjadi hashtag
@@ -71,6 +71,7 @@ async function generateInstagramPost() {
     // Mengisi modal dengan data
     if (downloadImageLink) {
         downloadImageLink.href = imageUrl;
+        downloadImageLink.setAttribute('download', downloadFileName);
     }
     if (instagramCaptionTextarea) {
         instagramCaptionTextarea.value = fullCaption;
