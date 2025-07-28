@@ -17,6 +17,7 @@
   <link rel="preconnect"
     href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap"
     rel="stylesheet">
+  <link rel="canonical" href="https://creativevector.store/products/3586_jjpdkc.html" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link rel="icon" href="../img/favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="../css/style.css" />
@@ -102,9 +103,9 @@
   <div id="globalAlertContainer" style="position: fixed; top: 20px; right: 20px; z-index: 9999;"></div>
   <main class="layout" style="padding: 40px 20px;">
     <div class="content" style="width:100%;">
-      <button class="btn" id="postToInstagramButton" >
+      <button class="btn" id="postToInstagramButton">
         <i class="fab fa-instagram"></i> Post to Instagram
-    </button>
+      </button>
       <div class="image-wrapper" style="max-width: 1200px; margin: 5px auto;">
         <img src="https://res.cloudinary.com/dpb7gy4mk/image/upload/v1753365983/preview_3586_jjpdkc.jpg" alt="Detailed Glossy Platinum Credit card with Wavy Neon Light Decoration, Isolated on White Background, Vector Illustration" style="width: 100%; border-radius:10px; cursor: zoom-in;"
           onclick="openImagePreview('https://res.cloudinary.com/dpb7gy4mk/image/upload/v1753365983/preview_3586_jjpdkc.jpg')" />
@@ -161,72 +162,31 @@
     <img id="popupImage" src="" style="max-width:100vw; max-height:100vh; border-radius:8px;" alt="Preview">
   </div>
 
-  <div id="instagramModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.8); z-index:9999; justify-content:center; align-items:center;">
+  <div id="instagramModal"
+    style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.8); z-index:9999; justify-content:center; align-items:center;">
     <div style="background:#fff; padding:30px; border-radius:10px; max-width:500px; text-align:center;">
-        <span onclick="closeInstagramModal()" style="position:absolute; top:100px; right:100px; font-size:4rem; cursor:pointer; color:#ccc;">&times;</span>
-        <h3>Post to Instagram</h3>
-        <p>Follow these steps to share this product on Instagram:</p>
-        <div style="margin: 20px 0;">
-            <p><strong>1. Download the image:</strong></p>
-            <a id="downloadImageLink" href="#" download class="btn" style="background-color: #3897f0;">
-                Download Image
-            </a>
-        </div>
-        <div style="margin: 20px 0;">
-            <p><strong>2. Copy the caption:</strong></p>
-            <textarea id="instagramCaptionTextarea" rows="6" style="width:100%; resize:none; padding:10px; border:1px solid #ccc;"></textarea>
-            <button class="btn" onclick="copyCaption()" style="margin-top:10px; background-color: #4CAF50;">Copy Caption</button>
-            
-        </div>
-        <p style="font-size:14px; color:#555;"><strong>3. Open your Instagram app</strong>, create a new post with the downloaded image, and paste the caption.</p>
+      <span onclick="closeInstagramModal()"
+        style="position:absolute; top:100px; right:100px; font-size:4rem; cursor:pointer; color:#ccc;">&times;</span>
+      <h3>Post to Instagram</h3>
+      <p>Follow these steps to share this product on Instagram:</p>
+      <div style="margin: 20px 0;">
+        <p><strong>1. Download the image:</strong></p>
+        <a id="downloadImageLink" href="#" download class="btn" style="background-color: #3897f0;">
+          Download Image
+        </a>
+      </div>
+      <div style="margin: 20px 0;">
+        <p><strong>2. Copy the caption:</strong></p>
+        <textarea id="instagramCaptionTextarea" rows="6"
+          style="width:100%; resize:none; padding:10px; border:1px solid #ccc;"></textarea>
+        <button class="btn" onclick="copyCaption()" style="margin-top:10px; background-color: #4CAF50;">Copy
+          Caption</button>
+
+      </div>
+      <p style="font-size:14px; color:#555;"><strong>3. Open your Instagram app</strong>, create a new post with the
+        downloaded image, and paste the caption.</p>
     </div>
-</div>
-
-  <script>
-    document.getElementById("currentYear").textContent = new Date().getFullYear();
-
-    // Fungsi image preview (tetap di sini karena spesifik ke template ini)
-    function openImagePreview(url) {
-      const popup = document.getElementById('imgPreviewPopup');
-      const img = document.getElementById('popupImage');
-      img.src = url;
-      popup.style.display = 'flex';
-    }
-
-    function closeImagePreview() {
-      document.getElementById('imgPreviewPopup').style.display = 'none';
-    }
-
-    // Fungsi keyword dan category (tetap di sini)
-    document.addEventListener('DOMContentLoaded', function () {
-      const keywordContainer = document.querySelector('.preview-keyword');
-      if (keywordContainer && keywordContainer.textContent.trim() !== '') {
-        const rawKeywords = keywordContainer.textContent.trim();
-        keywordContainer.textContent = '';
-        const keywordsArray = rawKeywords.split(',');
-        keywordsArray.forEach(keyword => {
-          const trimmedKeyword = keyword.trim();
-          if (trimmedKeyword) {
-            const keywordLink = document.createElement('a');
-            keywordLink.classList.add('keyword-item');
-            keywordLink.href = `/?q=${encodeURIComponent(trimmedKeyword)}`;
-            keywordLink.textContent = trimmedKeyword;
-            keywordLink.style.marginRight = '6px';
-            keywordLink.style.textDecoration = 'none';
-            keywordContainer.appendChild(keywordLink);
-          }
-        });
-      }
-
-      const categoryButton = document.querySelector('.category-search');
-      if (categoryButton) {
-        const categoryText = categoryButton.textContent.trim();
-        categoryButton.onclick = () => {
-          window.location.href = `/?category=${encodeURIComponent(categoryText)}`;
-        };
-      }
-    });
-  </script>
+  </div>
   <script type="module" src="../js/product-page.js"></script>
   <script type="module" src="../js/user.js"></script>
   <script type="module" src="../js/product.js"></script>
@@ -255,10 +215,6 @@
         target="_blank">Terms of Service</a>
     </div>
   </footer>
-
-  <script>
-    document.getElementById("currentYear").textContent = new Date().getFullYear();
-  </script>
 </body>
 
 </html>
