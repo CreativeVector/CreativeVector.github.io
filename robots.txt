@@ -1,3 +1,4 @@
 User-agent: *
 Allow: /
 Sitemap: https://creativevector.store/sitemap.xml
+Disallow: /index.html

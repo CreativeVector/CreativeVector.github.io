@@ -110,3 +110,4 @@ if (authButton) {
 if (logoutButton) {
     logoutButton.addEventListener('click', handleLogout);
 }
+document.getElementById('currentYear').textContent = new Date().getFullYear();

@@ -14,6 +14,7 @@
       "products/product.html",
       "auth.html",
       "checkout.html",
+      "profile.html",
       "template/product-template.html"
     ],
     "TagsToInclude": [

@@ -375,8 +375,10 @@ function renderProducts() {
                 <img src="img/eps.png" class="icon" alt="EPS">
                 <img src="img/jpg.png" class="icon" alt="JPG">
               </div>
-              <button class="btn" style="height: 20px; padding: 0 10px; font-size: 0.7rem; margin-top: 3px;"
-                onclick="window.location.href='/?category=${p.category}'">${p.category}</button>
+            <button class="btn" style="height: 20px; padding: 0 10px; font-size: 0.7rem; margin-top: 3px;"
+                        onclick="handleCategoryClick('${p.category}')">
+                        ${p.category}
+          </button>
         </div>
           
           

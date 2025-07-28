@@ -24,21 +24,48 @@ if (postToInstagramButton) {
 
 
 // Fungsi baru untuk menutup modal
-window.closeInstagramModal = function() {
+window.closeInstagramModal = function () {
     if (instagramModal) {
         instagramModal.style.display = 'none';
     }
 }
 
 // Fungsi baru untuk menyalin caption
-window.copyCaption = function() {
+window.copyCaption = function () {
     if (instagramCaptionTextarea) {
         instagramCaptionTextarea.select();
         document.execCommand('copy');
         showAlert('Caption copied to clipboard!', 'success');
     }
 }
+document.addEventListener('DOMContentLoaded', function () {
+    const keywordContainer = document.querySelector('.preview-keyword');
+    if (keywordContainer && keywordContainer.textContent.trim() !== '') {
+        const rawKeywords = keywordContainer.textContent.trim();
+        keywordContainer.textContent = '';
+        const keywordsArray = rawKeywords.split(',');
+        keywordsArray.forEach(keyword => {
+            const trimmedKeyword = keyword.trim();
+            if (trimmedKeyword) {
+                const keywordLink = document.createElement('a');
+                keywordLink.classList.add('keyword-item');
+                keywordLink.href = `/?q=${encodeURIComponent(trimmedKeyword)}`;
+                keywordLink.textContent = trimmedKeyword;
+                keywordLink.style.marginRight = '6px';
+                keywordLink.style.textDecoration = 'none';
+                keywordContainer.appendChild(keywordLink);
+            }
+        });
+    }
 
+    const categoryButton = document.querySelector('.category-search');
+    if (categoryButton) {
+        const categoryText = categoryButton.textContent.trim();
+        categoryButton.onclick = () => {
+            window.location.href = `/?category=${encodeURIComponent(categoryText)}`;
+        };
+    }
+});
 // Fungsi utama untuk membuat postingan Instagram
 async function generateInstagramPost() {
     if (!productData) {
@@ -208,7 +235,7 @@ function addToCartFromTemplate() {
         preview_url: productData.preview_url,
         license: selectedLicense,
         extractedId: productData.filename,
-        selectedCurrency: currentCurrency 
+        selectedCurrency: currentCurrency
     };
 
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
