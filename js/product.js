@@ -6,17 +6,25 @@ let supabase;
 function getQueryParams() {
   const params = new URLSearchParams(window.location.search);
   return {
-    query: params.get('q') || '',
     page: parseInt(params.get('page')) || 1,
-    category: params.get('category') || ''
+    category: params.get('category') || '',
+    titleFilter: params.get('filter_title') || '',
+    keywordFilter: params.get('filter_keyword') || '',
+    filenameFilter: params.get('filter_filename') || '',
+    minPrice: params.has('min_price') ? parseFloat(params.get('min_price')) : null, // Corrected parsing
+    maxPrice: params.has('max_price') ? parseFloat(params.get('max_price')) : null  // Corrected parsing
   };
 }
 
-function updateURLParams(query, page, category) {
+function updateURLParams(page, category, titleFilter, keywordFilter, filenameFilter, minPrice, maxPrice) {
   const params = new URLSearchParams();
-  if (query) params.set('q', query);
   if (page > 1) params.set('page', page);
   if (category) params.set('category', category);
+  if (titleFilter) params.set('filter_title', titleFilter);
+  if (keywordFilter) params.set('filter_keyword', keywordFilter);
+  if (filenameFilter) params.set('filter_filename', filenameFilter);
+  if (minPrice !== null && !isNaN(minPrice)) params.set('min_price', minPrice.toString());
+  if (maxPrice !== null && !isNaN(maxPrice)) params.set('max_price', maxPrice.toString());
 
   const newUrl = `${window.location.pathname}?${params.toString()}`;
   window.history.replaceState({}, '', newUrl);
@@ -26,7 +34,6 @@ let allProducts = [];
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
 let activeCategory = '';
 let selectedLicense = 'personal';
-let searchQuery = '';
 let currentPage = 1;
 const itemsPerPage = 24;
 let totalPagesDisplay;
@@ -35,6 +42,16 @@ let goToPageButton;
 let previewImageContainer;
 let currentPreviewTimeout;
 let currentCurrency = localStorage.getItem('currentCurrency') || 'USD';
+
+// Filter specific variables (now all active at once)
+let currentTitleFilter = '';
+let currentKeywordFilter = '';
+let currentFilenameFilter = '';
+let minPriceFilter = null;
+let maxPriceFilter = null;
+
+// For dropdown functionality
+let isFilterMenuOpen = false;
 
 
 const cartIcon = document.getElementById("cartIcon");
@@ -57,9 +74,24 @@ const storeDiv = document.getElementById('store');
 const licenseSelector = document.getElementById('licenseSelector');
 const categoryTabsContainer = document.getElementById('categoryTabs');
 const cartCountSpan = document.querySelector('.cart-count');
-const searchInput = document.getElementById('searchInput');
 const paginationControls = document.getElementById('pagination-controls');
 const currToggle = document.getElementById('currToggle');
+const searchResultCount = document.getElementById('searchResultCount');
+
+// Filter DOM elements (all now directly visible)
+const titleFilterInput = document.getElementById('titleFilterInput');
+const keywordFilterInput = document.getElementById('keywordFilterInput');
+const filenameFilterInput = document.getElementById('filenameFilterInput');
+const minPriceInput = document.getElementById('minPriceInput');
+const maxPriceInput = document.getElementById('maxPriceInput');
+const applyFiltersBtn = document.getElementById('applyFiltersBtn');
+const clearFiltersBtn = document.getElementById('clearFiltersBtn');
+
+// Dropdown menu elements
+const toggleFilterMenuBtn = document.getElementById('toggleFilterMenuBtn');
+const closeFilterMenuBtn = document.getElementById('closeFilterMenuBtn');
+const filterControlsWrapper = document.querySelector('.filter-controls-wrapper');
+
 
 totalPagesDisplay = document.createElement('span');
 totalPagesDisplay.id = 'totalPagesDisplay';
@@ -82,29 +114,24 @@ window.addEventListener('click', (event) => {
   if (event.target === previewModal) {
     closePreview();
   }
+  // Close filter menu if clicking outside
+  if (isFilterMenuOpen && filterControlsWrapper && toggleFilterMenuBtn &&
+      !filterControlsWrapper.contains(event.target) &&
+      !toggleFilterMenuBtn.contains(event.target)) {
+      toggleFilterMenu();
+  }
 });
 currToggle.addEventListener('click', toggleCurrency);
 
-let debounceTimeout;
-searchInput.addEventListener('input', (e) => {
-  clearTimeout(debounceTimeout);
-  debounceTimeout = setTimeout(() => {
-    searchQuery = e.target.value.toLowerCase();
-    currentPage = 1;
-    updateURLParams(searchQuery, currentPage);
-    renderProducts();
-  }, 300);
-});
 
 function saveCart() {
   localStorage.setItem('cart', JSON.stringify(cart));
 }
 
 function clearCartOnCurrencyChange() {
-  // Hapus semua item dari keranjang
   localStorage.removeItem('cart');
-  cart = []; // Pastikan variabel 'cart' di memori juga dikosongkan
-  updateCartUI(); // Perbarui tampilan UI keranjang
+  cart = [];
+  updateCartUI();
   showAlert("Cart has been cleared due to currency change. Please add items again.", "info");
   console.log("Cart cleared due to currency change.");
 }
@@ -125,14 +152,13 @@ function updateCartUI() {
     }
   } else {
     cartList.innerHTML = cart.map((p, i) => {
-      const itemPrice = (p.selectedCurrency === currentCurrency) ? p.price :
-        (currentCurrency === 'IDR' ? (p.idr_price_from_data || p.price * IDR_CONVERSION_RATE) : (p.usd_price_from_data || p.price / IDR_CONVERSION_RATE));
+      const itemPrice = (currentCurrency === 'USD') ? p.price_usd : p.price_idr;
 
       total += itemPrice;
       const identifier = p.extractedId || p.filename || 'N/A';
       return `
-        <li class="cart-item" data-preview-url="${p.preview_url}"> 
-          <span class="cart-item-number">${i + 1}</span> 
+        <li class="cart-item" data-preview-url="${p.preview_url}">
+          <span class="cart-item-number">${i + 1}</span>
           <span class="cart-item-info">${p.title} - ${p.license} #${identifier}</span>
           <span class="cart-item-price">${formatPrice(itemPrice, currentCurrency)}</span>
           <button class="remove-btn" data-index="${i}">✕</button>
@@ -151,7 +177,6 @@ function updateCartUI() {
 
     if (!previewImageContainer) {
       previewImageContainer = document.getElementById('global-cart-preview');
-
     }
 
     document.querySelectorAll('.cart-item').forEach(itemElement => {
@@ -206,6 +231,9 @@ function toggleCurrency() {
   updateCartUI();
 }
 function formatPrice(amount, currency) {
+  if (amount === null || isNaN(amount)) {
+    return currency === 'IDR' ? 'IDR 0' : '$0.00'; // Ensure no "NaN" or "undefined"
+  }
   if (currency === 'IDR') {
     if (amount >= 1000) {
       return `IDR ${(amount / 1000).toFixed(0)}K`;
@@ -239,26 +267,26 @@ window.closeCart = function () {
 function handleCategoryClick(cat) {
   activeCategory = cat;
   currentPage = 1;
-  updateURLParams(searchQuery, currentPage, activeCategory);
+  updateURLParams(currentPage, activeCategory, currentTitleFilter, currentKeywordFilter, currentFilenameFilter, minPriceFilter, maxPriceFilter);
   renderProducts();
   highlightActiveCategory();
 }
 
 function renderCategories(categories) {
 
-  const maxVisibleCategories = 9; // Batasi jumlah kategori yang terlihat
-  let isExpanded = false; // Status untuk melacak apakah kategori diperluas
+  const maxVisibleCategories = 9;
+  let isExpanded = false;
 
   const allBtn = document.createElement('button');
   allBtn.textContent = 'All';
   allBtn.className = 'category-btn ' + (activeCategory === '' ? 'active' : '');
   allBtn.onclick = () => handleCategoryClick('');
+  categoryTabsContainer.innerHTML = '';
   categoryTabsContainer.appendChild(allBtn);
 
   const visibleCategories = categories.slice(0, maxVisibleCategories);
   const hiddenCategories = categories.slice(maxVisibleCategories);
 
-  // Render kategori yang terlihat
   visibleCategories.forEach(cat => {
     const btn = document.createElement('button');
     btn.textContent = cat;
@@ -267,11 +295,10 @@ function renderCategories(categories) {
     categoryTabsContainer.appendChild(btn);
   });
 
-  // Jika ada kategori yang tersembunyi, buat wadah untuk mereka dan tombol expand/collapse
   if (hiddenCategories.length > 0) {
     const hiddenCategoriesContainer = document.createElement('div');
     hiddenCategoriesContainer.id = 'hiddenCategoriesContainer';
-    hiddenCategoriesContainer.style.display = 'none'; // Sembunyikan secara default
+    hiddenCategoriesContainer.style.display = 'none';
 
     hiddenCategories.forEach(cat => {
       const btn = document.createElement('button');
@@ -285,7 +312,7 @@ function renderCategories(categories) {
     const toggleButton = document.createElement('button');
     toggleButton.id = 'toggleCategoriesBtn';
     toggleButton.textContent = 'Expand ▼';
-    toggleButton.className = 'category-toggle-btn'; // Tambahkan kelas untuk styling
+    toggleButton.className = 'category-toggle-btn';
     toggleButton.onclick = () => {
       isExpanded = !isExpanded;
       if (isExpanded) {
@@ -310,23 +337,62 @@ function highlightActiveCategory() {
 
 function renderProducts() {
   storeDiv.innerHTML = '';
-  let filteredProducts = allProducts;
+  let productsToProcess = allProducts;
 
+  // 1. Filter by category first
   if (activeCategory) {
-    filteredProducts = filteredProducts.filter(p => p.category === activeCategory);
+    productsToProcess = productsToProcess.filter(p => p.category === activeCategory);
   }
-  if (searchQuery) {
-    filteredProducts = allProducts.filter(p => {
-      const productCategory = p.category ? p.category.toLowerCase() : '';
-      const productTitle = p.keyword ? p.keyword.toLowerCase() : '';
 
-      const matchesCategory = activeCategory === '' || productCategory === activeCategory.toLowerCase();
-      const matchesSearch = productTitle.includes(searchQuery);
+  // 2. Apply all specific text and price filters simultaneously (AND logic)
+  let finalFilteredProducts = productsToProcess;
 
-      return matchesCategory && matchesSearch;
-    });
+  // Apply Title filter
+  if (currentTitleFilter) {
+      finalFilteredProducts = finalFilteredProducts.filter(p => {
+          const productTitle = p.title ? p.title.toLowerCase() : '';
+          return productTitle.includes(currentTitleFilter);
+      });
   }
-  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+
+  // Apply Keyword filter (assuming p.keyword exists and is a string or can be converted to string)
+  if (currentKeywordFilter) {
+      finalFilteredProducts = finalFilteredProducts.filter(p => {
+          const productKeywords = p.keyword ? p.keyword.toLowerCase() : ''; // Assuming keyword is a string
+          return productKeywords.includes(currentKeywordFilter);
+      });
+  }
+
+  // Apply Filename filter
+  if (currentFilenameFilter) {
+      finalFilteredProducts = finalFilteredProducts.filter(p => {
+          const productFilename = p.filename ? p.filename.toLowerCase() : '';
+          return productFilename.includes(currentFilenameFilter);
+      });
+  }
+
+  // Apply Price filter
+  if (minPriceFilter !== null || maxPriceFilter !== null) {
+      finalFilteredProducts = finalFilteredProducts.filter(p => {
+          let priceToCheck;
+          if (currentCurrency === 'USD') {
+              priceToCheck = selectedLicense === 'commercial' ? p.price_commercial : selectedLicense === 'extended' ? p.price_extended : p.price;
+          } else {
+              priceToCheck = selectedLicense === 'commercial' ? p.idr_commercial : selectedLicense === 'extended' ? p.idr_extended : p.idr_price;
+          }
+          // Ensure priceToCheck is a number for comparison
+          if (typeof priceToCheck !== 'number' || isNaN(priceToCheck)) return false;
+
+
+          const priceMatchesMin = (minPriceFilter === null || priceToCheck >= minPriceFilter);
+          const priceMatchesMax = (maxPriceFilter === null || priceToCheck <= maxPriceFilter);
+
+          return priceMatchesMin && priceMatchesMax;
+      });
+  }
+
+
+  const totalPages = Math.ceil(finalFilteredProducts.length / itemsPerPage);
 
   if (currentPage > totalPages && totalPages > 0) {
     currentPage = totalPages;
@@ -337,11 +403,16 @@ function renderProducts() {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
 
-  const productsToDisplay = filteredProducts.slice(startIndex, endIndex);
+  const productsToDisplay = finalFilteredProducts.slice(startIndex, endIndex);
 
   if (productsToDisplay.length === 0) {
-    searchResultCount.textContent = `Found ${filteredProducts.length} product${filteredProducts.length !== 1 ? 's' : ''}`;
-    storeDiv.innerHTML = '<p class="no-products-message">No products found matching your criteria.</p>';
+    let message = 'No products found matching your criteria.';
+    if (currentTitleFilter || currentKeywordFilter || currentFilenameFilter || minPriceFilter !== null || maxPriceFilter !== null || activeCategory) {
+        message += `<br>Please adjust your filters.`;
+    }
+    searchResultCount.innerHTML = `<p class="no-products-message">${message}</p>`;
+    searchResultCount.style.display = 'block'; // Ensure it's visible
+    storeDiv.innerHTML = '';
     paginationControls.innerHTML = '';
     return;
   }
@@ -353,11 +424,10 @@ function renderProducts() {
     } else { // currentCurrency === 'IDR'
       price = selectedLicense === 'commercial' ? p.idr_commercial : selectedLicense === 'extended' ? p.idr_extended : p.idr_price;
     }
-    const formattedPrice = formatPrice(price, currentCurrency); // Gunakan fungsi formatPrice
+    const formattedPrice = formatPrice(price, currentCurrency);
 
     const productUrl = `products/${p.filename}.html`;
     const html = `
-    
       <div class="product-card">
         <div class="image-wrapper">
           <a href="${productUrl}" class="product-link">
@@ -378,35 +448,43 @@ function renderProducts() {
             <button class="btn" style="height: 20px; padding: 0 10px; font-size: 0.7rem; margin-top: 3px;"
                         onclick="handleCategoryClick('${p.category}')">
                         ${p.category}
-          </button>
-        </div>
-          
-          
+            </button>
+          </div>
+
+
           <div class="product-price">
-            <span class="price">${formattedPrice}</span> 
+            <span class="price">${formattedPrice}</span>
             <span class="license-type">${selectedLicense.charAt(0).toUpperCase() + selectedLicense.slice(1)} License</span>
           </div>
         </div>
         <button class="btn add-to-cart-btn" onclick='addToCart({...${JSON.stringify(p).replace(/'/g, "\\'")}, price:${price}, selectedCurrency: "${currentCurrency}", license: "${selectedLicense}"})'>+ Add to Cart</button>
       </div>
-   
+
     `;
     storeDiv.innerHTML += html;
   });
 
-  const resultDiv = document.getElementById('searchResultCount');
-  const isFiltered = activeCategory || searchQuery;
   const countMessageParts = [];
+  if (currentTitleFilter) countMessageParts.push(`title "<span class="keyword">${currentTitleFilter}</span>"`);
+  if (currentKeywordFilter) countMessageParts.push(`keyword "<span class="keyword">${currentKeywordFilter}</span>"`);
+  if (currentFilenameFilter) countMessageParts.push(`filename "<span class="keyword">${currentFilenameFilter}</span>"`);
+  if (minPriceFilter !== null || maxPriceFilter !== null) {
+      let priceRange = [];
+      if (minPriceFilter !== null) priceRange.push(`>= ${formatPrice(minPriceFilter, currentCurrency)}`);
+      if (maxPriceFilter !== null) priceRange.push(`<= ${formatPrice(maxPriceFilter, currentCurrency)}`);
+      countMessageParts.push(`price ${priceRange.join(' and ')}`);
+  }
+  if (activeCategory) countMessageParts.push(`category "<span class="category">${activeCategory}</span>"`);
 
-  if (searchQuery) countMessageParts.push(`<span class="keyword">${searchQuery}</span>`);
-  if (activeCategory) countMessageParts.push(`<span class="category">${activeCategory}</span>`);
-  resultDiv.style.display = 'block';
-  let message = `Found <b>${filteredProducts.length}</b> product${filteredProducts.length !== 1 ? 's' : ''}`;
+  let message = `Found <b>${finalFilteredProducts.length}</b> product`;
+  if (finalFilteredProducts.length !== 1) message += 's';
   if (countMessageParts.length > 0) {
-    message += ` by <b>${countMessageParts.join(' in ')}</b>`;
+    message += ` matching ${countMessageParts.join(' and ')}`;
   }
 
-  resultDiv.innerHTML = message;
+  searchResultCount.innerHTML = message;
+  searchResultCount.style.display = 'block'; // Ensure it's visible
+
   renderPaginationControls(totalPages);
 }
 
@@ -430,7 +508,7 @@ function renderPaginationControls(totalPages) {
   prevButton.onclick = () => {
     if (currentPage > 1) {
       currentPage--;
-      updateURLParams(searchQuery, currentPage, activeCategory);
+      updateURLParams(currentPage, activeCategory, currentTitleFilter, currentKeywordFilter, currentFilenameFilter, minPriceFilter, maxPriceFilter);
       renderProducts();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -458,7 +536,7 @@ function renderPaginationControls(totalPages) {
     }
     pageButton.onclick = () => {
       currentPage = i;
-      updateURLParams(searchQuery, currentPage, activeCategory);
+      updateURLParams(currentPage, activeCategory, currentTitleFilter, currentKeywordFilter, currentFilenameFilter, minPriceFilter, maxPriceFilter);
       renderProducts();
       window.scrollTo(0, 0);
     };
@@ -473,7 +551,7 @@ function renderPaginationControls(totalPages) {
   nextButton.onclick = () => {
     if (currentPage < totalPages) {
       currentPage++;
-      updateURLParams(searchQuery, currentPage, activeCategory);
+      updateURLParams(currentPage, activeCategory, currentTitleFilter, currentKeywordFilter, currentFilenameFilter, minPriceFilter, maxPriceFilter);
       renderProducts();
       window.scrollTo(0, 0);
     }
@@ -509,12 +587,11 @@ function renderPaginationControls(totalPages) {
     pageInputContainer.appendChild(goToPageButton);
     paginationControls.appendChild(pageInputContainer);
 
-    // Event listener untuk tombol 'Go'
     goToPageButton.addEventListener('click', () => {
       const pageNum = parseInt(pageInput.value, 10);
       if (!isNaN(pageNum) && pageNum >= 1 && pageNum <= totalPages) {
         currentPage = pageNum;
-        updateURLParams(searchQuery, currentPage, activeCategory);
+        updateURLParams(currentPage, activeCategory, currentTitleFilter, currentKeywordFilter, currentFilenameFilter, minPriceFilter, maxPriceFilter);
         renderProducts();
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else {
@@ -544,7 +621,6 @@ window.setLicense = function (val) {
 }
 
 
-
 function extractIdFromUrl(url) {
   if (!url) return '';
   const urlParts = url.split('/');
@@ -563,7 +639,6 @@ function extractIdFromUrl(url) {
 window.addToCart = function (product) {
   const extractedId = product.filename || extractIdFromUrl(product.preview_url);
 
-  // Ambil harga asli dalam USD dan IDR dari objek produk yang lengkap
   let originalPriceUSD, originalPriceIDR;
   if (product.license === 'personal') {
     originalPriceUSD = product.price;
@@ -579,7 +654,6 @@ window.addToCart = function (product) {
     ...product,
     extractedId: extractedId,
     license: product.license,
-    // Simpan harga dalam USD dan IDR agar bisa di-toggle di keranjang
     price_usd: originalPriceUSD,
     price_idr: originalPriceIDR,
     selectedCurrencyAtAddToCart: currentCurrency,
@@ -619,24 +693,108 @@ async function loadProducts() {
     renderProducts();
     updateCartUI();
   } catch (err) {
-    storeDiv.innerHTML = `<p style="color:red;">❌ Failed to load products: ${err.message}</p> 
-    <button class="btn fas fa-arrows-rotate" onclick="localStorage.clear()"> Refresh</button>`;
+    storeDiv.innerHTML = `<p style="color:red;">❌ Failed to load products: ${err.message}</p>
+    <button class="btn fas fa-arrows-rotate" onclick="localStorage.clear()">Refresh</button>`; // "Refresh" changed to English
     console.error('Fetch error:', err);
   }
 }
+
+function applyAllFilters() {
+    currentTitleFilter = (titleFilterInput && titleFilterInput.value) ? titleFilterInput.value.toLowerCase() : '';
+    currentKeywordFilter = (keywordFilterInput && keywordFilterInput.value) ? keywordFilterInput.value.toLowerCase() : '';
+    currentFilenameFilter = (filenameFilterInput && filenameFilterInput.value) ? filenameFilterInput.value.toLowerCase() : '';
+    // Ensure minPriceFilter and maxPriceFilter are correctly set as numbers or null
+    minPriceFilter = (minPriceInput && minPriceInput.value !== '') ? parseFloat(minPriceInput.value) : null;
+    maxPriceFilter = (maxPriceInput && maxPriceInput.value !== '') ? parseFloat(maxPriceInput.value) : null;
+
+    currentPage = 1; // Reset to the first page when new filters are applied
+    updateURLParams(currentPage, activeCategory, currentTitleFilter, currentKeywordFilter, currentFilenameFilter, minPriceFilter, maxPriceFilter);
+    renderProducts();
+    toggleFilterMenu(); // Close the filter menu after applying filters
+}
+
+function clearAllFilters() {
+    // Reset all filter-related variables to their default states
+    currentTitleFilter = '';
+    currentKeywordFilter = '';
+    currentFilenameFilter = '';
+    minPriceFilter = null;
+    maxPriceFilter = null;
+    currentPage = 1; // Reset to page 1
+
+    // Update the UI elements to reflect the reset state
+    if (titleFilterInput) titleFilterInput.value = '';
+    if (keywordFilterInput) keywordFilterInput.value = '';
+    if (filenameFilterInput) filenameFilterInput.value = '';
+    if (minPriceInput) minPriceInput.value = '';
+    if (maxPriceInput) maxPriceInput.value = '';
+
+    // Clear URL parameters related to filters
+    updateURLParams(currentPage, activeCategory, currentTitleFilter, currentKeywordFilter, currentFilenameFilter, minPriceFilter, maxPriceFilter);
+
+    // Re-render products to show all (or filtered only by category if active)
+    renderProducts();
+
+    // Close the filter menu after clearing
+    toggleFilterMenu();
+}
+
+
+// Function to toggle the filter menu visibility
+function toggleFilterMenu() {
+    isFilterMenuOpen = !isFilterMenuOpen;
+    if (filterControlsWrapper) {
+        filterControlsWrapper.style.display = isFilterMenuOpen ? 'flex' : 'none'; // Use 'flex' for the internal layout
+    }
+}
+
+
 document.addEventListener('DOMContentLoaded', () => {
   if (window.supabase && typeof window.supabase.createClient === 'function') {
     supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-    const { query, page, category } = getQueryParams();
-    searchQuery = query.toLowerCase();
+    console.log("Supabase client initialized in product.js.");
+
+    // Initialize filter state from URL
+    const { page, category, titleFilter, keywordFilter, filenameFilter, minPrice, maxPrice } = getQueryParams();
     currentPage = page;
     activeCategory = category;
-    searchInput.value = query;
-    loadProducts();
+    currentTitleFilter = titleFilter;
+    currentKeywordFilter = keywordFilter;
+    currentFilenameFilter = filenameFilter;
+    minPriceFilter = minPrice;
+    maxPriceFilter = maxPrice;
+
+    // Set initial UI values for new filters
+    if (titleFilterInput) titleFilterInput.value = currentTitleFilter;
+    if (keywordFilterInput) keywordFilterInput.value = currentKeywordFilter;
+    if (filenameFilterInput) filenameFilterInput.value = currentFilenameFilter;
+    // Ensure price inputs are set to empty string if null
+    if (minPriceInput) minPriceInput.value = minPriceFilter !== null ? minPriceFilter.toString() : '';
+    if (maxPriceInput) maxPriceInput.value = maxPriceFilter !== null ? maxPriceFilter.toString() : '';
+
+    loadProducts(); // Load products with initial filters
     updateCartUI();
     currToggle.textContent = `${currentCurrency === 'USD' ? 'USD / IDR' : 'IDR / USD'}`;
+
+    // Event listeners for filter controls
+    if (applyFiltersBtn) {
+        applyFiltersBtn.addEventListener('click', applyAllFilters);
+    }
+    if (clearFiltersBtn) {
+        clearFiltersBtn.addEventListener('click', clearAllFilters);
+    }
+
+    // Event listeners for the dropdown toggle buttons
+    if (toggleFilterMenuBtn) {
+        toggleFilterMenuBtn.addEventListener('click', toggleFilterMenu);
+    }
+    if (closeFilterMenuBtn) {
+        closeFilterMenuBtn.addEventListener('click', toggleFilterMenu);
+    }
+
+
   } else {
-    console.error("Error: Supabase global object or createClient function not found. Is Supabase SDK loaded correctly?");
+    console.error("Error: Supabase SDK not available. Cannot initialize product.js.");
   }
 });
 

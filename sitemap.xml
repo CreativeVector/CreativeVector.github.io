@@ -3,7 +3,7 @@
 	<url>
 		<loc>https://creativevector.store</loc>
 		<priority>1.00</priority>
-		<lastmod>2025-07-28</lastmod>
+		<lastmod>2025-07-29</lastmod>
 	</url>
 	<url>
 		<loc>https://creativevector.store/about.html</loc>
@@ -14109,10 +14109,5 @@
 		<loc>https://creativevector.store/products/4000_imnse6.html</loc>
 		<priority>0.33</priority>
 		<lastmod>2025-07-26</lastmod>
-	</url>
-	<url>
-		<loc>https://creativevector.store/template/testpage.html</loc>
-		<priority>0.33</priority>
-		<lastmod>2025-07-28</lastmod>
 	</url>
 </urlset>

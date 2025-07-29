@@ -19,7 +19,8 @@
   <meta property="og:site_name" content="CreativeVector Store" />
 
   <title>Premium Quality Vectors | CreativeVector</title>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link rel="stylesheet" href="css/style.css" />
   <link rel="icon" href="img/favicon.ico" type="image/x-icon">
@@ -87,18 +88,49 @@
         </select>
       </div>
       <div class="curr-toggle">
-          <button id="currToggle" class="btn" hidden>USD / IDR</button>
+        <button id="currToggle" class="btn" hidden>USD / IDR</button>
       </div>
       <h4>Category</h4>
       <div class="categories" id="categoryTabs">
 
       </div>
-      <div class="search-box-wrapper">
+      <!-- <div class="search-box-wrapper">
         <input type="text" id="searchInput" placeholder="Search products..." />
         <i class="fas fa-search search-icon"></i>
-      </div>
-      
-      <div class="header-actions"> 
+      </div> -->
+      <div class="filter-dropdown-container">
+    <button id="toggleFilterMenuBtn" class="btn filter-toggle-btn">
+        <i class="fas fa-filter"></i> Product Filter
+    </button>
+
+    <div class="filter-controls-wrapper" style="display: none;">
+        <div class="filter-group">
+            <label for="titleFilterInput">Title</label>
+            <input type="text" id="titleFilterInput" placeholder="Search by title..." />
+        </div>
+
+        <div class="filter-group">
+            <label for="keywordFilterInput">Keyword</label>
+            <input type="text" id="keywordFilterInput" placeholder="Search by keyword..." />
+        </div>
+
+        <div class="filter-group">
+            <label for="filenameFilterInput">Filename</label>
+            <input type="text" id="filenameFilterInput" placeholder="Search by filename..." />
+        </div>
+
+        <div class="filter-group price-filter-inputs">
+            <label>Price</label>
+            <input type="number" id="minPriceInput" placeholder="Min" step="any" min="0" />
+            <input type="number" id="maxPriceInput" placeholder="Max" step="any" min="0" />
+        </div>
+        <button id="applyFiltersBtn" class="btn">Apply Filters</button>
+        <button id="clearFiltersBtn" class="btn clear-btn">Clear Filters</button>
+
+    </div>
+</div>
+
+      <div class="header-actions">
         <div class="cart-icon" id="cartIcon" data-count="0">
           <i class="fas fa-shopping-cart" style="color:black"></i>
           <span class="cart-count">0</span>
@@ -112,20 +144,20 @@
 
   <main id="store" class="store"></main>
   <div class="pagination-controls" id="pagination-controls">
-            <span id="totalPagesDisplay" class="pagination-info"></span>
+    <span id="totalPagesDisplay" class="pagination-info"></span>
 
-            <button id="prevPage" class="pagination-btn">Previous</button>
+    <button id="prevPage" class="pagination-btn">Previous</button>
 
-            <div class="pagination-numbers" id="paginationNumbers">
-                </div>
+    <div class="pagination-numbers" id="paginationNumbers">
+    </div>
 
-            <button id="nextPage" class="pagination-btn">Next</button>
+    <button id="nextPage" class="pagination-btn">Next</button>
 
-            <div class="page-input-group">
-                <input type="number" id="pageInput" class="page-input" min="1" value="1">
-                <button id="goToPageButton" class="go-btn">Go</button>
-            </div>
-        </div>
+    <div class="page-input-group">
+      <input type="number" id="pageInput" class="page-input" min="1" value="1">
+      <button id="goToPageButton" class="go-btn">Go</button>
+    </div>
+  </div>
   </div>
 
   <div id="cartModal" class="modal">

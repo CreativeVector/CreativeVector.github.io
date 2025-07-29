@@ -498,6 +498,7 @@ body {
     flex-direction: column;
     gap: 0.5rem;
 }
+
 .format-div {
     display: flex;
     gap: 10px;
@@ -505,6 +506,7 @@ body {
     width: fit-content;
 
 }
+
 .format-icons {
     display: flex;
     gap: 8px;
@@ -2101,6 +2103,7 @@ body {
     gap: 15px;
 
 }
+
 /* Gaya untuk form kontak */
 .contact-form .form-group {
     margin-bottom: 15px;
@@ -2166,6 +2169,7 @@ body {
     font-size: 1em;
     width: auto;
 }
+
 .button-contact i,
 .button-primary i {
     margin-right: 8px;
@@ -2780,4 +2784,87 @@ body {
     display: grid;
     justify-content: center;
     margin-top: 20px;
+}
+
+.filter-dropdown-container {
+    position: relative;
+    display: inline-block;
+}
+
+.filter-toggle-btn {
+    text-decoration: none;
+    color: var(--text-color-medium);
+    font-size: 15px;
+    padding: var(--btn-padding);
+    border: 1px solid var(--border-color-medium);
+    border-radius: 20px;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    background-color: #fff;
+    cursor: pointer;
+}
+
+.filter-toggle-btn i {
+    font-size: 1.1rem;
+}
+
+.filter-controls-wrapper {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    z-index: 1000;
+    background-color: white;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 20px;
+    min-width: 280px;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Pastikan grup filter tersusun rapi di dalam dropdown */
+.filter-controls-wrapper .filter-group {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.filter-controls-wrapper .filter-group label {
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #555;
+}
+
+.filter-controls-wrapper .filter-group select,
+.filter-controls-wrapper .filter-group input[type="text"],
+.filter-controls-wrapper .filter-group input[type="number"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    box-sizing: border-box;
+}
+
+.filter-controls-wrapper .price-filter-inputs {
+    flex-direction: row;
+    gap: 10px;
+}
+
+.filter-controls-wrapper .price-filter-inputs input {
+    flex: 1;
+}
+
+.filter-controls-wrapper .btn {
+    background-color: var(--bg-medium);
+    width: 100%;
+}
+.filter-controls-wrapper .clear-btn {
+    background-color: #dd979e;
+    color: white;
+}
+
+.filter-controls-wrapper .clear-btn:hover {
+    background-color: var(--error-color);
+    border-color: white
 }
