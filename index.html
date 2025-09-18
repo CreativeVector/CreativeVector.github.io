@@ -80,56 +80,59 @@
   <div class="sub-header">
     <div class="sub-header-container">
       <div class="license-selector-wrapper">
-        <h4>License</h4>
+        <i class="fa fa-certificate" aria-hidden="true"></i>
         <select id="licenseSelector" onchange="setLicense(this.value)">
           <option value="personal" selected>Personal</option>
           <option value="commercial">Commercial</option>
           <option value="extended">Extended</option>
         </select>
+        <div class="sort-container">
+          <i class="fas fa-arrow-up-wide-short"></i>
+          <select id="sortSelect">
+            <option value="name_asc">ID Ascending</option>
+            <option value="name_desc">ID Descending</option>
+            <option value="price_asc">Lowest Price</option>
+            <option value="price_desc">Highest Price</option>
+          </select>
+        </div>
+        <div class="filter-dropdown-container">
+          <button id="toggleFilterMenuBtn" class="btn filter-toggle-btn">
+            <i class="fas fa-filter"></i> Product Filter
+          </button>
+
+          <div class="filter-controls-wrapper" style="display: none;">
+            <div class="filter-group">
+              <label for="titleFilterInput">Title</label>
+              <input type="text" id="titleFilterInput" placeholder="Search by title..." />
+            </div>
+
+            <div class="filter-group">
+              <label for="keywordFilterInput">Keyword</label>
+              <input type="text" id="keywordFilterInput" placeholder="Search by keyword..." />
+            </div>
+
+            <div class="filter-group">
+              <label for="filenameFilterInput">Filename</label>
+              <input type="text" id="filenameFilterInput" placeholder="Search by filename..." />
+            </div>
+
+            <div class="filter-group price-filter-inputs">
+              <label>Price</label>
+              <input type="number" id="minPriceInput" placeholder="Min" step="any" min="0" />
+              <input type="number" id="maxPriceInput" placeholder="Max" step="any" min="0" />
+            </div>
+            <button id="applyFiltersBtn" class="btn">Apply Filters</button>
+            <button id="clearFiltersBtn" class="btn clear-btn">Clear Filters</button>
+
+          </div>
+        </div>
+
       </div>
       <div class="curr-toggle">
         <button id="currToggle" class="btn" hidden>USD / IDR</button>
       </div>
-      <h4>Category</h4>
       <div class="categories" id="categoryTabs">
-
       </div>
-      <!-- <div class="search-box-wrapper">
-        <input type="text" id="searchInput" placeholder="Search products..." />
-        <i class="fas fa-search search-icon"></i>
-      </div> -->
-      <div class="filter-dropdown-container">
-    <button id="toggleFilterMenuBtn" class="btn filter-toggle-btn">
-        <i class="fas fa-filter"></i> Product Filter
-    </button>
-
-    <div class="filter-controls-wrapper" style="display: none;">
-        <div class="filter-group">
-            <label for="titleFilterInput">Title</label>
-            <input type="text" id="titleFilterInput" placeholder="Search by title..." />
-        </div>
-
-        <div class="filter-group">
-            <label for="keywordFilterInput">Keyword</label>
-            <input type="text" id="keywordFilterInput" placeholder="Search by keyword..." />
-        </div>
-
-        <div class="filter-group">
-            <label for="filenameFilterInput">Filename</label>
-            <input type="text" id="filenameFilterInput" placeholder="Search by filename..." />
-        </div>
-
-        <div class="filter-group price-filter-inputs">
-            <label>Price</label>
-            <input type="number" id="minPriceInput" placeholder="Min" step="any" min="0" />
-            <input type="number" id="maxPriceInput" placeholder="Max" step="any" min="0" />
-        </div>
-        <button id="applyFiltersBtn" class="btn">Apply Filters</button>
-        <button id="clearFiltersBtn" class="btn clear-btn">Clear Filters</button>
-
-    </div>
-</div>
-
       <div class="header-actions">
         <div class="cart-icon" id="cartIcon" data-count="0">
           <i class="fas fa-shopping-cart" style="color:black"></i>
@@ -138,11 +141,95 @@
       </div>
     </div>
   </div>
+  <!-- POPULAR SLIDER (Home Only) -->
+  <section id="popularSlider" class="popular-slider">
+    <div class="slider-container">
+      <!-- Slide 1 -->
+      <div class="slide active">
+        <img src="img/4313.jpg" alt="Popular Product 1" />
+        <div class="slide-content">
+          <h2>Realistic Golden Trophy with Gold Laurel Wreath</h2>
+          <p>Perfect for a victory celebration.</p>
+          <a href="" class="btn bannersoon-btn">Will be uploaded soon</a>
+        </div>
+      </div>
+
+      <!-- Slide 2 -->
+      <div class="slide">
+        <img src="img/4271.jpg" alt="Popular Product 2" />
+        <div class="slide-content">
+          <h2>Blue and Pink Rays Zoom In Motion Effect</h2>
+          <p>Perfect for focusing on what you want to show.</p>
+          <a href="" class="btn bannersoon-btn">Will be uploaded soon</a>
+        </div>
+      </div>
+
+      <!-- Slide 3 -->
+      <div class="slide">
+        <img src="img/4407.jpg" alt="Popular Product 3" />
+        <div class="slide-content">
+          <h2>Colorful Light Trails, Perspective Long Time Exposure Motion Blur Effect</h2>
+          <p>High-quality illustration for your projects.</p>
+          <a href="" class="btn bannersoon-btn">Will be uploaded soon</a>
+        </div>
+      </div>
+
+      <!-- Slide 4 -->
+      <div class="slide">
+        <img src="img/2202.jpg" alt="Popular Product 4" />
+        <div class="slide-content">
+          <h2>Golden Banner with Text Space of Tropical Leaves</h2>
+          <p>Perfect for focusing on what you want to show.</p>
+          <a href="/products/2202_fsbanr.html" class="btn banner-btn">View Product</a>
+        </div>
+      </div>
+
+      <!-- Slide 5 -->
+      <div class="slide">
+        <img src="img/3442.jpg" alt="Popular Product 5" />
+        <div class="slide-content">
+          <h2>Realistic Handshaking on Dark Background</h2>
+          <p>High-quality illustration for your projects.</p>
+          <a href="/products/3442_lsnevk.html" class="btn banner-btn">View Product</a>
+        </div>
+      </div>
+
+      <!-- Slide 6 -->
+      <div class="slide">
+        <img src="img/3676.jpg" alt="Popular Product 6" />
+        <div class="slide-content">
+          <h2>Kid with Joker and Harley Quinn Makeup</h2>
+          <p>High-quality illustration for your projects.</p>
+          <a href="/products/3676_osezoi.html" class="btn banner-btn">View product</a>
+        </div>
+      </div>
+
+      <!-- Slide 7 -->
+      <div class="slide">
+        <img src="img/2470.jpg" alt="Popular Product 7" />
+        <div class="slide-content">
+          <h2>Blue Rays Rising on Dark Background</h2>
+          <p>Perfect for focusing on what you want to show</p>
+          <a href="/products/2470_m5w5xm.html" class="btn banner-btn">View product</a>
+        </div>
+      </div>
+
+      <!-- Navigation Arrows -->
+      <button class="nav prev">&#10094;</button>
+      <button class="nav next">&#10095;</button>
+    </div>
+  </section>
+
   <div id="searchResultCount"></div>
   <div id="globalAlertContainer" style="position: fixed; top: 20px; right: 20px; z-index: 9999;"></div>
 
 
   <main id="store" class="store"></main>
+  <div id="loadingIndicator" style="display:none; text-align:center; margin:20px;">
+    <i class="fas fa-spinner fa-spin"></i> Loading products...
+  </div>
+  <div id="errorMessage" style="display:none; color:red; text-align:center; margin:20px;"></div>
+
   <div class="pagination-controls" id="pagination-controls">
     <span id="totalPagesDisplay" class="pagination-info"></span>
 

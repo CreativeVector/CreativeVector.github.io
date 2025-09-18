@@ -91,7 +91,15 @@ const clearFiltersBtn = document.getElementById('clearFiltersBtn');
 const toggleFilterMenuBtn = document.getElementById('toggleFilterMenuBtn');
 const closeFilterMenuBtn = document.getElementById('closeFilterMenuBtn');
 const filterControlsWrapper = document.querySelector('.filter-controls-wrapper');
-
+const sortSelect = document.getElementById('sortSelect');
+if (sortSelect) {
+  // panggil ulang render saat user ganti opsi sort
+  sortSelect.addEventListener('change', () => {
+    currentPage = 1;
+    updateURLParams(); // jika kamu menyimpan sort di URL
+    renderProducts();
+  });
+}
 
 totalPagesDisplay = document.createElement('span');
 totalPagesDisplay.id = 'totalPagesDisplay';
@@ -116,9 +124,9 @@ window.addEventListener('click', (event) => {
   }
   // Close filter menu if clicking outside
   if (isFilterMenuOpen && filterControlsWrapper && toggleFilterMenuBtn &&
-      !filterControlsWrapper.contains(event.target) &&
-      !toggleFilterMenuBtn.contains(event.target)) {
-      toggleFilterMenu();
+    !filterControlsWrapper.contains(event.target) &&
+    !toggleFilterMenuBtn.contains(event.target)) {
+    toggleFilterMenu();
   }
 });
 currToggle.addEventListener('click', toggleCurrency);
@@ -335,9 +343,83 @@ function highlightActiveCategory() {
   });
 }
 
+// --- helper: parse numeric prefix dari filename ---
+// contoh: "3000_hbcfhwb" -> 3000 ; "file_abc" -> null
+function parseNumericPrefix(filename) {
+  if (!filename) return null;
+  const m = filename.match(/^(\d+)(?:[_-].*)?/);
+  return m ? Number(m[1]) : null;
+}
+
+// comparator yang "numeric-aware" untuk filename
+// dir = 1 untuk ascending, -1 untuk descending
+function compareFilenameNumeric(fa, fb, dir = 1) {
+  // normalisasi: kosong -> ''
+  fa = (fa || '').toString();
+  fb = (fb || '').toString();
+
+  const na = parseNumericPrefix(fa);
+  const nb = parseNumericPrefix(fb);
+
+  if (na !== null && nb !== null) {
+    if (na < nb) return -1 * dir;
+    if (na > nb) return 1 * dir;
+    // jika prefix sama, bandingkan sisa string setelah prefix
+    const ra = fa.replace(/^\d+[_-]?/, '');
+    const rb = fb.replace(/^\d+[_-]?/, '');
+    return ra.localeCompare(rb) * dir;
+  }
+
+  if (na !== null && nb === null) {
+    // treat numeric-prefixed names before non-numeric in ascending
+    return -1 * dir;
+  }
+
+  if (na === null && nb !== null) {
+    return 1 * dir;
+  }
+
+  // tidak ada prefix numeric di keduanya -> biasa compare
+  return fa.localeCompare(fb) * dir;
+}
+// --- helper: get numeric price berdasarkan license & currency ---
+function getProductPriceForSort(p) {
+  if (!p) return NaN;
+  let priceVal = NaN;
+
+  if (currentCurrency === 'USD') {
+    if (selectedLicense === 'commercial') {
+      priceVal = parseFloat(p.price_commercial);
+    } else if (selectedLicense === 'extended') {
+      priceVal = parseFloat(p.price_extended);
+    } else {
+      priceVal = parseFloat(p.price);
+    }
+  } else { // IDR
+    if (selectedLicense === 'commercial') {
+      priceVal = parseFloat(p.idr_commercial);
+    } else if (selectedLicense === 'extended') {
+      priceVal = parseFloat(p.idr_extended);
+    } else {
+      priceVal = parseFloat(p.idr_price);
+    }
+  }
+
+  return isNaN(priceVal) ? NaN : priceVal;
+}
+
+// perbaiki listener sortSelect (jangan panggil updateURLParams tanpa argumen)
+if (sortSelect) {
+  sortSelect.addEventListener('change', () => {
+    currentPage = 1;
+    // jika mau menyimpan sort di URL, extend updateURLParams untuk menerima param sort
+    renderProducts();
+  });
+}
+
 function renderProducts() {
   storeDiv.innerHTML = '';
-  let productsToProcess = allProducts;
+  let productsToProcess = allProducts || [];
 
   // 1. Filter by category first
   if (activeCategory) {
@@ -345,54 +427,72 @@ function renderProducts() {
   }
 
   // 2. Apply all specific text and price filters simultaneously (AND logic)
-  let finalFilteredProducts = productsToProcess;
+  let finalFilteredProducts = productsToProcess.slice(); // clone
 
   // Apply Title filter
   if (currentTitleFilter) {
-      finalFilteredProducts = finalFilteredProducts.filter(p => {
-          const productTitle = p.title ? p.title.toLowerCase() : '';
-          return productTitle.includes(currentTitleFilter);
-      });
+    const q = currentTitleFilter.toLowerCase();
+    finalFilteredProducts = finalFilteredProducts.filter(p => {
+      const productTitle = p.title ? p.title.toLowerCase() : '';
+      return productTitle.includes(q);
+    });
   }
 
-  // Apply Keyword filter (assuming p.keyword exists and is a string or can be converted to string)
+  // Apply Keyword filter
   if (currentKeywordFilter) {
-      finalFilteredProducts = finalFilteredProducts.filter(p => {
-          const productKeywords = p.keyword ? p.keyword.toLowerCase() : ''; // Assuming keyword is a string
-          return productKeywords.includes(currentKeywordFilter);
-      });
+    const q = currentKeywordFilter.toLowerCase();
+    finalFilteredProducts = finalFilteredProducts.filter(p => {
+      const productKeywords = p.keyword ? p.keyword.toString().toLowerCase() : '';
+      return productKeywords.includes(q);
+    });
   }
 
   // Apply Filename filter
   if (currentFilenameFilter) {
-      finalFilteredProducts = finalFilteredProducts.filter(p => {
-          const productFilename = p.filename ? p.filename.toLowerCase() : '';
-          return productFilename.includes(currentFilenameFilter);
-      });
+    const q = currentFilenameFilter.toLowerCase();
+    finalFilteredProducts = finalFilteredProducts.filter(p => {
+      const productFilename = p.filename ? p.filename.toLowerCase() : '';
+      return productFilename.includes(q);
+    });
   }
 
-  // Apply Price filter
+  // Apply Price filter (min/max) — using the same price resolution as the UI
   if (minPriceFilter !== null || maxPriceFilter !== null) {
-      finalFilteredProducts = finalFilteredProducts.filter(p => {
-          let priceToCheck;
-          if (currentCurrency === 'USD') {
-              priceToCheck = selectedLicense === 'commercial' ? p.price_commercial : selectedLicense === 'extended' ? p.price_extended : p.price;
-          } else {
-              priceToCheck = selectedLicense === 'commercial' ? p.idr_commercial : selectedLicense === 'extended' ? p.idr_extended : p.idr_price;
-          }
-          // Ensure priceToCheck is a number for comparison
-          if (typeof priceToCheck !== 'number' || isNaN(priceToCheck)) return false;
-
-
-          const priceMatchesMin = (minPriceFilter === null || priceToCheck >= minPriceFilter);
-          const priceMatchesMax = (maxPriceFilter === null || priceToCheck <= maxPriceFilter);
-
-          return priceMatchesMin && priceMatchesMax;
-      });
+    finalFilteredProducts = finalFilteredProducts.filter(p => {
+      const priceToCheck = getProductPriceForSort(p);
+      if (isNaN(priceToCheck)) return false;
+      const matchesMin = (minPriceFilter === null || priceToCheck >= minPriceFilter);
+      const matchesMax = (maxPriceFilter === null || priceToCheck <= maxPriceFilter);
+      return matchesMin && matchesMax;
+    });
   }
 
+  // --- sorting: lakukan setelah semua filter diterapkan ---
+  const sortVal = sortSelect ? sortSelect.value : 'name_asc';
+  if (sortVal === 'name_asc') {
+    finalFilteredProducts.sort((a, b) => compareFilenameNumeric(a.filename, b.filename, 1));
+  } else if (sortVal === 'name_desc') {
+    finalFilteredProducts.sort((a, b) => compareFilenameNumeric(a.filename, b.filename, -1));
+  } else if (sortVal === 'price_asc') {
+    finalFilteredProducts.sort((a, b) => {
+      const pa = getProductPriceForSort(a);
+      const pb = getProductPriceForSort(b);
+      const va = isNaN(pa) ? Infinity : pa; // produk tanpa price akan di akhir pada ascending
+      const vb = isNaN(pb) ? Infinity : pb;
+      return va - vb;
+    });
+  } else if (sortVal === 'price_desc') {
+    finalFilteredProducts.sort((a, b) => {
+      const pa = getProductPriceForSort(a);
+      const pb = getProductPriceForSort(b);
+      const va = isNaN(pa) ? -Infinity : pa;
+      const vb = isNaN(pb) ? -Infinity : pb;
+      return vb - va;
+    });
+  }
 
-  const totalPages = Math.ceil(finalFilteredProducts.length / itemsPerPage);
+  // --- pagination ---
+  const totalPages = Math.ceil(finalFilteredProducts.length / itemsPerPage) || 1;
 
   if (currentPage > totalPages && totalPages > 0) {
     currentPage = totalPages;
@@ -405,18 +505,21 @@ function renderProducts() {
 
   const productsToDisplay = finalFilteredProducts.slice(startIndex, endIndex);
 
+  // tampilkan pesan jika kosong
   if (productsToDisplay.length === 0) {
     let message = 'No products found matching your criteria.';
     if (currentTitleFilter || currentKeywordFilter || currentFilenameFilter || minPriceFilter !== null || maxPriceFilter !== null || activeCategory) {
-        message += `<br>Please adjust your filters.`;
+      message += `<br>Please adjust your filters.`;
     }
     searchResultCount.innerHTML = `<p class="no-products-message">${message}</p>`;
-    searchResultCount.style.display = 'block'; // Ensure it's visible
+    searchResultCount.style.display = 'block';
     storeDiv.innerHTML = '';
     paginationControls.innerHTML = '';
     return;
   }
 
+  // Render produk
+  storeDiv.innerHTML = '';
   productsToDisplay.forEach(p => {
     let price;
     if (currentCurrency === 'USD') {
@@ -435,10 +538,10 @@ function renderProducts() {
             <div class="preview-overlay">
                 <i class="fas fa-eye"></i> <span>View Product</span>
             </div>
-        </a>
+          </a>
         </div>
-        <h2>${p.title}</h2>
-        <id>ID #${p.filename}</id>
+        <h2>${p.title || ''}</h2>
+        <id>ID #${p.filename || ''}</id>
         <div class="product-meta">
           <div class="format-div">
             <div class="format-icons">
@@ -451,7 +554,6 @@ function renderProducts() {
             </button>
           </div>
 
-
           <div class="product-price">
             <span class="price">${formattedPrice}</span>
             <span class="license-type">${selectedLicense.charAt(0).toUpperCase() + selectedLicense.slice(1)} License</span>
@@ -459,20 +561,20 @@ function renderProducts() {
         </div>
         <button class="btn add-to-cart-btn" onclick='addToCart({...${JSON.stringify(p).replace(/'/g, "\\'")}, price:${price}, selectedCurrency: "${currentCurrency}", license: "${selectedLicense}"})'>+ Add to Cart</button>
       </div>
-
     `;
     storeDiv.innerHTML += html;
   });
 
+  // update pesan hasil pencarian
   const countMessageParts = [];
   if (currentTitleFilter) countMessageParts.push(`title "<span class="keyword">${currentTitleFilter}</span>"`);
   if (currentKeywordFilter) countMessageParts.push(`keyword "<span class="keyword">${currentKeywordFilter}</span>"`);
   if (currentFilenameFilter) countMessageParts.push(`filename "<span class="keyword">${currentFilenameFilter}</span>"`);
   if (minPriceFilter !== null || maxPriceFilter !== null) {
-      let priceRange = [];
-      if (minPriceFilter !== null) priceRange.push(`>= ${formatPrice(minPriceFilter, currentCurrency)}`);
-      if (maxPriceFilter !== null) priceRange.push(`<= ${formatPrice(maxPriceFilter, currentCurrency)}`);
-      countMessageParts.push(`price ${priceRange.join(' and ')}`);
+    let priceRange = [];
+    if (minPriceFilter !== null) priceRange.push(`>= ${formatPrice(minPriceFilter, currentCurrency)}`);
+    if (maxPriceFilter !== null) priceRange.push(`<= ${formatPrice(maxPriceFilter, currentCurrency)}`);
+    countMessageParts.push(`price ${priceRange.join(' and ')}`);
   }
   if (activeCategory) countMessageParts.push(`category "<span class="category">${activeCategory}</span>"`);
 
@@ -483,10 +585,11 @@ function renderProducts() {
   }
 
   searchResultCount.innerHTML = message;
-  searchResultCount.style.display = 'block'; // Ensure it's visible
+  searchResultCount.style.display = 'block';
 
   renderPaginationControls(totalPages);
 }
+
 
 function renderPaginationControls(totalPages) {
   paginationControls.innerHTML = '';
@@ -677,75 +780,95 @@ window.addToCart = function (product) {
 }
 
 async function loadProducts() {
-  try {
-    const res = await fetch(`${supabaseUrl}/rest/v1/${tableName}?select=*,keyword`, {
+  const loadingIndicator = document.getElementById('loadingIndicator');
+  const errorMessage = document.getElementById('errorMessage');
 
+  try {
+    // tampilkan loading, sembunyikan error
+    if (loadingIndicator) loadingIndicator.style.display = 'block';
+    if (errorMessage) {
+      errorMessage.style.display = 'none';
+      errorMessage.textContent = '';
+    }
+    storeDiv.innerHTML = '';
+
+    const res = await fetch(`${supabaseUrl}/rest/v1/${tableName}?select=*,keyword`, {
       headers: {
         'apikey': supabaseKey,
         'Authorization': `Bearer ${supabaseKey}`
       }
     });
+
     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+
     const data = await res.json();
     allProducts = data;
+
     const categories = [...new Set(data.map(p => p.category).filter(Boolean))];
     renderCategories(categories);
     renderProducts();
     updateCartUI();
   } catch (err) {
-    storeDiv.innerHTML = `<p style="color:red;">❌ Failed to load products: ${err.message}</p>
-    <button class="btn fas fa-arrows-rotate" onclick="localStorage.clear()">Refresh</button>`; // "Refresh" changed to English
     console.error('Fetch error:', err);
+    if (errorMessage) {
+      errorMessage.textContent = `❌ Failed to load products: ${err.message}`;
+      errorMessage.style.display = 'block';
+    }
+    storeDiv.innerHTML = '';
+    storeDiv.innerHTML = `<button class="btn fas fa-arrows-rotate" onclick="localStorage.clear()">Refresh</button>`;
+  } finally {
+    // selalu sembunyikan loading
+    if (loadingIndicator) loadingIndicator.style.display = 'none';
   }
 }
 
 function applyAllFilters() {
-    currentTitleFilter = (titleFilterInput && titleFilterInput.value) ? titleFilterInput.value.toLowerCase() : '';
-    currentKeywordFilter = (keywordFilterInput && keywordFilterInput.value) ? keywordFilterInput.value.toLowerCase() : '';
-    currentFilenameFilter = (filenameFilterInput && filenameFilterInput.value) ? filenameFilterInput.value.toLowerCase() : '';
-    // Ensure minPriceFilter and maxPriceFilter are correctly set as numbers or null
-    minPriceFilter = (minPriceInput && minPriceInput.value !== '') ? parseFloat(minPriceInput.value) : null;
-    maxPriceFilter = (maxPriceInput && maxPriceInput.value !== '') ? parseFloat(maxPriceInput.value) : null;
+  currentTitleFilter = (titleFilterInput && titleFilterInput.value) ? titleFilterInput.value.toLowerCase() : '';
+  currentKeywordFilter = (keywordFilterInput && keywordFilterInput.value) ? keywordFilterInput.value.toLowerCase() : '';
+  currentFilenameFilter = (filenameFilterInput && filenameFilterInput.value) ? filenameFilterInput.value.toLowerCase() : '';
+  // Ensure minPriceFilter and maxPriceFilter are correctly set as numbers or null
+  minPriceFilter = (minPriceInput && minPriceInput.value !== '') ? parseFloat(minPriceInput.value) : null;
+  maxPriceFilter = (maxPriceInput && maxPriceInput.value !== '') ? parseFloat(maxPriceInput.value) : null;
 
-    currentPage = 1; // Reset to the first page when new filters are applied
-    updateURLParams(currentPage, activeCategory, currentTitleFilter, currentKeywordFilter, currentFilenameFilter, minPriceFilter, maxPriceFilter);
-    renderProducts();
-    toggleFilterMenu(); // Close the filter menu after applying filters
+  currentPage = 1; // Reset to the first page when new filters are applied
+  updateURLParams(currentPage, activeCategory, currentTitleFilter, currentKeywordFilter, currentFilenameFilter, minPriceFilter, maxPriceFilter);
+  renderProducts();
+  toggleFilterMenu(); // Close the filter menu after applying filters
 }
 
 function clearAllFilters() {
-    // Reset all filter-related variables to their default states
-    currentTitleFilter = '';
-    currentKeywordFilter = '';
-    currentFilenameFilter = '';
-    minPriceFilter = null;
-    maxPriceFilter = null;
-    currentPage = 1; // Reset to page 1
+  // Reset all filter-related variables to their default states
+  currentTitleFilter = '';
+  currentKeywordFilter = '';
+  currentFilenameFilter = '';
+  minPriceFilter = null;
+  maxPriceFilter = null;
+  currentPage = 1; // Reset to page 1
 
-    // Update the UI elements to reflect the reset state
-    if (titleFilterInput) titleFilterInput.value = '';
-    if (keywordFilterInput) keywordFilterInput.value = '';
-    if (filenameFilterInput) filenameFilterInput.value = '';
-    if (minPriceInput) minPriceInput.value = '';
-    if (maxPriceInput) maxPriceInput.value = '';
+  // Update the UI elements to reflect the reset state
+  if (titleFilterInput) titleFilterInput.value = '';
+  if (keywordFilterInput) keywordFilterInput.value = '';
+  if (filenameFilterInput) filenameFilterInput.value = '';
+  if (minPriceInput) minPriceInput.value = '';
+  if (maxPriceInput) maxPriceInput.value = '';
 
-    // Clear URL parameters related to filters
-    updateURLParams(currentPage, activeCategory, currentTitleFilter, currentKeywordFilter, currentFilenameFilter, minPriceFilter, maxPriceFilter);
+  // Clear URL parameters related to filters
+  updateURLParams(currentPage, activeCategory, currentTitleFilter, currentKeywordFilter, currentFilenameFilter, minPriceFilter, maxPriceFilter);
 
-    // Re-render products to show all (or filtered only by category if active)
-    renderProducts();
+  // Re-render products to show all (or filtered only by category if active)
+  renderProducts();
 
-    // Close the filter menu after clearing
-    toggleFilterMenu();
+  // Close the filter menu after clearing
+  toggleFilterMenu();
 }
 
 
 // Function to toggle the filter menu visibility
 function toggleFilterMenu() {
-    isFilterMenuOpen = !isFilterMenuOpen;
-    if (filterControlsWrapper) {
-        filterControlsWrapper.style.display = isFilterMenuOpen ? 'flex' : 'none'; // Use 'flex' for the internal layout
-    }
+  isFilterMenuOpen = !isFilterMenuOpen;
+  if (filterControlsWrapper) {
+    filterControlsWrapper.style.display = isFilterMenuOpen ? 'flex' : 'none'; // Use 'flex' for the internal layout
+  }
 }
 
 
@@ -778,24 +901,70 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Event listeners for filter controls
     if (applyFiltersBtn) {
-        applyFiltersBtn.addEventListener('click', applyAllFilters);
+      applyFiltersBtn.addEventListener('click', applyAllFilters);
     }
     if (clearFiltersBtn) {
-        clearFiltersBtn.addEventListener('click', clearAllFilters);
+      clearFiltersBtn.addEventListener('click', clearAllFilters);
     }
 
     // Event listeners for the dropdown toggle buttons
     if (toggleFilterMenuBtn) {
-        toggleFilterMenuBtn.addEventListener('click', toggleFilterMenu);
+      toggleFilterMenuBtn.addEventListener('click', toggleFilterMenu);
     }
     if (closeFilterMenuBtn) {
-        closeFilterMenuBtn.addEventListener('click', toggleFilterMenu);
+      closeFilterMenuBtn.addEventListener('click', toggleFilterMenu);
     }
 
 
   } else {
     console.error("Error: Supabase SDK not available. Cannot initialize product.js.");
   }
+});
+document.addEventListener("DOMContentLoaded", () => {
+  const slides = document.querySelectorAll(".slide");
+  const prevBtn = document.querySelector(".nav.prev");
+  const nextBtn = document.querySelector(".nav.next");
+  let currentIndex = 0;
+  let autoPlayInterval;
+
+  function showSlide(index) {
+    slides.forEach((slide, i) => {
+      slide.classList.remove("active");
+      if (i === index) slide.classList.add("active");
+    });
+    currentIndex = index;
+  }
+
+  function nextSlide() {
+    const newIndex = (currentIndex + 1) % slides.length;
+    showSlide(newIndex);
+  }
+
+  function prevSlide() {
+    const newIndex = (currentIndex - 1 + slides.length) % slides.length;
+    showSlide(newIndex);
+  }
+
+  // Event Listeners
+  nextBtn.addEventListener("click", () => {
+    nextSlide();
+    resetAutoPlay();
+  });
+  prevBtn.addEventListener("click", () => {
+    prevSlide();
+    resetAutoPlay();
+  });
+
+  // Auto play every 5s
+  function startAutoPlay() {
+    autoPlayInterval = setInterval(nextSlide, 5000);
+  }
+  function resetAutoPlay() {
+    clearInterval(autoPlayInterval);
+    startAutoPlay();
+  }
+
+  startAutoPlay();
 });
 
 document.getElementById('currentYear').textContent = new Date().getFullYear();

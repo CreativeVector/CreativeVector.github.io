@@ -38,6 +38,21 @@ window.copyCaption = function () {
         showAlert('Caption copied to clipboard!', 'success');
     }
 }
+window.openImagePreview = function (imageUrl) {
+  const popup = document.getElementById('imgPreviewPopup');
+  const popupImage = document.getElementById('popupImage');
+  if (popup && popupImage) {
+    popupImage.src = imageUrl;
+    popup.style.display = 'flex';
+  }
+}
+
+window.closeImagePreview = function () {
+  const popup = document.getElementById('imgPreviewPopup');
+  if (popup) {
+    popup.style.display = 'none';
+  }
+}
 document.addEventListener('DOMContentLoaded', function () {
     const keywordContainer = document.querySelector('.preview-keyword');
     if (keywordContainer && keywordContainer.textContent.trim() !== '') {
@@ -208,34 +223,37 @@ function addToCartFromTemplate() {
     }
 
     const currentCurrency = localStorage.getItem('currentCurrency') || 'USD';
-    let priceToAdd;
+    let priceUSD = 0;
+    let priceIDR = 0;
 
+    // Hitung harga sesuai license
     switch (selectedLicense) {
         case 'commercial':
-            priceToAdd = (currentCurrency === 'USD') ? productData.price_commercial : productData.idr_commercial;
+            priceUSD = parseFloat(productData.price_commercial) || 0;
+            priceIDR = parseFloat(productData.idr_commercial) || 0;
             break;
         case 'extended':
-            priceToAdd = (currentCurrency === 'USD') ? productData.price_extended : productData.idr_extended;
+            priceUSD = parseFloat(productData.price_extended) || 0;
+            priceIDR = parseFloat(productData.idr_extended) || 0;
             break;
         default: // personal
-            priceToAdd = (currentCurrency === 'USD') ? productData.price : productData.idr_price;
+            priceUSD = parseFloat(productData.price) || 0;
+            priceIDR = parseFloat(productData.idr_price) || 0;
             break;
     }
 
     const productForCart = {
         title: productData.title,
         filename: productData.filename,
-        price: parseFloat(priceToAdd),
-        price_usd: productData.price_usd,
-        price_idr: productData.price_idr,
-        price_commercial_usd: productData.price_commercial_usd,
-        price_commercial_idr: productData.price_commercial_idr,
-        price_extended_usd: productData.price_extended_usd,
-        price_extended_idr: productData.price_extended_idr,
-        preview_url: productData.preview_url,
         license: selectedLicense,
+        preview_url: productData.preview_url,
         extractedId: productData.filename,
-        selectedCurrency: currentCurrency
+        selectedCurrency: currentCurrency,
+
+        // simpan harga sesuai format yang dipakai updateCartUI
+        price_usd: priceUSD,
+        price_idr: priceIDR,
+        price: (currentCurrency === 'USD' ? priceUSD : priceIDR)
     };
 
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
@@ -246,7 +264,7 @@ function addToCartFromTemplate() {
     );
 
     if (exists) {
-        showAlert(`"${productForCart.title}" with "${productForCart.license}" license is already in your cart.`, "error");
+        showAlert(`"${productForCart.title}" with "${productForCart.license}" license is already in your cart.`, "info");
         return;
     }
 
