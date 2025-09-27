@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (trimmedKeyword) {
                 const keywordLink = document.createElement('a');
                 keywordLink.classList.add('keyword-item');
-                keywordLink.href = `/?q=${encodeURIComponent(trimmedKeyword)}`;
+                keywordLink.href = `/?filter_keyword=${encodeURIComponent(trimmedKeyword)}`;
                 keywordLink.textContent = trimmedKeyword;
                 keywordLink.style.marginRight = '6px';
                 keywordLink.style.textDecoration = 'none';

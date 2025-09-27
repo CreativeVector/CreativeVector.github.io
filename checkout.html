@@ -263,8 +263,10 @@
                         return response.json();
                     }).then(function (captureData) {
                         if (captureData.success) {
+                            
                             localStorage.removeItem('cart');
                             window.location.href = '/success.html';
+
                         } else {
                             window.location.href = '/error.html';
                         }
@@ -274,7 +276,7 @@
                 }
             }).render('#paypal-button-container');
         }
-
+        
         document.addEventListener('DOMContentLoaded', () => {
             displayCartSummary();
         });

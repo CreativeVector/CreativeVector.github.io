@@ -253,9 +253,24 @@ body {
 
 
 .sub-header {
-    background-color: var(--bg-medium);
+
     border-bottom: 1px solid var(--border-color-medium);
     padding: 10px 0;
+   
+    top: 0;
+    z-index: 1000;
+    background: var(--bg-medium);
+    transition: all 0.3s ease;
+}
+
+.sub-header.scrolled {
+    background: rgba(255, 255, 255, 0.90);
+    position: fixed;
+    top: 0;
+    width: 100%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+
 }
 
 .sub-header-container {
@@ -1039,6 +1054,11 @@ body {
         margin-top: 10px;
     }
 
+    .sub-header.scrolled {
+        position: static !important;
+        box-shadow: none !important;
+    }
+
     .sub-header-container {
         flex-direction: column;
         gap: 20px;
@@ -1186,6 +1206,11 @@ body {
         height: 16px;
         top: -6px;
         right: -6px;
+    }
+
+    .sub-header.scrolled {
+        position: static !important;
+        box-shadow: none !important;
     }
 
     .sub-header h4 {
@@ -2892,124 +2917,133 @@ body {
     background-size: 12px;
     width: 150px;
 }
+
 .sort-container select:focus {
     border-color: var(--primary-color);
     outline: none;
     box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
 }
+
 .popular-slider {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  margin: 20px 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
 }
 
 .slider-container {
-  position: relative;
-  max-width: 1200px;
-  width: 95%;
-  border-radius: 15px;
-  overflow: hidden;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    position: relative;
+    max-width: 1200px;
+    width: 95%;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 .slide {
-  display: none;
-  position: relative;
-  width: 100%;
+    display: none;
+    position: relative;
+    width: 100%;
 }
 
 .slide.active {
-  display: block;
-  animation: fadeIn 0.6s ease;
+    display: block;
+    animation: fadeIn 0.6s ease;
 }
 
 .slide img {
-  width: 100%;
-  height: auto;
-  display: block;
-  object-fit: cover;
-  border-radius: 15px;
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+    border-radius: 15px;
 }
 
 .slide-content {
-  position: absolute;
-  bottom: 20px;
-  left: 20px;
-  top:auto;
-  background: rgba(0, 0, 0, 0.200);
-  padding: 15px 20px;
-  border-radius: 10px;
-  color: #fff;
-  max-width: 70%;
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    top: auto;
+    background: rgba(0, 0, 0, 0.200);
+    padding: 15px 20px;
+    border-radius: 10px;
+    color: #fff;
+    max-width: 70%;
 }
 
 .slide-content h2 {
-  margin: 0 0 10px;
-  font-size: 1.5rem;
+    margin: 0 0 10px;
+    font-size: 1.5rem;
 }
+
 .bannersoon-btn {
-  display: inline-block;
-  margin-top: 10px;
-  padding: 8px 15px;
-  background: var(--text-color-dark);
-  color: var(--text-color-light);
-  border-radius: 10px;
-  border-color: transparent;
-  text-decoration: none;
-  transition: background 0.3s ease;
+    display: inline-block;
+    margin-top: 10px;
+    padding: 8px 15px;
+    background: var(--text-color-dark);
+    color: var(--text-color-light);
+    border-radius: 10px;
+    border-color: transparent;
+    text-decoration: none;
+    transition: background 0.3s ease;
 }
 
 .banner-btn {
-  display: inline-block;
-  margin-top: 10px;
-  padding: 8px 15px;
-  background: var(--primary-color);
-  color: #fff;
-  border-radius: 10px;
-  border-color: transparent;
-  text-decoration: none;
-  transition: background 0.3s ease;
+    display: inline-block;
+    margin-top: 10px;
+    padding: 8px 15px;
+    background: var(--primary-color);
+    color: #fff;
+    border-radius: 10px;
+    border-color: transparent;
+    text-decoration: none;
+    transition: background 0.3s ease;
 }
+
 .bannersoon-btn:hover {
-  background: var(--error-color);
-  color: var(--text-color-light);
-  border-color: transparent;
+    background: var(--error-color);
+    color: var(--text-color-light);
+    border-color: transparent;
 }
 
 .banner-btn:hover {
-  background: var(--primary-hover-color);
-  color: var(--text-color-light);
-  border-color: transparent;
+    background: var(--primary-hover-color);
+    color: var(--text-color-light);
+    border-color: transparent;
 }
 
 .nav {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: transparent;
-  color: #fff;
-  border: none;
-  padding: 15px 15px;
-  font-size: 2rem;
-  cursor: pointer;
-  border-radius: 50%;
-  transition: background 0.3s ease;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    color: #fff;
+    border: none;
+    padding: 15px 15px;
+    font-size: 2rem;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: background 0.3s ease;
 }
 
 .nav:hover {
-  color: var(--primary-color);
+    color: var(--primary-color);
 }
 
 .nav.prev {
-  left: 10px;
+    left: 10px;
 }
 
 .nav.next {
-  right: 10px;
+    right: 10px;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }

@@ -468,8 +468,16 @@ function renderProducts() {
   }
 
   // --- sorting: lakukan setelah semua filter diterapkan ---
-  const sortVal = sortSelect ? sortSelect.value : 'name_asc';
-  if (sortVal === 'name_asc') {
+  const sortVal = sortSelect ? sortSelect.value : 'popular';
+  if (sortVal === 'popular') {
+    finalFilteredProducts.sort((a, b) => {
+      const fa = (a && a.filename) ? a.filename : '';
+      const fb = (b && b.filename) ? b.filename : '';
+      const ra = (ratingsMap[fa] !== undefined) ? ratingsMap[fa] : RATING_DEFAULT;
+      const rb = (ratingsMap[fb] !== undefined) ? ratingsMap[fb] : RATING_DEFAULT;
+      return rb - ra;
+    });
+  } else if (sortVal === 'name_asc') {
     finalFilteredProducts.sort((a, b) => compareFilenameNumeric(a.filename, b.filename, 1));
   } else if (sortVal === 'name_desc') {
     finalFilteredProducts.sort((a, b) => compareFilenameNumeric(a.filename, b.filename, -1));
@@ -776,6 +784,24 @@ window.addToCart = function (product) {
     cart.push(productWithCartDetails);
     updateCartUI();
     showAlert("Added to cart.", "success");
+
+    incrementRating(productWithCartDetails.filename);
+
+  }
+
+}
+async function incrementRating(filename) {
+  try {
+    const { error } = await supabase.rpc('increment_rating', { p_filename: filename });
+    if (error) {
+      console.error("Failed to increment rating:", error.message);
+    } else {
+      console.log("Rating updated for", filename);
+      await loadRatings();
+    }
+
+  } catch (err) {
+    console.error("Unexpected error incrementing rating:", err);
   }
 }
 
@@ -792,7 +818,7 @@ async function loadProducts() {
     }
     storeDiv.innerHTML = '';
 
-    const res = await fetch(`${supabaseUrl}/rest/v1/${tableName}?select=*,keyword`, {
+    const res = await fetch(`${supabaseUrl}/rest/v1/${tableName}?select=*,keyword,rating:productrating(rating)`, {
       headers: {
         'apikey': supabaseKey,
         'Authorization': `Bearer ${supabaseKey}`
@@ -803,6 +829,14 @@ async function loadProducts() {
 
     const data = await res.json();
     allProducts = data;
+    /* allProducts = data.map(p => {
+      return {
+        ...p,
+        rating: (p.rating && p.rating.length > 0) ? p.rating[0].rating : 1
+      };
+    }); */
+
+    await loadRatings();
 
     const categories = [...new Set(data.map(p => p.category).filter(Boolean))];
     renderCategories(categories);
@@ -819,6 +853,36 @@ async function loadProducts() {
   } finally {
     // selalu sembunyikan loading
     if (loadingIndicator) loadingIndicator.style.display = 'none';
+  }
+}
+// --- Rating map (filename => rating) ---
+let ratingsMap = {};
+const RATING_DEFAULT = 1;
+
+// Load all ratings dari tabel productrating (lowercase)
+async function loadRatings() {
+  try {
+    const res = await fetch(`${supabaseUrl}/rest/v1/productrating?select=filename,rating`, {
+      headers: {
+        'apikey': supabaseKey,
+        'Authorization': `Bearer ${supabaseKey}`
+      }
+    });
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status}`);
+    }
+    const arr = await res.json();
+    ratingsMap = {};
+    for (const r of arr) {
+      if (r && r.filename) {
+        // pastikan rating numeric
+        ratingsMap[r.filename] = Number(r.rating) || RATING_DEFAULT;
+      }
+    }
+    console.log('ratingsMap loaded', ratingsMap);
+  } catch (err) {
+    console.error('Failed to load ratings:', err);
+    ratingsMap = {}; // fallback
   }
 }
 
@@ -966,5 +1030,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
   startAutoPlay();
 });
+function handleScroll() {
+  const subHeader = document.getElementById('subHeader');
+  const isMobile = window.innerWidth <= 768; // cek ukuran layar
 
+  if (isMobile) {
+    // paksa hapus scrolled di mobile
+    subHeader.classList.remove('scrolled');
+    return; // hentikan, tidak perlu lanjut
+  }
+
+  // hanya jalan kalau bukan mobile
+  if (window.scrollY > 50) {
+    subHeader.classList.add('scrolled');
+  } else {
+    subHeader.classList.remove('scrolled');
+  }
+}
+
+window.addEventListener('scroll', handleScroll);
+window.addEventListener('resize', handleScroll);
+document.addEventListener('DOMContentLoaded', handleScroll); // cek awal
 document.getElementById('currentYear').textContent = new Date().getFullYear();
