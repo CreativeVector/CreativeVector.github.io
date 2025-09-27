@@ -106,7 +106,7 @@ async function generateInstagramPost() {
             .filter(k => k.length > 1); // Pastikan tidak ada hashtag kosong
 
         // Batasi maksimal 30 hashtag
-        hashtags = hashtagArray.slice(0, 30).join(' ');
+        hashtags = hashtagArray.slice(0, 25).join(' ');
     }
 
     // Menggabungkan semuanya menjadi satu caption
