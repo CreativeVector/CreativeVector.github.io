@@ -39,19 +39,19 @@ window.copyCaption = function () {
     }
 }
 window.openImagePreview = function (imageUrl) {
-  const popup = document.getElementById('imgPreviewPopup');
-  const popupImage = document.getElementById('popupImage');
-  if (popup && popupImage) {
-    popupImage.src = imageUrl;
-    popup.style.display = 'flex';
-  }
+    const popup = document.getElementById('imgPreviewPopup');
+    const popupImage = document.getElementById('popupImage');
+    if (popup && popupImage) {
+        popupImage.src = imageUrl;
+        popup.style.display = 'flex';
+    }
 }
 
 window.closeImagePreview = function () {
-  const popup = document.getElementById('imgPreviewPopup');
-  if (popup) {
-    popup.style.display = 'none';
-  }
+    const popup = document.getElementById('imgPreviewPopup');
+    if (popup) {
+        popup.style.display = 'none';
+    }
 }
 document.addEventListener('DOMContentLoaded', function () {
     const keywordContainer = document.querySelector('.preview-keyword');
@@ -100,11 +100,13 @@ async function generateInstagramPost() {
     // Memformat keywords menjadi hashtag
     let hashtags = '';
     if (keywords) {
-        // Asumsi keywords dipisahkan oleh koma
-        hashtags = keywords
+        const hashtagArray = keywords
             .split(',')
-            .map(k => `#${k.trim().replace(/\s+/g, '')}`) // Ganti spasi dengan kosong
-            .join(' ');
+            .map(k => `#${k.trim().replace(/\s+/g, '')}`)
+            .filter(k => k.length > 1); // Pastikan tidak ada hashtag kosong
+
+        // Batasi maksimal 30 hashtag
+        hashtags = hashtagArray.slice(0, 30).join(' ');
     }
 
     // Menggabungkan semuanya menjadi satu caption
