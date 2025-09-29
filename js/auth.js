@@ -227,15 +227,23 @@ function handleToggleAuthMode(e) {
 
     // Update form text and clear inputs
     if (formTitle && submitButton && toggleAuthMode && passwordInput && emailInput) {
-        if (isSignUpMode) {
-            formTitle.textContent = 'Sign Up';
-            submitButton.textContent = 'Sign Up';
-            toggleAuthMode.textContent = 'Log In';
-        } else {
-            formTitle.textContent = 'Log In';
-            submitButton.textContent = 'Log In';
-            toggleAuthMode.textContent = 'Sign Up';
+        const toggleForm = document.querySelector('.toggle-form'); // ambil div toggle-form utama
+
+    if (isSignUpMode) {
+        formTitle.textContent = 'Sign Up';
+        submitButton.textContent = 'Sign Up';
+        toggleAuthMode.textContent = 'Log In';
+        if (toggleForm) {
+            toggleForm.firstChild.textContent = 'Already have an account? '; 
         }
+    } else {
+        formTitle.textContent = 'Log In';
+        submitButton.textContent = 'Log In';
+        toggleAuthMode.textContent = 'Sign Up';
+        if (toggleForm) {
+            toggleForm.firstChild.textContent = 'New user? ';
+        }
+    }
 
         passwordInput.value = '';
         emailInput.value = '';

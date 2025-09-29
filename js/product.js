@@ -87,11 +87,16 @@ const maxPriceInput = document.getElementById('maxPriceInput');
 const applyFiltersBtn = document.getElementById('applyFiltersBtn');
 const clearFiltersBtn = document.getElementById('clearFiltersBtn');
 
+
 // Dropdown menu elements
 const toggleFilterMenuBtn = document.getElementById('toggleFilterMenuBtn');
 const closeFilterMenuBtn = document.getElementById('closeFilterMenuBtn');
 const filterControlsWrapper = document.querySelector('.filter-controls-wrapper');
 const sortSelect = document.getElementById('sortSelect');
+
+let filterLikedOnly = false;
+let filterWishlistOnly = false;
+
 if (sortSelect) {
   // panggil ulang render saat user ganti opsi sort
   sortSelect.addEventListener('change', () => {
@@ -417,7 +422,7 @@ if (sortSelect) {
   });
 }
 
-function renderProducts() {
+async function renderProducts() {
   storeDiv.innerHTML = '';
   let productsToProcess = allProducts || [];
 
@@ -426,10 +431,7 @@ function renderProducts() {
     productsToProcess = productsToProcess.filter(p => p.category === activeCategory);
   }
 
-  // 2. Apply all specific text and price filters simultaneously (AND logic)
   let finalFilteredProducts = productsToProcess.slice(); // clone
-
-  // Apply Title filter
   if (currentTitleFilter) {
     const q = currentTitleFilter.toLowerCase();
     finalFilteredProducts = finalFilteredProducts.filter(p => {
@@ -438,7 +440,6 @@ function renderProducts() {
     });
   }
 
-  // Apply Keyword filter
   if (currentKeywordFilter) {
     const q = currentKeywordFilter.toLowerCase();
     finalFilteredProducts = finalFilteredProducts.filter(p => {
@@ -447,7 +448,6 @@ function renderProducts() {
     });
   }
 
-  // Apply Filename filter
   if (currentFilenameFilter) {
     const q = currentFilenameFilter.toLowerCase();
     finalFilteredProducts = finalFilteredProducts.filter(p => {
@@ -456,7 +456,6 @@ function renderProducts() {
     });
   }
 
-  // Apply Price filter (min/max) — using the same price resolution as the UI
   if (minPriceFilter !== null || maxPriceFilter !== null) {
     finalFilteredProducts = finalFilteredProducts.filter(p => {
       const priceToCheck = getProductPriceForSort(p);
@@ -467,7 +466,44 @@ function renderProducts() {
     });
   }
 
-  // --- sorting: lakukan setelah semua filter diterapkan ---
+    // ✅ Apply user-only filters (likes / wishlist)
+  if (filterLikedOnly || filterWishlistOnly) {
+    const user = await getCurrentUser();
+    if (user) {
+      try {
+        const { data, error } = await supabase
+          .from('CustomerData')
+          .select('data_content')
+          .eq('user_id', user.id)
+          .single();
+
+        if (!error && data && data.data_content) {
+          const likes = Array.isArray(data.data_content.likes) ? data.data_content.likes : [];
+          const wishlist = Array.isArray(data.data_content.wishlist) ? data.data_content.wishlist : [];
+
+          finalFilteredProducts = finalFilteredProducts.filter(p => {
+            const inLiked = likes.includes(p.filename);
+            const inWishlist = wishlist.includes(p.filename);
+            if (filterLikedOnly && filterWishlistOnly) return inLiked || inWishlist;
+            if (filterLikedOnly) return inLiked;
+            if (filterWishlistOnly) return inWishlist;
+            return true;
+          });
+        }
+      } catch (err) {
+        console.error('Error applying user-only filters', err);
+      }
+    } else {
+      finalFilteredProducts = [];
+      searchResultCount.innerHTML = `<p class="no-products-message">⚠️ You must be logged in to use user-only filters (Liked / Wishlist).</p>`;
+      searchResultCount.style.display = 'block';
+      storeDiv.innerHTML = '';
+      paginationControls.innerHTML = '';
+      return;
+    }
+  }
+
+
   const sortVal = sortSelect ? sortSelect.value : 'popular';
   if (sortVal === 'popular') {
     finalFilteredProducts.sort((a, b) => {
@@ -552,14 +588,18 @@ function renderProducts() {
         <id>ID #${p.filename || ''}</id>
         <div class="product-meta">
           <div class="format-div">
-            <div class="format-icons">
-                <img src="img/eps.png" class="icon" alt="EPS">
-                <img src="img/jpg.png" class="icon" alt="JPG">
-              </div>
             <button class="btn" style="height: 20px; padding: 0 10px; font-size: 0.7rem; margin-top: 3px;"
                         onclick="handleCategoryClick('${p.category}')">
                         ${p.category}
             </button>
+          <div class="product-actions">
+            <button class="like-btn" data-filename="${p.filename}" title="Like">
+              <i class="fas fa-heart"></i>
+            </button>
+            <button class="wishlist-btn" data-filename="${p.filename}" title="Wishlist">
+              <i class="fas fa-bookmark"></i>
+            </button>
+          </div>
           </div>
 
           <div class="product-price">
@@ -567,7 +607,7 @@ function renderProducts() {
             <span class="license-type">${selectedLicense.charAt(0).toUpperCase() + selectedLicense.slice(1)} License</span>
           </div>
         </div>
-        <button class="btn add-to-cart-btn" onclick='addToCart({...${JSON.stringify(p).replace(/'/g, "\\'")}, price:${price}, selectedCurrency: "${currentCurrency}", license: "${selectedLicense}"})'>+ Add to Cart</button>
+        <button class="btn add-to-cart-btn" data-filename="${p.filename}" onclick='addToCart({...${JSON.stringify(p).replace(/'/g, "\\'")}, price:${price}, selectedCurrency: "${currentCurrency}", license: "${selectedLicense}"})'>+ Add to Cart</button>
       </div>
     `;
     storeDiv.innerHTML += html;
@@ -594,10 +634,9 @@ function renderProducts() {
 
   searchResultCount.innerHTML = message;
   searchResultCount.style.display = 'block';
-
+  markUserActions();
   renderPaginationControls(totalPages);
 }
-
 
 function renderPaginationControls(totalPages) {
   paginationControls.innerHTML = '';
@@ -790,6 +829,7 @@ window.addToCart = function (product) {
   }
 
 }
+
 async function incrementRating(filename) {
   try {
     const { error } = await supabase.rpc('increment_rating', { p_filename: filename });
@@ -886,43 +926,49 @@ async function loadRatings() {
   }
 }
 
-function applyAllFilters() {
+async function applyAllFilters() {
   currentTitleFilter = (titleFilterInput && titleFilterInput.value) ? titleFilterInput.value.toLowerCase() : '';
   currentKeywordFilter = (keywordFilterInput && keywordFilterInput.value) ? keywordFilterInput.value.toLowerCase() : '';
   currentFilenameFilter = (filenameFilterInput && filenameFilterInput.value) ? filenameFilterInput.value.toLowerCase() : '';
-  // Ensure minPriceFilter and maxPriceFilter are correctly set as numbers or null
   minPriceFilter = (minPriceInput && minPriceInput.value !== '') ? parseFloat(minPriceInput.value) : null;
   maxPriceFilter = (maxPriceInput && maxPriceInput.value !== '') ? parseFloat(maxPriceInput.value) : null;
 
-  currentPage = 1; // Reset to the first page when new filters are applied
+  filterLikedOnly = likedFilterInput && likedFilterInput.checked;
+  filterWishlistOnly = wishlistFilterInput && wishlistFilterInput.checked;
+
+  currentPage = 1;
+
   updateURLParams(currentPage, activeCategory, currentTitleFilter, currentKeywordFilter, currentFilenameFilter, minPriceFilter, maxPriceFilter);
   renderProducts();
-  toggleFilterMenu(); // Close the filter menu after applying filters
+  toggleFilterMenu();
 }
 
 function clearAllFilters() {
-  // Reset all filter-related variables to their default states
   currentTitleFilter = '';
   currentKeywordFilter = '';
   currentFilenameFilter = '';
   minPriceFilter = null;
   maxPriceFilter = null;
-  currentPage = 1; // Reset to page 1
 
-  // Update the UI elements to reflect the reset state
+  window.filterLiked = false;
+  window.filterWishlist = false;
+  window.userLikedList = [];
+  window.userWishlist = [];
+
+  currentPage = 1;
+
   if (titleFilterInput) titleFilterInput.value = '';
   if (keywordFilterInput) keywordFilterInput.value = '';
   if (filenameFilterInput) filenameFilterInput.value = '';
   if (minPriceInput) minPriceInput.value = '';
   if (maxPriceInput) maxPriceInput.value = '';
+  filterLikedOnly = false;
+  filterWishlistOnly = false;
+  if (likedFilterInput) likedFilterInput.checked = false;
+  if (wishlistFilterInput) wishlistFilterInput.checked = false;
 
-  // Clear URL parameters related to filters
   updateURLParams(currentPage, activeCategory, currentTitleFilter, currentKeywordFilter, currentFilenameFilter, minPriceFilter, maxPriceFilter);
-
-  // Re-render products to show all (or filtered only by category if active)
   renderProducts();
-
-  // Close the filter menu after clearing
   toggleFilterMenu();
 }
 
@@ -1047,6 +1093,145 @@ function handleScroll() {
     subHeader.classList.remove('scrolled');
   }
 }
+// helper: redirect to auth with alert
+function requireAuthRedirect(actionText = '') {
+  showAlert(`You must log in to ${actionText}. Redirecting to sign in...`, 'error');
+  setTimeout(() => { window.location.href = 'auth.html'; }, 1200);
+}
+
+// Helper: get current user (returns user object or null)
+async function getCurrentUser() {
+  try {
+    const { data } = await supabase.auth.getUser();
+    return data && data.user ? data.user : null;
+  } catch (e) {
+    console.error('getCurrentUser error', e);
+    return null;
+  }
+}
+
+// Toggle field (likes/wishlist) for current user; will call RPC toggle_user_data_content
+// buttonEl is optional (if provided, we toggle its class based on result)
+async function toggleUserField(filename, field, buttonEl) {
+  if (!filename) return;
+
+  const user = await getCurrentUser();
+  if (!user) {
+    requireAuthRedirect(field === 'likes' ? 'like this product' : 'add to wishlist');
+    return;
+  }
+
+  try {
+    const { data, error } = await supabase.rpc('toggle_user_data_content', {
+      p_user_id: user.id,
+      p_field: field,
+      p_product: filename
+    });
+
+    if (error) {
+      console.error('RPC toggle_user_data_content error', error);
+      showAlert('Failed to update. Try again later.', 'error');
+      return;
+    }
+
+    // Normalize returned data (Supabase may return json directly or wrapped)
+    let returned = data;
+    if (Array.isArray(returned) && returned.length) returned = returned[0];
+    if (returned && returned.hasOwnProperty('toggle_user_data_content')) returned = returned.toggle_user_data_content;
+
+    // returned should be the jsonb object of data_content, e.g. { likes: [...], wishlist: [...] }
+    const content = returned || {};
+
+    // Determine active state
+    const arr = Array.isArray(content[field]) ? content[field] : (content[field] ? [content[field]] : []);
+    const isActive = arr.includes(filename);
+
+    // Update all buttons for this filename on page (in case multiple cards exist)
+    if (field === 'likes') {
+      document.querySelectorAll(`.like-btn[data-filename="${CSS.escape(filename)}"]`).forEach(b => {
+        b.classList.toggle('liked', isActive);
+      });
+    } else if (field === 'wishlist') {
+      document.querySelectorAll(`.wishlist-btn[data-filename="${CSS.escape(filename)}"]`).forEach(b => {
+        b.classList.toggle('wishlisted', isActive);
+      });
+    }
+
+    showAlert(isActive ? `Added to ${field}.` : `Removed from ${field}.`, 'success');
+
+    // ✅ hanya increment kalau aktif
+    if (isActive) {
+      incrementRating(filename);
+    }
+    // If profile page open, refresh profile lists
+    if (window.location.pathname.endsWith('profile.html')) {
+      if (typeof loadProfileData === 'function') {
+        loadProfileData();
+      }
+    }
+
+  } catch (err) {
+    console.error('toggleUserField error', err);
+    showAlert('Unexpected error. Try again later.', 'error');
+  }
+}
+
+// markUserActions: baca CustomerData untuk user dan terapkan kelas visual pada tombol
+async function markUserActions() {
+  const user = await getCurrentUser();
+  if (!user) {
+    // remove any active state if user logged out
+    document.querySelectorAll('.like-btn.liked').forEach(b => b.classList.remove('liked'));
+    document.querySelectorAll('.wishlist-btn.wishlisted').forEach(b => b.classList.remove('wishlisted'));
+    return;
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('CustomerData')
+      .select('data_content')
+      .eq('user_id', user.id)
+      .single();
+
+    if (error || !data) {
+      // nothing to mark
+      return;
+    }
+
+    const content = data.data_content || {};
+    const likes = Array.isArray(content.likes) ? content.likes : [];
+    const wishlist = Array.isArray(content.wishlist) ? content.wishlist : [];
+
+    // apply classes
+    document.querySelectorAll('.like-btn').forEach(btn => {
+      const fname = btn.dataset.filename;
+      btn.classList.toggle('liked', likes.includes(fname));
+    });
+    document.querySelectorAll('.wishlist-btn').forEach(btn => {
+      const fname = btn.dataset.filename;
+      btn.classList.toggle('wishlisted', wishlist.includes(fname));
+    });
+
+  } catch (err) {
+    console.error('markUserActions error', err);
+  }
+}
+
+// Event delegation for like/wishlist buttons (safe, minimal changes)
+document.addEventListener('click', (e) => {
+  const likeBtn = e.target.closest('.like-btn');
+  if (likeBtn) {
+    const filename = likeBtn.dataset.filename;
+    toggleUserField(filename, 'likes', likeBtn);
+    return;
+  }
+  const wishBtn = e.target.closest('.wishlist-btn');
+  if (wishBtn) {
+    const filename = wishBtn.dataset.filename;
+    toggleUserField(filename, 'wishlist', wishBtn);
+    return;
+  }
+});
 
 window.addEventListener('scroll', handleScroll);
 window.addEventListener('resize', handleScroll);

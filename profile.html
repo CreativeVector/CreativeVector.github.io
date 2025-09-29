@@ -1,24 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Profile | CreativeVector</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="preconnect"
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="css/style.css"> 
+    <link rel="stylesheet" href="css/style.css">
     <link rel="icon" href="img/favicon.ico" type="image/x-icon">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <meta name="google-site-verification" content="_J1nX2G61upYTYfcmSRSifBh6sLBYfo-eEyp4nnZ2IU" />
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-MHQSM53YE1"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-MHQSM53YE1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
 
-    gtag('config', 'G-MHQSM53YE1');
-  </script>
+        gtag('config', 'G-MHQSM53YE1');
+    </script>
 </head>
+
 <body>
     <header class="main-header">
         <div class="header-container">
@@ -33,12 +37,13 @@
                     <li><a href="user-license.html">License Agreement</a></li>
                     <li><a href="about.html">About</a></li>
                     <li><a href="contact.html">Contact</a></li>
-                    <li><a href="faq.html" class="active">FAQ</a></li> </ul>
+                    <li><a href="faq.html" class="active">FAQ</a></li>
+                </ul>
                 </ul>
             </nav>
             <div class="user-auth-container">
                 <button id="authButton" class="btn btn-auth">
-                    <i class="fas fa-sign-in-alt"></i> Sign In 
+                    <i class="fas fa-sign-in-alt"></i> Sign In
                 </button>
                 <div id="userProfileStatus" style="display:none;" class="user-profile-status">
                     <div class="user-avatar-wrapper">
@@ -61,7 +66,7 @@
         <div class="profile-content">
             <h1>My Account</h1>
             <div class="profile-section" id="userEmailSection">
-                
+
                 <h2>Personal Details</h2>
                 <div class="user-info-detail">
                     <i class="fas fa-user"></i>
@@ -76,10 +81,14 @@
                     <strong>Phone: </strong> <span id="profilePhone">Loading...</span>
                 </div>
                 <button id="changeDetailsButton" class="btn btn-auth">Change Details</button>
-                
-            </div>
-            
 
+            </div>
+
+            <h3>Liked Products</h3>
+            <div id="likesContainer" class="thumb-grid"></div>
+
+            <h3>Wishlist</h3>
+            <div id="wishlistContainer" class="thumb-grid"></div>
             <div class="profile-section" id="purchaseHistory">
                 <h2>Purchase History</h2>
                 <div id="historyMessage">Loading purchase history...</div>
@@ -95,35 +104,39 @@
                         </tr>
                     </thead>
                     <tbody id="historyTableBody">
-                        </tbody>
+                    </tbody>
                 </table>
             </div>
         </div>
     </main>
 
     <footer class="main-footer">
-    <div class="footer-content">
-      <div class="footer-section about-shop">
-        <img style="height:40px;" src="img/cstore.png" alt="Alextian Creative Logo" />
-        <p>Your one-stop shop for high-quality digital assets. We offer unique designs for personal and commercial projects, ensuring creativity and value in every product.</p>
-        <p>All digital assets displayed here are purely owned by Alextian Creative Artwork, we do not sell or steal other designers digital assets.</p>
-      </div>
-      <div class="footer-section">
-        <h3>Quick Links</h3>
-        <ul>
-                    <li><a href="/">Store</a></li> 
+        <div class="footer-content">
+            <div class="footer-section about-shop">
+                <img style="height:40px;" src="img/cstore.png" alt="Alextian Creative Logo" />
+                <p>Your one-stop shop for high-quality digital assets. We offer unique designs for personal and
+                    commercial projects, ensuring creativity and value in every product.</p>
+                <p>All digital assets displayed here are purely owned by Alextian Creative Artwork, we do not sell or
+                    steal other designers digital assets.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="/">Store</a></li>
                     <li><a href="user-license.html">License Agreement</a></li>
                     <li><a href="about.html">About</a></li>
                     <li><a href="contact.html">Contact</a></li>
                     <li><a href="faq.html">FAQ</a></li>
-      </div>
-    </div>
-    <div class="footer-bottom">
-        &copy; <span id="currentYear"></span> CreativeVector. All rights reserved.<br>
-        <a href="privacy-policy.html" target="_blank">Privacy Policy</a> | <a href="terms-of-service.html" target="_blank">Terms of Service</a>
+            </div>
         </div>
-  </footer>
+        <div class="footer-bottom">
+            &copy; <span id="currentYear"></span> CreativeVector. All rights reserved.<br>
+            <a href="privacy-policy.html" target="_blank">Privacy Policy</a> | <a href="terms-of-service.html"
+                target="_blank">Terms of Service</a>
+        </div>
+    </footer>
     <script type="module" src="js/user.js"></script>
     <script type="module" src="js/profile.js"></script>
 </body>
+
 </html>

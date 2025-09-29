@@ -26,6 +26,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     await loadUserProfileAndHistory();
+    loadProfileData();
 
     if (logoutButton) {
         logoutButton.addEventListener('click', handleLogout);
@@ -35,6 +36,40 @@ document.addEventListener('DOMContentLoaded', async () => {
             showAlert('Leads to the profile edit page (not yet implemented).', 'info');
             // window.location.href = '/edit-profile.html'; // Contoh: arahkan ke halaman edit profil
         });
+    }
+});
+async function loadUserPreferences(userId) {
+    const { data, error } = await supabase
+        .from("CustomerData")
+        .select("data_content")
+        .eq("id", userId)
+        .single();
+
+    if (error || !data) {
+        console.error("Failed to load user preferences:", error);
+        return;
+    }
+
+    const content = data.data_content || {};
+    renderList("likesList", content.likes || []);
+    renderList("wishlistList", content.wishlist || []);
+}
+
+function renderList(containerId, items) {
+    const container = document.getElementById(containerId);
+    if (!items.length) {
+        container.textContent = "No items yet.";
+        return;
+    }
+    container.innerHTML = items
+        .map(item => `<div class="profile-item">Product ID: ${item}</div>`)
+        .join("");
+}
+
+// panggil saat login
+supabase.auth.getUser().then(({ data: { user } }) => {
+    if (user) {
+        loadUserPreferences(user.id);
     }
 });
 
@@ -140,3 +175,76 @@ function renderPurchaseHistory(records) {
         historyTableBody.appendChild(row);
     });
 }
+// loadUserCollection: gunakan RPC get_user_collection yang mengembalikan
+// [{ filename, title, preview_url }, ...]
+async function loadUserCollection(userId, field, containerId) {
+  try {
+    const { data, error } = await supabase
+      .rpc('get_user_collection', { p_user_id: userId, p_field: field });
+
+    if (error) throw error;
+
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    container.innerHTML = '';
+
+    if (!data || data.length === 0) {
+      container.innerHTML = `<p>No ${field} yet.</p>`;
+      return;
+    }
+
+    // build grid: gunakan DOM API untuk menghindari injection
+    data.forEach(item => {
+      const filename = item.filename || '';
+      const title = item.title || filename;
+      const preview = item.preview_url || 'img/placeholder.png';
+
+      const link = document.createElement('a');
+      // link ke produk (sama dengan struktur produk di site Anda)
+      link.href = `/products/${encodeURIComponent(filename)}.html`;
+      // buka di tab yang sama; kalau mau new tab: set target='_blank' rel='noopener'
+      link.className = 'thumb-link';
+      link.title = title;
+
+      const card = document.createElement('div');
+      card.className = 'thumb-card';
+
+      const img = document.createElement('img');
+      img.className = 'thumb-img';
+      img.src = preview;
+      img.alt = title;
+
+      const t = document.createElement('p');
+      t.className = 'thumb-title';
+      t.textContent = title;
+
+      card.appendChild(img);
+      card.appendChild(t);
+      link.appendChild(card);
+      container.appendChild(link);
+    });
+
+  } catch (err) {
+    console.error(`Failed to load ${field}:`, err);
+    const container = document.getElementById(containerId);
+    if (container) container.innerHTML = `<p>Error loading ${field}.</p>`;
+  }
+}
+
+
+async function loadProfileData() {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+        window.location.href = '/auth.html';
+        return;
+    }
+
+    try {
+        await loadUserCollection(user.id, 'likes', 'likesContainer');
+        await loadUserCollection(user.id, 'wishlist', 'wishlistContainer');
+    } catch (err) {
+        console.error('loadProfileData error', err);
+    }
+}
+
+

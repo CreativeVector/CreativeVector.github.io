@@ -99,7 +99,7 @@
         </div>
         <div class="filter-dropdown-container">
           <button id="toggleFilterMenuBtn" class="btn filter-toggle-btn">
-            <i class="fas fa-filter"></i> Product Filter
+            <i class="fas fa-filter"></i> Search & Filter
           </button>
 
           <div class="filter-controls-wrapper" style="display: none;">
@@ -123,6 +123,22 @@
               <input type="number" id="minPriceInput" placeholder="Min" step="any" min="0" />
               <input type="number" id="maxPriceInput" placeholder="Max" step="any" min="0" />
             </div>
+
+            <div class="filter-group">
+              <label for="likedFilterInput">For User Only</label>
+              <div>
+                <input type="checkbox" id="likedFilterInput" value="Show My Liked" />
+                <label style="font-weight: normal; font-size: small;" for="likedFilterInput"> Show My Liked
+                  Products</label>
+              </div>
+              <div>
+                <input type="checkbox" id="wishlistFilterInput" value="Show My Wishlist" />
+                <label style="font-weight: normal; font-size: small;" for="wishlistFilterInput"> Show My Wishlist
+                  Products</label>
+              </div>
+
+            </div>
+
             <button id="applyFiltersBtn" class="btn">Apply Filters</button>
             <button id="clearFiltersBtn" class="btn clear-btn">Clear Filters</button>
 
@@ -228,7 +244,7 @@
 
   <main id="store" class="store"></main>
   <div id="loadingIndicator" style="display:none; text-align:center; margin:20px;">
-    <i class="fas fa-spinner fa-spin"></i> Loading products...
+    <i class="fas fa-spinner fa-spin"></i><br> Loading products...
   </div>
   <div id="errorMessage" style="display:none; color:red; text-align:center; margin:20px;"></div>
 
@@ -246,7 +262,6 @@
       <input type="number" id="pageInput" class="page-input" min="1" value="1">
       <button id="goToPageButton" class="go-btn">Go</button>
     </div>
-  </div>
   </div>
 
   <div id="cartModal" class="modal">
