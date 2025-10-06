@@ -100,6 +100,19 @@ function updateURLParams(page, category, titleFilter, keywordFilter, filenameFil
   }
 }
 
+// --- UMANI TRACKING INITIALIZATION ---
+function trackUmamiEvent(eventName, details = {}) {
+  try {
+    if (window.umami && typeof window.umami.track === 'function') {
+      window.umami.track(eventName, details);
+      console.log('[Umami]', eventName, details);
+    } else {
+      console.warn('[Umami] Tracker not loaded yet');
+    }
+  } catch (err) {
+    console.error('[Umami] Tracking failed', err);
+  }
+}
 
 let allProducts = [];
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
@@ -537,7 +550,6 @@ async function renderProducts() {
     });
   }
 
-  // ✅ Apply user-only filters (likes / wishlist)
   if (filterLikedOnly || filterWishlistOnly) {
     const user = await getCurrentUser();
     if (user) {
@@ -648,7 +660,7 @@ async function renderProducts() {
     const html = `
       <div class="product-card">
         <div class="image-wrapper">
-          <a href="${productUrl}" class="product-link">
+          <a href="${productUrl}" class="product-link" onclick="trackUmamiEvent('View Product', { product: '${p.filename}' })">
             <img src="${p.preview_url}" alt="${p.title}"/>
             <div class="preview-overlay">
                 <i class="fas fa-eye"></i> <span>View Product</span>
@@ -707,6 +719,12 @@ async function renderProducts() {
   searchResultCount.style.display = 'block';
   markUserActions();
   renderPaginationControls(totalPages);
+
+  trackUmamiEvent('Render Products', {
+    total: finalFilteredProducts.length,
+    category: activeCategory || 'all',
+    sort: sortSelect ? sortSelect.value : 'popular'
+  });
 }
 
 function renderPaginationControls(totalPages) {
@@ -1011,6 +1029,16 @@ async function applyAllFilters() {
 
   updateURLParams(currentPage, activeCategory, currentTitleFilter, currentKeywordFilter, currentFilenameFilter, minPriceFilter, maxPriceFilter);
   renderProducts();
+
+  trackUmamiEvent('Apply Filters', {
+    category: activeCategory || 'all',
+    title: currentTitleFilter,
+    keyword: currentKeywordFilter,
+    filename: currentFilenameFilter,
+    minPrice: minPriceFilter,
+    maxPrice: maxPriceFilter
+  });
+
   toggleFilterMenu();
 }
 
@@ -1234,7 +1262,13 @@ async function toggleUserField(filename, field, buttonEl) {
     if (isActive) {
       incrementRating(filename);
     }
-    // If profile page open, refresh profile lists
+
+    trackUmamiEvent('User Action', {
+      action: field,
+      product: filename,
+      status: isActive ? 'added' : 'removed'
+    });
+
     if (window.location.pathname.endsWith('profile.html')) {
       if (typeof loadProfileData === 'function') {
         loadProfileData();
