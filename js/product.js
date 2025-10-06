@@ -5,20 +5,57 @@ let supabase;
 
 function getQueryParams() {
   const params = new URLSearchParams(window.location.search);
-  return {
+  const query = {
     page: parseInt(params.get('page')) || 1,
     category: params.get('category') || '',
     titleFilter: params.get('filter_title') || '',
     keywordFilter: params.get('filter_keyword') || '',
     filenameFilter: params.get('filter_filename') || '',
-    minPrice: params.has('min_price') ? parseFloat(params.get('min_price')) : null, // Corrected parsing
-    maxPrice: params.has('max_price') ? parseFloat(params.get('max_price')) : null  // Corrected parsing
+    minPrice: params.has('min_price') ? parseFloat(params.get('min_price')) : null,
+    maxPrice: params.has('max_price') ? parseFloat(params.get('max_price')) : null
   };
+
+  // === Tambahan untuk Canonical Tag ===
+  try {
+    const canonicalBase = window.location.origin + window.location.pathname;
+
+    // Pilih parameter penting yang boleh ada di canonical
+    const allowedParams = ['category', 'page', 'filter_keyword', 'filter_title', 'filter_filename'];
+    const canonicalParams = [];
+
+    for (const [key, value] of params) {
+      if (allowedParams.includes(key) && value) {
+        canonicalParams.push(`${key}=${encodeURIComponent(value)}`);
+      }
+    }
+
+    // Bangun canonical URL
+    let canonicalUrl = canonicalBase;
+    if (canonicalParams.length > 0) {
+      canonicalUrl += '?' + canonicalParams.join('&');
+    }
+
+    // Perbarui atau buat canonical tag di <head>
+    let link = document.querySelector('link[rel="canonical"]');
+    if (!link) {
+      link = document.createElement('link');
+      link.rel = 'canonical';
+      document.head.appendChild(link);
+    }
+    link.href = canonicalUrl;
+  } catch (err) {
+    console.warn('Failed to update canonical tag:', err);
+  }
+
+  return query;
 }
+
 
 function updateURLParams(page, category, titleFilter, keywordFilter, filenameFilter, minPrice, maxPrice) {
   const params = new URLSearchParams();
-  if (page > 1) params.set('page', page);
+
+  // Tambahkan parameter hanya jika ada nilainya
+  if (page && page > 1) params.set('page', page);
   if (category) params.set('category', category);
   if (titleFilter) params.set('filter_title', titleFilter);
   if (keywordFilter) params.set('filter_keyword', keywordFilter);
@@ -26,9 +63,43 @@ function updateURLParams(page, category, titleFilter, keywordFilter, filenameFil
   if (minPrice !== null && !isNaN(minPrice)) params.set('min_price', minPrice.toString());
   if (maxPrice !== null && !isNaN(maxPrice)) params.set('max_price', maxPrice.toString());
 
-  const newUrl = `${window.location.pathname}?${params.toString()}`;
+  // Buat URL baru
+  const newQuery = params.toString();
+  const newUrl = newQuery ? `${window.location.pathname}?${newQuery}` : window.location.pathname;
+
+  // Perbarui URL tanpa reload halaman
   window.history.replaceState({}, '', newUrl);
+
+  // === Tambahan opsional: perbarui canonical otomatis ===
+  try {
+    let link = document.querySelector('link[rel="canonical"]');
+    if (!link) {
+      link = document.createElement('link');
+      link.rel = 'canonical';
+      document.head.appendChild(link);
+    }
+
+    const canonicalBase = window.location.origin + window.location.pathname;
+    const allowedParams = ['category', 'page', 'filter_keyword', 'filter_title', 'filter_filename'];
+    const canonicalParams = [];
+
+    for (const [key, value] of params) {
+      if (allowedParams.includes(key) && value) {
+        canonicalParams.push(`${key}=${encodeURIComponent(value)}`);
+      }
+    }
+
+    let canonicalUrl = canonicalBase;
+    if (canonicalParams.length > 0) {
+      canonicalUrl += '?' + canonicalParams.join('&');
+    }
+
+    link.href = canonicalUrl;
+  } catch (err) {
+    console.warn('Failed to update canonical tag:', err);
+  }
 }
+
 
 let allProducts = [];
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
@@ -466,7 +537,7 @@ async function renderProducts() {
     });
   }
 
-    // ✅ Apply user-only filters (likes / wishlist)
+  // ✅ Apply user-only filters (likes / wishlist)
   if (filterLikedOnly || filterWishlistOnly) {
     const user = await getCurrentUser();
     if (user) {
