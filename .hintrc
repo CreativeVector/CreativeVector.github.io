@@ -11,7 +11,8 @@
         "image-alt": "off"
       }
     ],
-    "button-type": "off"
+    "button-type": "off",
+    "meta-viewport": "off"
   },
   "browserslist": [
     "defaults",

@@ -3,6 +3,20 @@ const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 const tableName = 'StorePreview';
 let supabase;
 
+// --- UMANI TRACKING INITIALIZATION ---
+function trackUmamiEvent(eventName, details = {}) {
+  try {
+    if (window.umami && typeof window.umami.track === 'function') {
+      window.umami.track(eventName, details);
+      console.log('[Umami]', eventName, details);
+    } else {
+      console.warn('[Umami] Tracker not loaded yet');
+    }
+  } catch (err) {
+    console.error('[Umami] Tracking failed', err);
+  }
+}
+
 function getQueryParams() {
   const params = new URLSearchParams(window.location.search);
   const query = {
@@ -760,6 +774,7 @@ function renderPaginationControls(totalPages) {
       updateURLParams(currentPage, activeCategory, currentTitleFilter, currentKeywordFilter, currentFilenameFilter, minPriceFilter, maxPriceFilter);
       renderProducts();
       window.scrollTo(0, 0);
+      trackUmamiEvent('Pagination', { page: currentPage });
     };
 
     paginationControls.appendChild(pageButton);
@@ -1011,6 +1026,16 @@ async function applyAllFilters() {
 
   updateURLParams(currentPage, activeCategory, currentTitleFilter, currentKeywordFilter, currentFilenameFilter, minPriceFilter, maxPriceFilter);
   renderProducts();
+
+  trackUmamiEvent('Apply Filters', {
+    category: activeCategory || 'all',
+    title: currentTitleFilter,
+    keyword: currentKeywordFilter,
+    filename: currentFilenameFilter,
+    minPrice: minPriceFilter,
+    maxPrice: maxPriceFilter
+  });
+
   toggleFilterMenu();
 }
 
@@ -1234,6 +1259,13 @@ async function toggleUserField(filename, field, buttonEl) {
     if (isActive) {
       incrementRating(filename);
     }
+
+    trackUmamiEvent('User Action', {
+      action: field,
+      product: filename,
+      status: isActive ? 'added' : 'removed'
+    });
+
     // If profile page open, refresh profile lists
     if (window.location.pathname.endsWith('profile.html')) {
       if (typeof loadProfileData === 'function') {

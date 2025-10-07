@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Verified | CreativeVector</title>
+    <link rel="preconnect"
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="3b7c87a5-b997-4543-a350-ff1d5612a197"></script>
+    <link rel="icon" href="img/favicon.ico" type="image/x-icon">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <meta name="google-site-verification" content="_J1nX2G61upYTYfcmSRSifBh6sLBYfo-eEyp4nnZ2IU" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-MHQSM53YE1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-MHQSM53YE1');
+    </script>
+
+    <style>
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: #f4f5f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .verify-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            padding: 40px 30px;
+            max-width: 400px;
+            width: 90%;
+            animation: fadeIn 0.6s ease;
+        }
+
+        .verify-container h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .verify-container p {
+            color: #555;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+
+        .verify-container .checkmark {
+            font-size: 70px;
+            color: #27ae60;
+            margin-bottom: 10px;
+        }
+
+        .verify-container a {
+            display: inline-block;
+            margin-top: 20px;
+            background-color: #2c7df0;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background 0.3s ease;
+        }
+
+        .verify-container a:hover {
+            background-color: #1e5cc9;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="verify-container">
+        <div class="checkmark">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <h1>Email Verified!</h1>
+        <p>Your account has been successfully verified.<br>
+            You can now sign in and access your profile.</p>
+        <a href="auth.html#login">Continue to Login</a>
+        <p style="font-size: 13px; margin-top: 10px; color: #777;">
+            Redirecting automatically in <span id="countdown">5</span> seconds...
+        </p>
+    </div>
+
+    <script>
+        let count = 7;
+        const countdownEl = document.getElementById('countdown');
+        const redirectUrl = 'auth.html#login';
+
+        const interval = setInterval(() => {
+            count--;
+            countdownEl.textContent = count;
+            if (count <= 0) {
+                clearInterval(interval);
+                window.location.href = redirectUrl;
+            }
+        }, 1000);
+    </script>
+</body>
+
+</html>

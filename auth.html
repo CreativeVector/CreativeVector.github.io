@@ -9,7 +9,8 @@
         href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <script defer src="https://cloud.umami.is/script.js" data-website-id="3b7c87a5-b997-4543-a350-ff1d5612a197"></script>
+    <script defer src="https://cloud.umami.is/script.js"
+        data-website-id="3b7c87a5-b997-4543-a350-ff1d5612a197"></script>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/auth.css" />
     <link rel="icon" href="img/favicon.ico" type="image/x-icon">
@@ -27,7 +28,7 @@
 
 <body>
     <div class="auth-container">
-        
+
         <div class="logo">
             <a href="/">
                 <img style="height:40px;" src="img/cstore.png" alt="CreativeVector Logo" />
@@ -266,7 +267,14 @@
             <div id="authMessage" class="message" style="display: none;"></div>
 
             <div class="toggle-form">
-                Already have an account? <a href="#" id="toggleAuthMode">Log In</a>
+                Already have an account? <a href="#login" id="toggleAuthMode">Log In</a>
+            </div>
+            <div class="social-login">
+                <button type="button" id="googleLoginBtn" class="btn google-btn">
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google Logo"
+                        style="width:18px; vertical-align:middle; margin-right:8px;">
+                    Continue with Google
+                </button>
             </div>
             <p class="toggle-form" style="font-size: 12px;">
                             CreativeVector uses <a href="https://supabase.com/docs/guides/auth" target="_blank">Supabase
@@ -280,10 +288,10 @@
             <div style="margin-top: 20px;">
                 <a href="/" class="btn" style="text-decoration: none;font-weight: bold;">Back to store</a>
             </div>
-            
+
         </div>
-        
-        <div id="globalAlertContainer" ></div>
+
+        <div id="globalAlertContainer"></div>
         <script src="js/show-alert.js"></script>
         <script type="module" src="js/auth.js"></script>
         <script>

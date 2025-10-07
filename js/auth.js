@@ -72,10 +72,10 @@ async function signUp(email, password, firstName, lastName, fullPhoneNumber) {
         const { data: customerData, error: customerError } = await supabase
             .from('CustomerData') // Pastikan nama tabel ini sama dengan yang Anda buat di Supabase
             .insert([
-                { 
-                    user_id: authData.user.id, 
-                    first_name: firstName, 
-                    last_name: lastName, 
+                {
+                    user_id: authData.user.id,
+                    first_name: firstName,
+                    last_name: lastName,
                     phone_number: fullPhoneNumber,
                     email: email
                 }
@@ -154,7 +154,7 @@ function handleSubmit(e) {
 
     const email = emailInput.value.trim();
     const password = passwordInput.value.trim();
-    
+
     // Validasi dasar untuk email dan password (selalu diperlukan)
     if (!email || !password) {
         showMessage('Please enter your email and password.', 'error');
@@ -229,21 +229,21 @@ function handleToggleAuthMode(e) {
     if (formTitle && submitButton && toggleAuthMode && passwordInput && emailInput) {
         const toggleForm = document.querySelector('.toggle-form'); // ambil div toggle-form utama
 
-    if (isSignUpMode) {
-        formTitle.textContent = 'Sign Up';
-        submitButton.textContent = 'Sign Up';
-        toggleAuthMode.textContent = 'Log In';
-        if (toggleForm) {
-            toggleForm.firstChild.textContent = 'Already have an account? '; 
+        if (isSignUpMode) {
+            formTitle.textContent = 'Sign Up';
+            submitButton.textContent = 'Sign Up';
+            toggleAuthMode.textContent = 'Log In';
+            if (toggleForm) {
+                toggleForm.firstChild.textContent = 'Already have an account? ';
+            }
+        } else {
+            formTitle.textContent = 'Log In';
+            submitButton.textContent = 'Log In';
+            toggleAuthMode.textContent = 'Sign Up';
+            if (toggleForm) {
+                toggleForm.firstChild.textContent = `Don't have a account yet? `;
+            }
         }
-    } else {
-        formTitle.textContent = 'Log In';
-        submitButton.textContent = 'Log In';
-        toggleAuthMode.textContent = 'Sign Up';
-        if (toggleForm) {
-            toggleForm.firstChild.textContent = 'New user? ';
-        }
-    }
 
         passwordInput.value = '';
         emailInput.value = '';
@@ -271,6 +271,34 @@ async function checkUserSession() {
     }
 }
 
+async function signInWithGoogle() {
+    try {
+        const { data, error } = await supabase.auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+                redirectTo: `${window.location.origin}/auth-redirect.html` // arahkan ke halaman redirect milikmu
+            }
+        });
+
+        if (error) {
+            console.error('Google Sign-in Error:', error);
+            showMessage('Failed to sign in with Google. Please try again.', 'error');
+        } else {
+            console.log('Redirecting to Google Auth...');
+        }
+    } catch (err) {
+        console.error('Unexpected error:', err);
+        showMessage('Unexpected error occurred during Google login.', 'error');
+    }
+}
+
+// Tambahkan event listener
+document.addEventListener('DOMContentLoaded', () => {
+    const googleBtn = document.getElementById('googleLoginBtn');
+    if (googleBtn) {
+        googleBtn.addEventListener('click', signInWithGoogle);
+    }
+});
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -283,17 +311,50 @@ document.addEventListener('DOMContentLoaded', () => {
         showMessage("Auth service is currently unavailable. Please load Supabase SDK.", 'error');
     }
 
-    // Ensure initial visibility of all fields based on isSignUpMode
-    if (firstNameInput) firstNameInput.style.display = isSignUpMode ? 'block' : 'none';
-    if (lastNameInput) lastNameInput.style.display = isSignUpMode ? 'block' : 'none';
-    if (document.querySelector('.phone-input-group')) document.querySelector('.phone-input-group').style.display = isSignUpMode ? 'flex' : 'none';
-    if (repeatPasswordInput) repeatPasswordInput.style.display = isSignUpMode ? 'block' : 'none';
+    const hash = window.location.hash.toLowerCase();
+    if (hash === '#login') {
+        isSignUpMode = false;
+    } else if (hash === '#signup') {
+        isSignUpMode = true;
+    }
 
+    // Terapkan mode sesuai hash
+    if (!isSignUpMode) {
+        // Login mode
+        firstNameInput.style.display = 'none';
+        lastNameInput.style.display = 'none';
+        document.querySelector('.phone-input-group').style.display = 'none';
+        repeatPasswordInput.style.display = 'none';
+        formTitle.textContent = 'Log In';
+        submitButton.textContent = 'Log In';
+        toggleAuthMode.textContent = 'Sign Up';
+        document.querySelector('.toggle-form').firstChild.textContent = `Don't have a account yet? `;
+    } else {
+        // Sign Up mode
+        firstNameInput.style.display = 'block';
+        lastNameInput.style.display = 'block';
+        document.querySelector('.phone-input-group').style.display = 'flex';
+        repeatPasswordInput.style.display = 'block';
+        formTitle.textContent = 'Sign Up';
+        submitButton.textContent = 'Sign Up';
+        toggleAuthMode.textContent = 'Log In';
+        document.querySelector('.toggle-form').firstChild.textContent = 'Already have an account? ';
+    }
 
+    // --- Event listeners ---
     if (authForm) {
         authForm.addEventListener('submit', handleSubmit);
     }
     if (toggleAuthMode) {
         toggleAuthMode.addEventListener('click', handleToggleAuthMode);
     }
+
+    // --- Optional: ubah hash saat toggle ---
+    toggleAuthMode.addEventListener('click', () => {
+        if (isSignUpMode) {
+            window.location.hash = '#signup';
+        } else {
+            window.location.hash = '#login';
+        }
+    });
 });

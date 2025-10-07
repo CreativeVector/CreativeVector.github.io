@@ -15,6 +15,8 @@
       "auth.html",
       "checkout.html",
       "profile.html",
+      "verify-success.html",
+      "reset-password.html",
       "template/product-template.html"
     ],
     "TagsToInclude": [
